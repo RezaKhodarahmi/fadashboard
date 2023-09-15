@@ -3,5 +3,5 @@ export default {
   loginEndpoint: 'http://localhost:3200/api/v1/auth/login',
   registerEndpoint: '/jwt/register',
   storageTokenKeyName: 'accessToken',
-  onTokenExpiration: 'refreshToken' // logout | refreshToken
+  onTokenExpiration: 'refreshToken'
 }
