@@ -46,6 +46,7 @@ const couponValidationSchema = yup.object().shape({
 
 export default function CrateUserForm(props) {
   const [generatedCode, setGeneratedCode] = useState('')
+  const [allowedEmails, setAllowedEmails] = useState([])
 
   //Hooks
   const dispatch = useDispatch()
@@ -64,8 +65,9 @@ export default function CrateUserForm(props) {
   useEffect(() => {
     if (props.couponData) {
       reset(props.couponData)
+      setAllowedEmails(props.couponData.allowed_emails || [])
     }
-  }, [props])
+  }, [props, reset])
 
   useEffect(() => {
     reset({ code: generatedCode })
@@ -83,8 +85,24 @@ export default function CrateUserForm(props) {
   }
 
   const onSubmit = data => {
-    // Handle form submission
-    dispatch(updateCoupon(data))
+    // Combine form data with the allowed emails array
+    const combinedData = {
+      ...data,
+      allowed_emails: allowedEmails
+    }
+    dispatch(updateCoupon(combinedData))
+  }
+  const handleAddEmail = () => {
+    setAllowedEmails([...allowedEmails, ''])
+  }
+
+  const handleRemoveEmail = index => {
+    setAllowedEmails(allowedEmails.filter((_, i) => i !== index))
+  }
+
+  const handleEmailChange = (index, value) => {
+    const updatedEmails = allowedEmails.map((email, i) => (i === index ? value : email))
+    setAllowedEmails(updatedEmails)
   }
 
   return (
@@ -173,13 +191,20 @@ export default function CrateUserForm(props) {
           )}
         </Grid>
         <Grid item xs={12} sm={6} mb={3}>
-          <TextField {...register('allowed_emails')} label='Allowed emails' fullWidth />
-          {errors.allowed_emails && (
-            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-allowed_emails-helper'>
-              {errors.allowed_emails.message}
-            </FormHelperText>
-          )}
+          {allowedEmails.map((email, index) => (
+            <Box key={index} display='flex' alignItems='center' mb={1}>
+              <TextField
+                value={email}
+                onChange={e => handleEmailChange(index, e.target.value)}
+                label={`Email ${index + 1}`}
+                fullWidth
+              />
+              <Button onClick={() => handleRemoveEmail(index)}>Remove</Button>
+            </Box>
+          ))}
+          <Button onClick={handleAddEmail}>Add an allowed email </Button>
         </Grid>
+
         <Grid item xs={12} sm={6} mb={3}>
           <FormControl fullWidth>
             <InputLabel id='is_used-select-label'>Exclude sale items</InputLabel>
