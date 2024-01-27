@@ -92,6 +92,7 @@ export default function CrateUserForm(props) {
     }
     dispatch(updateCoupon(combinedData))
   }
+
   const handleAddEmail = () => {
     setAllowedEmails([...allowedEmails, ''])
   }

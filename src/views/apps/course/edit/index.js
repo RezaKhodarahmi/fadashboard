@@ -386,30 +386,21 @@ export default function EditForm(props) {
             )}
           </Grid>
 
-          {activeCampList && (
-            <Grid item xs={12} sm={6} marginTop={5}>
-              <FormControl fullWidth>
-                <InputLabel id='activeList-select-label'>Active Camp List</InputLabel>
-                <Select
-                  {...register('activeList')}
-                  defaultValue={selectedActiveList}
-                  labelId='campaing-select-label'
-                  label='Active campaing list '
-                >
-                  {activeCampList?.map(list => (
-                    <MenuItem key={list.id} value={list.id}>
-                      {list.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              {errors.activeList && (
-                <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-activeList-helper'>
-                  {errors.activeList.message}
-                </FormHelperText>
-              )}
-            </Grid>
-          )}
+          <Grid item xs={12} sm={6} marginTop={5}>
+            <TextField
+              {...register('activeList')}
+              name='activeList'
+              type='number'
+              label='ActiveCamping list number'
+              fullWidth
+            />
+
+            {errors.activeList && (
+              <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-activeList-helper'>
+                {errors.activeList.message}
+              </FormHelperText>
+            )}
+          </Grid>
           <Grid marginTop={5} item xs={12} sm={6}>
             {type ? (
               <FormControl fullWidth>

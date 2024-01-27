@@ -129,7 +129,7 @@ export default function EditForm() {
         </Grid>
 
         <Grid marginTop={5} item xs={12} sm={6}>
-          {courses.data.data ? (
+          {Array.isArray(courses.data.data) ? (
             <FormControl fullWidth>
               <InputLabel id='courses-select-label'>Selet Course</InputLabel>
               <Select

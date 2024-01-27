@@ -34,13 +34,6 @@ const validationSchema = yup.object().shape({
 export default function EditForm(props) {
   const dispatch = useDispatch()
 
-  const [file, setFile] = useState(null)
-  const [imageUrl, setImageUrl] = useState(null)
-  const [type, setType] = useState(null)
-  const [status, setStatus] = useState(null)
-  const currentStatus = watch('status')
-  const currentType = watch('type')
-
   const {
     register,
     handleSubmit,
@@ -56,6 +49,13 @@ export default function EditForm(props) {
       type: props.webinarData?.type || '1'
     }
   })
+
+  const [file, setFile] = useState(null)
+  const [imageUrl, setImageUrl] = useState(null)
+  const [type, setType] = useState(null)
+  const [status, setStatus] = useState(null)
+  const currentStatus = watch('status')
+  const currentType = watch('type')
 
   useEffect(() => {
     if (props.webinarData) {

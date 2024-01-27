@@ -49,21 +49,24 @@ const Questions = props => {
       setAnswers(props.Questions.map(question => question.answers))
     }
   }, [props.Questions])
+  useEffect(() => {
+    console.log(questions)
+  }, [questions])
 
   // Update question with the existing question data
   useEffect(() => {
     if (existQuestion?.data?.data) {
+      console.log(existQuestion)
       const newQuestion = [...questions]
-      const existQuIndex = newQuestion.findIndex(question => question.secId == existQuestion?.data?.data.secId)
+      const existQuIndex = newQuestion.findIndex(question => question.secId == existQuestion?.data?.data[0].secId)
 
       if (existQuIndex !== -1) {
         const updatedQuestion = {
           ...newQuestion[existQuIndex],
-          id: existQuestion?.data?.data.id
+          id: existQuestion?.data?.data[0].id
         }
         newQuestion.splice(existQuIndex, 1, updatedQuestion)
-        setQuestion(null)
-        setQuestion(newQuestion)
+        setQuestion(newQuestion) // Remove setQuestion(null)
       }
     }
   }, [existQuestion])

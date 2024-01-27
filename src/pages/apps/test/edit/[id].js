@@ -1,7 +1,8 @@
-import { useEffect, Suspense, lazy } from 'react'
-
-import { Grid, Box } from '@mui/material'
+import React, { Suspense, lazy } from 'react'
+import { Grid, Box, CircularProgress, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
+import BASE_URL from 'src/api/BASE_URL'
+import axios from 'axios'
 
 // ** Styled Component
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
@@ -9,10 +10,6 @@ import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 // ** Custom Components Imports
 import PageHeader from 'src/@core/components/page-header'
 import MuiLink from '@mui/material/Link'
-import Typography from '@mui/material/Typography'
-import { useDispatch, useSelector } from 'react-redux'
-import { getTestWithId } from 'src/store/apps/test'
-import CircularProgress from '@mui/material/CircularProgress'
 
 const EditForm = lazy(() => import('src/views/apps/test/edit'))
 
@@ -25,19 +22,28 @@ const Loading = () => {
   )
 }
 
-export default function EditVideo() {
-  const router = useRouter()
-  const { id } = router.query
-  const dispatch = useDispatch()
-  const test = useSelector(state => state.test)
-  const testData = test.data?.data
-  const testQuestions = test.data?.questions
+// getServerSideProps function to fetch data server-side
+export async function getServerSideProps(context) {
+  const { id } = context.params
 
-  useEffect(() => {
-    if (id) {
-      dispatch(getTestWithId(id))
-    }
-  }, [dispatch, id])
+  try {
+    const response = await axios.get(`${BASE_URL}/tests/${id}`, {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      withCredentials: true
+    })
+
+    // Return only the data needed for the page, not the entire response object
+    return { props: { testData: response.data } }
+  } catch (error) {
+    return { props: { error: 'Error fetching data' } }
+  }
+}
+
+export default function EditVideo({ testData }) {
+  const test = testData.data
+  const testQuestions = testData.questions
 
   return (
     <DatePickerWrapper>
@@ -50,12 +56,15 @@ export default function EditVideo() {
               </MuiLink>
             </Typography>
           }
-          subtitle={<Typography variant='body2'>{testData ? testData.name : 'Test title'}</Typography>}
+          subtitle={<Typography variant='body2'>{test ? test.name : 'Test title'}</Typography>}
         />
+
         <Grid item xs={12}>
-          <Suspense fallback={<Loading />}>
-            <EditForm testData={testData} testQuestions={testQuestions} />
-          </Suspense>
+          {test && (
+            <Suspense fallback={<Loading />}>
+              <EditForm testData={test} testQuestions={testQuestions} />
+            </Suspense>
+          )}
         </Grid>
       </Grid>
     </DatePickerWrapper>

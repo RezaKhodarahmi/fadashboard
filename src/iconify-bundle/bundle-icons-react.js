@@ -134,8 +134,6 @@ const target = 'src/iconify-bundle/icons-bundle-react.js'
       // Minify data and add to bundle
       minifyIconSet(content)
       bundle += 'addCollection(' + JSON.stringify(content) + ');\n'
-
-      // console.log(`Bundled icons from ${filename}`)
     }
   }
 
