@@ -44,19 +44,18 @@ const Questions = props => {
 
   // Set initial questions and answers from props
   useEffect(() => {
-    if (props.Questions) {
-      setQuestion(props.Questions)
-      setAnswers(props.Questions.map(question => question.answers))
+    if (Array.isArray(props?.Questions)) {
+      // Check if props.Questions is an array
+      setQuestion(props?.Questions)
+
+      // Initialize answers state as an array of answer arrays for each question
+      setAnswers(props?.Questions.map(question => question.answers || []))
     }
   }, [props.Questions])
-  useEffect(() => {
-    console.log(questions)
-  }, [questions])
 
   // Update question with the existing question data
   useEffect(() => {
     if (existQuestion?.data?.data) {
-      console.log(existQuestion)
       const newQuestion = [...questions]
       const existQuIndex = newQuestion.findIndex(question => question.secId == existQuestion?.data?.data[0].secId)
 
@@ -168,7 +167,7 @@ const Questions = props => {
     <>
       <Grid marginTop={5} item xs={12} sm={12} flex>
         <div>
-          {isApiLoaded
+          {isApiLoaded && Array.isArray(questions)
             ? questions.map((question, index) => {
                 return (
                   <form
@@ -230,30 +229,34 @@ const Questions = props => {
                     </Grid>
 
                     <Grid container marginTop={5} spacing={2}>
-                      {answers[index]?.map((answer, answerIndex) => (
-                        <Grid item xs={12} sm={12} key={`answer-${answerIndex}`}>
-                          <TextField
-                            {...register2(`questions.${index}.answers.${answerIndex}.answerText`)}
-                            defaultValue={answer.answerText}
-                            label={`Answer ${answerIndex + 1}`}
-                            fullWidth
-                            onChange={e =>
-                              handleQuestionUpdate('answerText', e.target.value, index, answerIndex, question.id)
-                            }
-                          />
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                {...register2(`questions.${index}.answers.${answerIndex}.isCorrect`)}
-                                defaultChecked={answer.isCorrect}
-                                color='primary'
-                                onChange={e => handleQuestionUpdate('isCorrect', e.target.checked, index, answerIndex)}
+                      {Array.isArray(answers[index])
+                        ? answers[index]?.map((answer, answerIndex) => (
+                            <Grid item xs={12} sm={12} key={`answer-${answerIndex}`}>
+                              <TextField
+                                {...register2(`questions.${index}.answers.${answerIndex}.answerText`)}
+                                defaultValue={answer.answerText}
+                                label={`Answer ${answerIndex + 1}`}
+                                fullWidth
+                                onChange={e =>
+                                  handleQuestionUpdate('answerText', e.target.value, index, answerIndex, question.id)
+                                }
                               />
-                            }
-                            label='Correct'
-                          />
-                        </Grid>
-                      ))}
+                              <FormControlLabel
+                                control={
+                                  <Checkbox
+                                    {...register2(`questions.${index}.answers.${answerIndex}.isCorrect`)}
+                                    defaultChecked={answer.isCorrect}
+                                    color='primary'
+                                    onChange={e =>
+                                      handleQuestionUpdate('isCorrect', e.target.checked, index, answerIndex)
+                                    }
+                                  />
+                                }
+                                label='Correct'
+                              />
+                            </Grid>
+                          ))
+                        : null}
                     </Grid>
                     <Grid item xs={12} sm={12} marginTop={2}>
                       <TextField

@@ -15,9 +15,12 @@ const validationSchema = yup.object().shape({
   title: yup.string().required('Title is required'),
   subTitle: yup.string().nullable(),
   date: yup.string().required('The date is required'),
+  time: yup.string().required('The time is required'),
   slug: yup.string().required('Slug is required'),
   description: yup.string().nullable(),
   status: yup.string().required('This field is required'),
+  video: yup.string().nullable(),
+  listId: yup.string().required('This field is required'),
   type: yup.string().required('This field is required'),
   regularPrice: yup.number().min(0, 'Regular price must be positive').nullable(),
   vipPrice: yup
@@ -100,6 +103,14 @@ export default function EditForm() {
           )}
         </Grid>
         <Grid marginTop={5} item xs={12} sm={6}>
+          <TextField {...register('time')} label='Time' type='time' fullWidth />
+          {errors.time && (
+            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-time-helper'>
+              {errors.time.message}
+            </FormHelperText>
+          )}
+        </Grid>
+        <Grid marginTop={5} item xs={12} sm={6}>
           <TextField {...register('instructor')} label='Instructor' fullWidth />
           {errors.instructor && (
             <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-instructor-helper'>
@@ -163,7 +174,7 @@ export default function EditForm() {
 
         <>
           <Grid marginTop={5} item xs={12} sm={6}>
-            <TextField {...register('regularPrice')} label='Regular Price' fullWidth />
+            <TextField {...register('regularPrice')} defaultValue={'0'} label='Regular Price' fullWidth />
             {errors.regularPrice && (
               <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-regularPrice-helper'>
                 {errors.regularPrice.message}
@@ -171,10 +182,26 @@ export default function EditForm() {
             )}
           </Grid>
           <Grid marginTop={5} item xs={12} sm={6}>
-            <TextField {...register('vipPrice')} label='VIP Price' fullWidth />
+            <TextField {...register('vipPrice')} defaultValue={'0'} label='VIP Price' fullWidth />
             {errors.vipPrice && (
               <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-vipPrice-helper'>
                 {errors.vipPrice.message}
+              </FormHelperText>
+            )}
+          </Grid>
+          <Grid marginTop={5} item xs={12} sm={6}>
+            <TextField {...register('video')} label='Video' fullWidth />
+            {errors.video && (
+              <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-video-helper'>
+                {errors.video.message}
+              </FormHelperText>
+            )}
+          </Grid>
+          <Grid marginTop={5} item xs={12} sm={6}>
+            <TextField {...register('listId')} label='List id' fullWidth />
+            {errors.listId && (
+              <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-listId-helper'>
+                {errors.listId.message}
               </FormHelperText>
             )}
           </Grid>

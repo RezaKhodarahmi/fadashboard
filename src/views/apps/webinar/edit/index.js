@@ -13,9 +13,12 @@ const validationSchema = yup.object().shape({
   title: yup.string().required('Title is required'),
   subTitle: yup.string().nullable(),
   date: yup.string().required('The date is required'),
+  time: yup.string().required('The time is required'),
   slug: yup.string().required('Slug is required'),
   description: yup.string().nullable(),
   status: yup.string().required('This field is required'),
+  video: yup.string().nullable(),
+  listId: yup.string().required('This field is required'),
   type: yup.string().required('This field is required'),
   regularPrice: yup.number().min(0, 'Regular price must be positive').nullable(),
   vipPrice: yup
@@ -60,6 +63,8 @@ export default function EditForm(props) {
   useEffect(() => {
     if (props.webinarData) {
       reset({ ...props.webinarData, date: formatDateForInput(props.webinarData.date) })
+      setStatus(JSON.stringify(props.webinarData.status))
+      setType(JSON.stringify(props.webinarData.type))
       setImageUrl(props.webinarData.image)
     }
   }, [props.webinarData, reset])
@@ -131,6 +136,14 @@ export default function EditForm(props) {
           )}
         </Grid>
         <Grid marginTop={5} item xs={12} sm={6}>
+          <TextField {...register('time')} label='Time' type='time' fullWidth />
+          {errors.time && (
+            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-time-helper'>
+              {errors.time.message}
+            </FormHelperText>
+          )}
+        </Grid>
+        <Grid marginTop={5} item xs={12} sm={6}>
           <TextField {...register('instructor')} label='Instructor' fullWidth />
           {errors.instructor && (
             <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-instructor-helper'>
@@ -161,10 +174,10 @@ export default function EditForm(props) {
         </Grid>
 
         <Grid marginTop={5} item xs={12} sm={6}>
-          {currentStatus !== null ? (
+          {status && currentStatus !== null ? (
             <FormControl fullWidth>
               <InputLabel id='enroll-select-label'>Status</InputLabel>
-              <Select {...register('status')} labelId='Status-select-label' label='Status'>
+              <Select {...register('status')} defaultValue={status} labelId='Status-select-label' label='Status'>
                 <MenuItem value={'1'}>Active</MenuItem>
                 <MenuItem value={'0'}>Inactive</MenuItem>
                 <MenuItem value={'2'}>Pending review</MenuItem>
@@ -179,13 +192,14 @@ export default function EditForm(props) {
         </Grid>
 
         <Grid marginTop={5} item xs={12} sm={6}>
-          {currentType !== null ? (
+          {type && currentType !== null ? (
             <FormControl fullWidth>
               <InputLabel id='enroll-select-label'>Type (Free or Paid)</InputLabel>
               <Select
                 {...register('type')}
                 labelId='type-select-label'
                 label='Type'
+                defaultValue={type}
                 onChange={e => setType(e.target.value)}
               >
                 <MenuItem value={'1'}>Free</MenuItem>
@@ -219,6 +233,22 @@ export default function EditForm(props) {
             </Grid>
           </>
         ) : null}
+        <Grid marginTop={5} item xs={12} sm={6}>
+          <TextField {...register('video')} label='Video' fullWidth />
+          {errors.video && (
+            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-video-helper'>
+              {errors.video.message}
+            </FormHelperText>
+          )}
+        </Grid>
+        <Grid marginTop={5} item xs={12} sm={6}>
+          <TextField {...register('listId')} label='List id' fullWidth />
+          {errors.listId && (
+            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-listId-helper'>
+              {errors.listId.message}
+            </FormHelperText>
+          )}
+        </Grid>
         <Grid marginTop={5} item xs={12} sm={6} flex>
           <img alt='Image' src={imageUrl} width='100' />
           <input type='file' name='image' onChange={handleFileChange} />

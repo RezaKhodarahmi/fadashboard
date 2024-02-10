@@ -70,12 +70,12 @@ export const newTest = params => async dispatch => {
   }
 }
 
-export const getTestWithId = id => async dispatch => {
+export const getTestWithId = (id, page, limit) => async dispatch => {
   dispatch(getDataStart())
   try {
     const token = window.localStorage.getItem('accessToken')
 
-    const response = await axios.get(`${BASE_URL}/tests/${id}`, {
+    const response = await axios.get(`${BASE_URL}/tests/${id}?page=${page}&limit=${limit}`, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`
@@ -125,6 +125,28 @@ export const deleteTest = id => async dispatch => {
       withCredentials: true
     })
     toast.success('Successfully deleted!')
+
+    dispatch(getDataSuccess(response.data))
+  } catch (error) {
+    toast.error('Error! message:' + error?.response?.data?.message)
+
+    dispatch(getDataFailure(error.message))
+  }
+}
+
+export const importFromJson = data => async dispatch => {
+  dispatch(getDataStart())
+  try {
+    const token = window.localStorage.getItem('accessToken')
+
+    const response = await axios.post(`${BASE_URL}/questions/import`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${token}`
+      },
+      withCredentials: true
+    })
+    toast.success('Successfully imported!')
 
     dispatch(getDataSuccess(response.data))
   } catch (error) {

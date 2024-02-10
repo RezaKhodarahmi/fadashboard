@@ -51,6 +51,49 @@ export const fetchData = () => async dispatch => {
   }
 }
 
+export const fetchUserData = () => async dispatch => {
+  dispatch(getDataStart())
+  try {
+    const token = window.localStorage.getItem('accessToken')
+
+    const response = await axios.get(`${BASE_URL}/users`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      withCredentials: true
+    })
+
+    dispatch(getDataSuccess(response.data))
+  } catch (error) {
+    toast.error('Error! message:' + error?.response?.data?.message)
+
+    dispatch(getDataFailure(error.message))
+  }
+}
+
+export const getUserWithEmail = email => async dispatch => {
+  console.log('yesssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss' + email)
+  dispatch(getDataStart())
+  try {
+    const token = window.localStorage.getItem('accessToken')
+
+    const response = await axios.get(`${BASE_URL}/users/get/email/${email}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      withCredentials: true
+    })
+
+    dispatch(getDataSuccess(response.data))
+  } catch (error) {
+    toast.error('Error! message:' + error?.response?.data?.message)
+
+    dispatch(getDataFailure(error.message))
+  }
+}
+
 export const newUser = params => async dispatch => {
   dispatch(getDataStart())
 

@@ -458,11 +458,12 @@ export default function EditForm(props) {
                   defaultValue={teacher?.id}
                 >
                   <MenuItem value={null}>Select a teacher</MenuItem>
-                  {user?.data?.data?.map(teacher => (
-                    <MenuItem key={teacher.id} value={teacher.id}>
-                      {teacher.firstName + ' ' + teacher.lastName}
-                    </MenuItem>
-                  ))}
+                  {Array.isArray(user?.data?.data) &&
+                    user?.data?.data?.map(teacher => (
+                      <MenuItem key={teacher.id} value={teacher.id}>
+                        {teacher.firstName + ' ' + teacher.lastName}
+                      </MenuItem>
+                    ))}
                 </Select>
               </FormControl>
               {errors.teacher && (

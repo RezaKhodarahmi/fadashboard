@@ -66,79 +66,26 @@ export const fetchTransactionWithId = id => async dispatch => {
   }
 }
 
-// export const newPost = params => async dispatch => {
-//   dispatch(getDataStart())
-//   const token = window.localStorage.getItem('accessToken')
-//   try {
-//     const response = await axios.post(`${BASE_URL}/posts/create`, params, {
-//       headers: {
-//         'Content-Type': 'multipart/form-data',
-//         Authorization: `Bearer ${token}`
-//       },
-//       withCredentials: true
-//     })
-//     toast.success('Post created successfully.')
-//     dispatch(getDataSuccess(response.data))
-//   } catch (error) {
-//     dispatch(getDataFailure(error.message))
-//     toast.error('Error! message:' + error?.response?.data?.message)
-//   }
-// }
-// export const getPostWithId = id => async dispatch => {
-//   dispatch(getDataStart())
-//   try {
-//     const token = window.localStorage.getItem('accessToken')
-//     const response = await axios.get(`${BASE_URL}/posts/${id}`, {
-//       headers: {
-//         'Content-Type': 'application/json',
-//         Authorization: `Bearer ${token}`
-//       },
-//       withCredentials: true
-//     })
+export const updateTransaction = params => async dispatch => {
+  dispatch(getDataStart())
+  try {
+    const token = window.localStorage.getItem('accessToken')
 
-//     dispatch(getDataSuccess(response.data))
-//   } catch (error) {
-//     toast.error('Error! message:' + error?.response?.data?.message)
-//     dispatch(getDataFailure(error.message))
-//   }
-// }
-// export const updatePost = params => async dispatch => {
-//   dispatch(getDataStart())
-//   try {
-//     const token = window.localStorage.getItem('accessToken')
-//     const response = await axios.patch(`${BASE_URL}/posts/update`, params, {
-//       headers: {
-//         'Content-Type': 'multipart/form-data',
-//         Authorization: `Bearer ${token}`
-//       },
-//       withCredentials: true
-//     })
-//     toast.success('Post successfully updated!')
+    const response = await axios.patch(`${BASE_URL}/transaction/update`, params, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      withCredentials: true
+    })
 
-//     dispatch(getDataSuccess(response.data))
-//   } catch (error) {
-//     toast.error('Error! message:' + error?.response?.data?.message)
-//     dispatch(getDataFailure(error.response?.data?.message))
-//   }
-// }
+    toast.success('Post successfully updated!')
 
-// export const deletePost = id => async dispatch => {
-//   dispatch(getDataStart())
-//   try {
-//     const token = window.localStorage.getItem('accessToken')
-//     const response = await axios.delete(`${BASE_URL}/posts/${id}`, {
-//       headers: {
-//         'Content-Type': 'application/json',
-//         Authorization: `Bearer ${token}`
-//       },
-//       withCredentials: true
-//     })
-//     toast.success('Post successfully deleted!')
-//     dispatch(getDataSuccess(response.data))
-//   } catch (error) {
-//     toast.error('Error! message:' + error?.response?.data?.message)
-//     dispatch(getDataFailure(error.message))
-//   }
-// }
+    dispatch(getDataSuccess(response.data))
+  } catch (error) {
+    toast.error('Error! message:' + error?.response?.data?.message)
+    dispatch(getDataFailure(error.response?.data?.message))
+  }
+}
 
 export default transactionSlice.reducer

@@ -10,10 +10,7 @@ const navigation = () => {
           title: 'Analytics',
           path: '/dashboards/analytics'
         },
-        {
-          title: 'CRM',
-          path: '/dashboards/crm'
-        },
+
         {
           title: 'eCommerce',
           path: '/dashboards/ecommerce'
@@ -83,6 +80,14 @@ const navigation = () => {
         {
           title: 'New test',
           path: '/apps/test/new'
+        },
+        {
+          title: 'Enrollment List',
+          path: '/apps/enrollment/list'
+        },
+        {
+          title: 'New Enrollment',
+          path: '/apps/enrollment/new'
         }
       ]
     },
