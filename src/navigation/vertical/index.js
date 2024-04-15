@@ -22,128 +22,150 @@ const navigation = () => {
     },
     {
       title: 'Posts',
-      icon: 'tabler:file',
+      icon: 'tabler:news',
       children: [
         {
-          title: 'Add Post',
+          title: 'Add New Post',
           path: '/apps/post/new'
         },
         {
-          title: 'Post List',
+          title: 'All Posts',
           path: '/apps/post/list'
         }
       ]
     },
 
-    // Categories
+    // Post Categories
     {
-      title: 'Blog Category',
+      title: 'Post Categories',
       icon: 'tabler:layout-grid',
       children: [
         {
-          title: 'Categories',
-          path: '/apps/blog-category/list'
+          title: 'Add New Category',
+          path: '/apps/blog-category/new'
         },
         {
-          title: 'Add Category',
-          path: '/apps/blog-category/new'
+          title: 'All Categories',
+          path: '/apps/blog-category/list'
         }
       ]
     },
     {
       sectionTitle: 'Courses'
     },
+    // Course
     {
       title: 'Courses',
-      icon: 'tabler:file',
+      icon: 'tabler:certificate',
       children: [
         {
-          title: 'Add Course',
+          title: 'Add New Course',
           path: '/apps/course/new'
         },
         {
-          title: 'Courses List',
+          title: 'All Courses',
           path: '/apps/course/list'
+        }
+      ]
+    },
+    // Course Category
+    {
+      title: 'Course Categories',
+      icon: 'tabler:layout-grid',
+      children: [
+        {
+          title: 'Add New Category',
+          path: '/apps/category/new'
         },
         {
-          title: 'Videos',
-          path: '/apps/video/list'
-        },
+          title: 'All Categories',
+          path: '/apps/category/list'
+        }
+      ]
+    },
+    // Recorded Videos
+    {
+      title: 'Recorded Videos',
+      icon: 'tabler:brand-zoom',
+      children: [
         {
-          title: 'New Video',
+          title: 'Add New Video',
           path: '/apps/video/new'
         },
         {
-          title: 'Tests',
-          path: '/apps/test/list'
+          title: 'All Recorded Videos',
+          path: '/apps/video/list'
         },
+      ]
+    },
+    // Tests
+    {
+      title: 'Tests',
+      icon: 'tabler:a-b',
+      children: [
         {
-          title: 'New test',
+          title: 'Add New Test',
           path: '/apps/test/new'
         },
         {
-          title: 'Enrollment List',
-          path: '/apps/enrollment/list'
+          title: 'All Tests',
+          path: '/apps/test/list'
+        }
+      ]
+    },
+    // Enrollments
+    {
+      title: 'Enrollments',
+      icon: 'tabler:list-numbers',
+      children: [
+        {
+          title: 'Add New Enrollment',
+          path: '/apps/enrollment/new'
         },
         {
-          title: 'New Enrollment',
-          path: '/apps/enrollment/new'
+          title: 'All Enrollments',
+          path: '/apps/enrollment/list'
         }
       ]
     },
 
     //Webinars
     {
-      sectionTitle: 'Courses'
+      sectionTitle: 'Webinars'
     },
     {
       title: 'Webinars',
-      icon: 'tabler:file',
+      icon: 'tabler:steam',
       children: [
         {
-          title: 'New Webinar',
+          title: 'Add New Webinar',
           path: '/apps/webinar/new'
         },
         {
-          title: 'Webinars List',
+          title: 'All Webinars',
           path: '/apps/webinar/list'
         }
       ]
     },
 
-    // Categories
     {
-      title: 'Course Category',
-      icon: 'tabler:layout-grid',
-      children: [
-        {
-          title: 'Categories',
-          path: '/apps/category/list'
-        },
-        {
-          title: 'Add Category',
-          path: '/apps/category/new'
-        }
-      ]
+      sectionTitle: 'Marketings'
     },
 
-    // Categories
+    // Coupons
     {
-      title: 'Discount and coupon',
-      icon: 'tabler:layout-grid',
+      title: 'Coupons',
+      icon: 'tabler:ticket',
       children: [
         {
-          title: 'Coupons',
-          path: '/apps/coupon/list'
+          title: 'Add New Coupon',
+          path: '/apps/coupon/new'
         },
         {
-          title: 'Add new coupon',
-          path: '/apps/coupon/new'
+          title: 'All Coupons',
+          path: '/apps/coupon/list'
         }
       ]
-    },
-    {
-      sectionTitle: 'eCommerce'
     },
     {
       title: 'Transactions',

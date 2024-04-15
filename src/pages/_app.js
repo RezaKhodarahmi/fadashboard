@@ -97,7 +97,7 @@ const App = props => {
     <Provider store={store}>
       <CacheProvider value={emotionCache}>
         <Head>
-          <title>{`${themeConfig.templateName} - Admin Dashbiard`}</title>
+          <title>{`${themeConfig.templateName} - Admin Dashboard`}</title>
           <meta name='description' content={`${themeConfig.templateName} – v1 Admin Dashboard of Fanavaran`} />
           <meta name='keywords' content='Fanavaran LMS, Fanavaran Dashboard' />
           <meta name='viewport' content='initial-scale=1, width=device-width' />
