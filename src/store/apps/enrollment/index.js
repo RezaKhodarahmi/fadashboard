@@ -54,17 +54,19 @@ export const newEnrollment = params => async dispatch => {
   try {
     const token = window.localStorage.getItem('accessToken')
 
-    const response = await axios.get(`${BASE_URL}/enrollment/new`, params, {
+    const response = await axios.post(`${BASE_URL}/enrollment/create`, params, {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`
       },
       withCredentials: true
     })
-    console.log(response.data)
+
     dispatch(getDataSuccess(response.data))
+    toast.success('Successfully created')
   } catch (error) {
     dispatch(getDataFailure(error.message))
+    toast.error('Error')
   }
 }
 
@@ -80,6 +82,7 @@ export const fetchEnrollmentWithId = id => async dispatch => {
       },
       withCredentials: true
     })
+    toast.success('Successfully created')
     dispatch(getDataSuccess(response.data))
   } catch (error) {
     dispatch(getDataFailure(error.message))

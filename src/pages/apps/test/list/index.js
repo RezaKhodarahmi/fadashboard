@@ -75,11 +75,11 @@ const TestList = () => {
 
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'title', headerName: 'Title', width: 100 },
-    { field: 'cycle', headerName: 'cycle', width: 100, renderCell: handelCycle },
-    { field: 'needEnroll', headerName: 'needEnroll', width: 70, renderCell: handelEnroll },
+    { field: 'title', headerName: 'Title', width: 180 },
+    { field: 'cycle', headerName: 'cycle', width: 120, renderCell: handelCycle },
+    { field: 'needEnroll', headerName: 'needEnroll', width: 100, renderCell: handelEnroll },
     { field: 'status', headerName: 'status', width: 70, renderCell: handelStatus },
-    { field: 'createdAt', headerName: 'createdAt', width: 100 },
+    { field: 'createdAt', headerName: 'createdAt', width: 150 },
 
     {
       field: 'edit',

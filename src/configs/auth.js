@@ -1,10 +1,8 @@
+import BASE_URL from '../api/BASE_URL'
+
 export default {
-  // meEndpoint: 'http://localhost:3200/api/v1/auth/refresh',
-
-  // loginEndpoint: 'http://localhost:3200/api/v1/auth/login',
-
-  meEndpoint: 'http://idtech.ca:3200/api/v1/auth/refresh',
-  loginEndpoint: 'http://idtech.ca:3200/api/v1/auth/login',
+  meEndpoint: `${BASE_URL}/auth/refresh`,
+  loginEndpoint: `${BASE_URL}/auth/login`,
 
   registerEndpoint: '/jwt/register',
   storageTokenKeyName: 'accessToken',

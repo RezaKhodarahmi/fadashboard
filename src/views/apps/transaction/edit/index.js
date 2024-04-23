@@ -49,7 +49,7 @@ export default function OrderView(props) {
       setCourses(mappedCourses)
       setLoading(false)
     }
-  }, [props.transactionData])
+  }, [props?.transactionData])
 
   useEffect(() => {
     if (coursesData) {

@@ -160,4 +160,25 @@ export const deleteCourseCategory = params => async dispatch => {
   }
 }
 
+export const fetchEnrollmentData = () => async dispatch => {
+  dispatch(getDataStart())
+
+  try {
+    const token = window.localStorage.getItem('accessToken')
+
+    const response = await axios.get(`${BASE_URL}/courses/enrollment/data`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      withCredentials: true
+    })
+    dispatch(getDataSuccess(response.data))
+  } catch (error) {
+    toast.error('Error! message:' + error?.response?.data?.message || 'Error!')
+
+    dispatch(getDataFailure(error.message))
+  }
+}
+
 export default courseSlice.reducer

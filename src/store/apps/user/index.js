@@ -73,7 +73,6 @@ export const fetchUserData = () => async dispatch => {
 }
 
 export const getUserWithEmail = email => async dispatch => {
-  console.log('yesssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss' + email)
   dispatch(getDataStart())
   try {
     const token = window.localStorage.getItem('accessToken')

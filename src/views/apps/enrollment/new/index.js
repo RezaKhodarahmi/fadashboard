@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
-import { useRouter } from 'next/router'
 import FormHelperText from '@mui/material/FormHelperText'
 import {
   Button,
   Grid,
   Typography,
-  List,
-  ListItem,
-  ListItemText,
   Divider,
   FormControl,
   InputLabel,
@@ -24,7 +20,7 @@ import {
 import { MultiSelect } from 'react-multi-select-component'
 import * as yup from 'yup'
 import { newEnrollment } from 'src/store/apps/enrollment'
-import { fetchData } from 'src/store/apps/course'
+import { fetchEnrollmentData } from 'src/store/apps/course'
 import { getUserWithEmail } from 'src/store/apps/user'
 import { useDispatch, useSelector } from 'react-redux'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -40,7 +36,7 @@ const Index = () => {
   const initialState = {
     enrollmentDate: null, //date format
     completionDate: null, //date format
-    status: '1', //string
+    status: 1, //string
     cancelled: '0', //string
     cancellationResult: '' //string
   }
@@ -48,29 +44,25 @@ const Index = () => {
   const [openCourseModel, setOpenCourseModel] = useState(false)
   const [openUsersModel, setOpenUsersModel] = useState(false)
   const [orderCourses, setOrderCourses] = useState([])
-  const [courses, setCourses] = useState([])
   const [orderUsers, setOrderUsers] = useState(null)
   const [searchUser, setSearchUser] = useState('')
   const [userError, setUserError] = useState(null)
-  const [orderData, setOrderData] = useState(initialState)
   const [loading, setLoading] = useState(false)
+  const [selectedCourses, setSelectedCourses] = useState([])
+  const [orderSelectedUsers, setOrderSelectedUsers] = useState({})
 
   const {
     register,
     handleSubmit,
     control,
-    setValue,
-    formState: { errors },
-    reset
+    formState: { errors }
   } = useForm({
     resolver: yupResolver(validationSchema),
     defaultValues: {
-      courseId: '',
-      email: '',
       enrollmentDate: null,
       completionDate: null,
-      status: '',
-      cancelled: '',
+      status: '1',
+      cancelled: '0',
       cancellationResult: ''
     }
   })
@@ -81,7 +73,7 @@ const Index = () => {
   const usersSearched = useSelector(state => state.user)
 
   useEffect(() => {
-    dispatch(fetchData())
+    dispatch(fetchEnrollmentData())
   }, [])
 
   useEffect(() => {
@@ -111,42 +103,77 @@ const Index = () => {
       value: course.id
     }))
 
-  const handleSelectCourse = selectedCourse => {
-    setOrderCourses(selectedCourse)
-
-    setOpenCourseModel(false)
+  const handleSelectCourse = selected => {
+    const updatedSelectedCourses = selected.map(s => {
+      // Find the course in the existing selectedCourses to keep its selectedCycle if already set
+      const existing = selectedCourses.find(sc => sc.value === s.value)
+      return { ...s, selectedCycle: existing?.selectedCycle || '' }
+    })
+    setSelectedCourses(updatedSelectedCourses)
   }
 
+  const onCycleChange = (courseValue, cycleId) => {
+    const updatedSelectedCourses = selectedCourses.map(course =>
+      course.value === courseValue ? { ...course, selectedCycle: cycleId } : course
+    )
+    setSelectedCourses(updatedSelectedCourses)
+  }
   const handelSearchUser = e => {
     setSearchUser(e.target.value)
-    setOrderUsers(null)
   }
 
-  const handleSelectUser = selectedUser => {
-    setOrderUsers(searchUser)
-    setOpenUsersModel(false)
+  const handleSelectUser = userId => {
+    // Assuming orderUsers is an array of user objects
+    const selectedUser = orderUsers?.email
+    if (selectedUser) {
+      setOrderSelectedUsers(selectedUser) // Update to hold the selected user object directly
+      setOpenUsersModel(false) // Close the modal after selection
+    } else {
+      // Handle the case where the user is not found (optional)
+      console.error('Selected user not found')
+    }
   }
-
-  useEffect(() => {
-    console.log(orderCourses)
-  }, [orderCourses])
 
   const onSubmit = data => {
-    console.log(data, orderCourses, orderUsers)
+    dispatch(newEnrollment({ data, selectedCourses, orderSelectedUsers }))
   }
 
   if (loading) {
     return <div>Loading...</div>
   }
 
-  // user course cycle date status
-
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={2}>
           <Button onClick={() => setOpenCourseModel(true)}>Add course</Button>
+
           <Button onClick={() => setOpenUsersModel(true)}>Add user</Button>
+        </Grid>
+        <Grid spacing={2}>
+          {selectedCourses?.map(course => (
+            <React.Fragment key={course.value}>
+              <Typography variant='subtitle1'>
+                {coursesData?.data?.data.find(item => item.id === course.value)?.title || 'Course not found'}
+              </Typography>
+              <FormControl fullWidth margin='normal'>
+                <InputLabel>Cycle</InputLabel>
+                <Select
+                  value={course.selectedCycle || ''}
+                  onChange={e => onCycleChange(course.value, e.target.value)}
+                  label='Cycle'
+                >
+                  {coursesData.data.data
+                    .find(item => item.id === course.value)
+                    ?.cycles.map(cycle => (
+                      <MenuItem key={cycle.id} value={cycle.id}>
+                        {cycle.name}
+                      </MenuItem>
+                    ))}
+                </Select>
+              </FormControl>
+            </React.Fragment>
+          ))}
         </Grid>
         <Grid item xs={12} md={6}>
           <FormControl fullWidth error={!!errors.status}>
@@ -222,10 +249,10 @@ const Index = () => {
         <DialogContent style={{ height: '500px', overflowY: 'auto' }}>
           <MultiSelect
             options={courseOptions}
-            value={courses}
+            value={selectedCourses}
             onChange={handleSelectCourse}
             labelledBy='Select Courses'
-            hasSelectAll={false}
+            hasSelectAll={true}
           />
         </DialogContent>
         <DialogActions>
@@ -260,7 +287,7 @@ const Index = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenUsersModel(false)} color='primary'>
-            Cancel
+            close
           </Button>
         </DialogActions>
       </Dialog>

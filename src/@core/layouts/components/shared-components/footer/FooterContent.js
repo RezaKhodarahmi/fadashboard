@@ -17,25 +17,9 @@ const FooterContent = () => {
         </Box>
         {` by `}
         <MuiLink target='_blank' href='https://fanavaran.ca'>
-          Payam & Reza
+          Fanavran Developers
         </MuiLink>
       </Typography>
-      {hidden ? null : (
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', '& :not(:last-child)': { mr: 4 } }}>
-          <MuiLink target='_blank' href='https://themeforest.net/licenses/standard'>
-            License
-          </MuiLink>
-          <MuiLink target='_blank' href='https://1.envato.market/pixinvent_portfolio'>
-            More Themes
-          </MuiLink>
-          <MuiLink target='_blank' href='https://pixinvent.com/demo/vuexy-react-admin-dashboard-template/documentation'>
-            Documentation
-          </MuiLink>
-          <MuiLink target='_blank' href='https://pixinvent.ticksy.com'>
-            Support
-          </MuiLink>
-        </Box>
-      )}
     </Box>
   )
 }
