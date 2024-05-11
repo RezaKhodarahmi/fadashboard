@@ -33,17 +33,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 
 const Index = () => {
-  const initialState = {
-    enrollmentDate: null, //date format
-    completionDate: null, //date format
-    status: 1, //string
-    cancelled: '0', //string
-    cancellationResult: '' //string
-  }
-
   const [openCourseModel, setOpenCourseModel] = useState(false)
   const [openUsersModel, setOpenUsersModel] = useState(false)
-  const [orderCourses, setOrderCourses] = useState([])
   const [orderUsers, setOrderUsers] = useState(null)
   const [searchUser, setSearchUser] = useState('')
   const [userError, setUserError] = useState(null)
@@ -77,14 +68,11 @@ const Index = () => {
   }, [])
 
   useEffect(() => {
-    // Define a simple email regex for basic validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
     if (emailRegex.test(searchUser)) {
       dispatch(getUserWithEmail(searchUser))
       setUserError(null)
-
-      // Call your API here with the valid email
     } else {
       setUserError('Invalid email.')
     }
@@ -97,16 +85,16 @@ const Index = () => {
   }, [usersSearched])
 
   const courseOptions =
-    Array.isArray(coursesData.data.data) &&
-    coursesData.data.data.map(course => ({
+    Array.isArray(coursesData?.data?.data) &&
+    coursesData?.data?.data?.map(course => ({
       label: course.title,
       value: course.id
     }))
 
   const handleSelectCourse = selected => {
-    const updatedSelectedCourses = selected.map(s => {
-      // Find the course in the existing selectedCourses to keep its selectedCycle if already set
-      const existing = selectedCourses.find(sc => sc.value === s.value)
+    const updatedSelectedCourses = selected?.map(s => {
+      const existing = selectedCourses?.find(sc => sc.value === s.value)
+
       return { ...s, selectedCycle: existing?.selectedCycle || '' }
     })
     setSelectedCourses(updatedSelectedCourses)
@@ -118,18 +106,17 @@ const Index = () => {
     )
     setSelectedCourses(updatedSelectedCourses)
   }
+
   const handelSearchUser = e => {
-    setSearchUser(e.target.value)
+    setSearchUser(e.target?.value)
   }
 
   const handleSelectUser = userId => {
-    // Assuming orderUsers is an array of user objects
     const selectedUser = orderUsers?.email
     if (selectedUser) {
       setOrderSelectedUsers(selectedUser) // Update to hold the selected user object directly
       setOpenUsersModel(false) // Close the modal after selection
     } else {
-      // Handle the case where the user is not found (optional)
       console.error('Selected user not found')
     }
   }
@@ -163,7 +150,7 @@ const Index = () => {
                   onChange={e => onCycleChange(course.value, e.target.value)}
                   label='Cycle'
                 >
-                  {coursesData.data.data
+                  {coursesData?.data?.data
                     .find(item => item.id === course.value)
                     ?.cycles.map(cycle => (
                       <MenuItem key={cycle.id} value={cycle.id}>
@@ -175,6 +162,7 @@ const Index = () => {
             </React.Fragment>
           ))}
         </Grid>
+
         <Grid item xs={12} md={6}>
           <FormControl fullWidth error={!!errors.status}>
             <InputLabel id='status-select-label'>Status</InputLabel>
@@ -188,7 +176,7 @@ const Index = () => {
 
         {/* Date Pickers for EnrollmentDate and CompletionDate */}
         <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <Grid item xs={12} md={6}>
+          <Grid style={{ margin: '10px 0' }} item xs={12} md={6}>
             <Controller
               name='enrollmentDate'
               control={control}
@@ -197,7 +185,7 @@ const Index = () => {
               )}
             />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid style={{ margin: '10px 0' }} item xs={12} md={6}>
             <Controller
               name='completionDate'
               control={control}
@@ -209,7 +197,7 @@ const Index = () => {
         </LocalizationProvider>
 
         {/* Cancelled Select Field */}
-        <Grid item xs={12} md={6}>
+        <Grid style={{ margin: '10px 0' }} item xs={12} md={6}>
           <FormControl fullWidth error={!!errors.cancelled}>
             <InputLabel id='cancelled-select-label'>Cancelled</InputLabel>
             <Select {...register('cancelled')} labelId='cancelled-select-label' label='Cancelled' defaultValue='0'>
@@ -221,7 +209,7 @@ const Index = () => {
         </Grid>
 
         {/* CancellationResult TextField */}
-        <Grid item xs={12}>
+        <Grid style={{ margin: '10px 0' }} item xs={12}>
           <TextField
             {...register('cancellationResult')}
             label='Cancellation Result'

@@ -17,7 +17,6 @@ const UserList = () => {
     const confirmation = window.confirm('Are you sure you want to delete this Video?')
     if (confirmation) {
       dispatch(deleteVideo(id))
-      dispatch(fetchData())
     }
   }
 
@@ -41,12 +40,12 @@ const UserList = () => {
 
   useEffect(() => {
     dispatch(fetchData())
-  }, [dispatch])
+  }, [])
 
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'title', headerName: 'Title', width: 100 },
-    { field: 'url', headerName: 'url', width: 150 },
+    { field: 'title', headerName: 'Title', width: 300 },
+    { field: 'url', headerName: 'url', width: 100 },
     { field: 'needEnroll', headerName: 'needEnroll', width: 70, renderCell: handelEnroll },
     { field: 'createdAt', headerName: 'createdAt', width: 100 },
     {
@@ -75,7 +74,7 @@ const UserList = () => {
     ? videos?.data?.data?.filter(video => {
         const searchTermMatch =
           video.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          video.slug.toLowerCase().includes(searchTerm.toLowerCase())
+          video?.slug?.toLowerCase().includes(searchTerm.toLowerCase())
 
         return searchTermMatch
       })
