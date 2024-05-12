@@ -114,7 +114,9 @@ const EnrollmentList = () => {
   const filteredEnrollment = Array.isArray(enrollments?.data?.data)
     ? enrollments?.data?.data
         ?.filter(
-          enrollment => enrollment.user?.email?.includes(searchTerm) || enrollment?.user?.phone?.includes(searchTerm)
+          enrollment =>
+            enrollment.user?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            enrollment?.user?.phone?.toLowerCase().includes(searchTerm.toLowerCase())
         )
         .map(enrollment => ({
           ...enrollment,

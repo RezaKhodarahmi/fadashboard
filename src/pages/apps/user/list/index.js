@@ -104,8 +104,8 @@ const UserList = () => {
   const filteredUsers = Array.isArray(users?.data?.data)
     ? users?.data?.data?.filter(user => {
         const searchTermMatch =
-          user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          user.phone.toLowerCase().includes(searchTerm.toLowerCase())
+          user?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          user?.phone?.toLowerCase().includes(searchTerm.toLowerCase())
 
         if (serchUserRole === '0') {
           const searchRoleMatch = serchUserRole

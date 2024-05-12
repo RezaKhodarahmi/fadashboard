@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { DataGrid } from '@mui/x-data-grid'
 import { fetchWebinarData, deleteWebinar } from 'src/store/apps/webinar'
-import { TextField, Select, MenuItem, InputLabel } from '@mui/material'
+import { TextField } from '@mui/material'
 import Button from '@mui/material/Button'
 import { useRouter } from 'next/router'
 
@@ -24,6 +24,11 @@ const CourseList = () => {
   // Handel webinar edit button
   const handleEdit = id => {
     router.push('/apps/webinar/edit/' + id)
+  }
+
+  //Handle show webinar enrollments
+  const handleShowList = id => {
+    router.push('/apps/webinar/enrollment/' + id)
   }
 
   //Handel Course published status
@@ -89,6 +94,16 @@ const CourseList = () => {
         </Button>
       )
     },
+    {
+      field: 'enrollments',
+      headerName: 'Enrollments',
+      width: 100,
+      renderCell: params => (
+        <Button color='success' variant='contained' onClick={() => handleShowList(params.row.id)}>
+          List
+        </Button>
+      )
+    },
     { field: 'createdAt', headerName: 'createdAt', width: 100, renderCell: handelDate },
     { field: 'updatedAt', headerName: 'updatedAt', width: 100, renderCell: handelDate }
   ]
@@ -97,8 +112,8 @@ const CourseList = () => {
   const filteredWebinar = Array.isArray(webinars?.data?.data)
     ? webinars?.data?.data?.filter(webinar => {
         const searchTermMatch =
-          webinar.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          webinar.slug.toLowerCase().includes(searchTerm.toLowerCase())
+          webinar?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          webinar?.slug?.toLowerCase().includes(searchTerm.toLowerCase())
 
         return searchTermMatch
       })

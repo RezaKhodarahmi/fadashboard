@@ -118,7 +118,9 @@ const TransactionList = () => {
   const filteredTransaction = Array.isArray(transactions?.data?.data)
     ? transactions?.data?.data
         ?.filter(
-          transaction => transaction.user.email.includes(searchTerm) || transaction.user?.phone?.includes(searchTerm)
+          transaction =>
+            transaction.user?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            transaction.user?.phone?.toLowerCase().includes(searchTerm.toLowerCase())
         )
         .map(transaction => ({
           ...transaction,

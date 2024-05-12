@@ -133,4 +133,46 @@ export const deleteWebinar = id => async dispatch => {
   }
 }
 
+export const fetchEnrollments = id => async dispatch => {
+  dispatch(getDataStart())
+  try {
+    const token = window.localStorage.getItem('accessToken')
+
+    const response = await axios.get(`${BASE_URL}/webinar/webinars/${id}/users`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      withCredentials: true
+    })
+
+    dispatch(getDataSuccess(response.data))
+  } catch (error) {
+    toast.error('Error! message:' + error?.response?.data?.message)
+
+    dispatch(getDataFailure(error.message))
+  }
+}
+
+export const fetchEnrollmentsCSV = id => async dispatch => {
+  dispatch(getDataStart())
+  try {
+    const token = window.localStorage.getItem('accessToken')
+
+    const response = await axios.get(`${BASE_URL}/webinar/webinars/${id}/users/csv`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      withCredentials: true
+    })
+
+    console.log(response)
+  } catch (error) {
+    toast.error('Error! message:' + error?.response?.data?.message)
+
+    dispatch(getDataFailure(error.message))
+  }
+}
+
 export default webinarSlice.reducer
