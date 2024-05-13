@@ -68,6 +68,10 @@ const Index = () => {
   }, [])
 
   useEffect(() => {
+    console.log(coursesData)
+  }, [coursesData])
+
+  useEffect(() => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
     if (emailRegex.test(searchUser)) {
@@ -87,7 +91,7 @@ const Index = () => {
   const courseOptions =
     Array.isArray(coursesData?.data?.data) &&
     coursesData?.data?.data?.map(course => ({
-      label: course.title,
+      label: course.title + '(' + course?.teachers[0]?.firstName + ' ' + course?.teachers[0]?.lastName + ')',
       value: course.id
     }))
 
