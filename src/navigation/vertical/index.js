@@ -3,7 +3,6 @@ const navigation = () => {
     {
       title: 'Dashboards',
       icon: 'tabler:smart-home',
-      badgeContent: 'new',
       badgeColor: 'error',
       children: [
         {
@@ -58,6 +57,8 @@ const navigation = () => {
     {
       title: 'Courses',
       icon: 'tabler:certificate',
+      badgeContent: 'new',
+      badgeColor: 'error',
       children: [
         {
           title: 'Add New Course',
@@ -65,6 +66,8 @@ const navigation = () => {
         },
         {
           title: 'All Courses',
+          badgeContent: 'new',
+          badgeColor: 'error',
           path: '/apps/course/list'
         }
       ]
