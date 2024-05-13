@@ -132,7 +132,7 @@ const UserList = () => {
       minWidth: 100,
       renderCell: params => (
         <Chip
-            label='Trash'
+            label='Delete'
             color='error'
             variant='outlined'
             onClick={()=> handleDelete(params.row.id)}
