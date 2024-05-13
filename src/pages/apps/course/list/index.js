@@ -1,10 +1,25 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+
+// ** MUI Imports
+import Box from '@mui/material/Box'
+import Card from '@mui/material/Card'
+import CardHeader from '@mui/material/CardHeader'
+import Chip from '@mui/material/Chip'
+
+// ** Icon Imports
+import Icon from 'src/@core/components/icon'
+
 import { DataGrid } from '@mui/x-data-grid'
 import { fetchData, deleteCourse } from 'src/store/apps/course'
 import { TextField, Select, MenuItem, InputLabel } from '@mui/material'
 import Button from '@mui/material/Button'
 import { useRouter } from 'next/router'
+
+const statusObj = {
+  1: { title: 'Active', color: 'primary' },
+  4: { title: 'Inactive', color: 'warning' },
+}
 
 const UserList = () => {
   const router = useRouter()
@@ -25,7 +40,7 @@ const UserList = () => {
     router.push('/apps/course/edit/' + id)
   }
 
-  const handelType = type => {
+  const handleType = type => {
     switch (type.formattedValue) {
       case '1':
         return 'Online'
@@ -39,7 +54,7 @@ const UserList = () => {
     }
   }
 
-  const handelStatus = status => {
+  const handleStatus = status => {
     switch (status.formattedValue) {
       case '1':
         return 'Active'
@@ -57,31 +72,73 @@ const UserList = () => {
     dispatch(fetchData())
   }, [dispatch])
 
+  const renderTypeCell = (params) => {
+    const { value } = params;
+    const statusText = handleType(value);
+  
+    return (
+      <div>
+        {statusText && (    
+          <Chip
+              label={value === '1' ? 'Online' : 'Recorded'}
+              color={value === '1' ? 'success' : 'error'}
+              variant='outlined'
+              icon={<Icon icon={value === '1' ? 'tabler:circle-dot-filled' : 'tabler:video'} fontSize={20} />}
+          />
+        )}
+      </div>
+    );
+  };
+
+  const renderStatusCell = (params) => {
+    const { value } = params;
+    const statusText = handleStatus(value);
+  
+    return (
+      <div>
+        {statusText && (
+          <Chip label={value === '1' ? 'Published' : 'Not Published'} color={value === '1' ? 'primary' : 'default'} />
+        )}
+      </div>
+    );
+  };
+
   const columns = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'title', headerName: 'Title', width: 200 },
-    { field: 'slug', headerName: 'Slug', width: 150 },
-    { field: 'keywords', headerName: 'Keywords', width: 150 },
-    { field: 'type', headerName: 'Type', width: 70, renderCell: handelType },
-    { field: 'status', headerName: 'Status', width: 90, renderCell: handelStatus },
+    { field: 'id', headerName: 'ID', flex: 0.01, minWidth: 50 },
+    { field: 'title', headerName: 'Title', flex: 0.5, minWidth: 200 },
+    { field: 'slug', headerName: 'Slug', flex: 0.4, minWidth: 150 },
+    { field: 'type', headerName: 'Type', flex: 0.15, minWidth: 70, renderCell: renderTypeCell },
+    { field: 'status', headerName: 'Status', flex: 0.15, minWidth: 90 ,renderCell: renderStatusCell },
     {
       field: 'edit',
       headerName: 'Edit',
-      width: 100,
+      flex: 0.12,
+      minWidth: 100,
       renderCell: params => (
-        <Button color='success' variant='contained' onClick={() => handleEdit(params.row.id)}>
-          Edit
-        </Button>
+        <Chip
+          label='Edit'
+          color='warning'
+          variant='outlined'
+          onClick={()=> handleEdit(params.row.id)}
+          icon={<Icon icon='tabler:edit' />}
+          fontSize={14}
+        />
       )
     },
     {
       field: 'delete',
       headerName: 'Delete',
-      width: 100,
+      flex: 0.15,
+      minWidth: 100,
       renderCell: params => (
-        <Button color='warning' variant='contained' onClick={() => handleDelete(params.row.id)}>
-          Delete
-        </Button>
+        <Chip
+            label='Trash'
+            color='error'
+            variant='outlined'
+            onClick={()=> handleDelete(params.row.id)}
+            icon={<Icon icon='tabler:trash' />}
+            fontSize={14}
+        />
       )
     }
   ]
@@ -97,26 +154,36 @@ const UserList = () => {
     : []
 
   return (
-    <div style={{ height: 400, width: '100%' }}>
-      <TextField
-        id='search'
-        variant='outlined'
-        label='Search by title or slug'
-        value={searchTerm}
-        onChange={e => setSearchTerm(e.target.value)}
-      />
-
+    <>
       {filteredUsers ? (
-        <DataGrid
-          rows={filteredUsers}
-          columns={columns}
-          pageSize={Number(pageSize)}
-          onPageSizeChange={newPageSize => setPageSize(newPageSize)}
-          rowsPerPageOptions={[5, 10, 25, 50, 100]}
-          checkboxSelection
-        />
+        <Card>
+          <CardHeader 
+            title='All Courses' 
+            action={
+              <div>
+                <TextField
+                  id='search'
+                  variant='outlined'
+                  label='Search'
+                  value={searchTerm}
+                  onChange={e => setSearchTerm(e.target.value)}
+                />
+              </div>
+            }
+          />
+          <Box sx={{ height: 650 }}>
+          <DataGrid
+              rows={filteredUsers}
+              columns={columns}
+              pageSize={Number(pageSize)}
+              onPageSizeChange={newPageSize => setPageSize(newPageSize)}
+              rowsPerPageOptions={[5, 10, 25, 50, 100]}
+              checkboxSelection
+            />
+          </Box>
+        </Card>
       ) : null}
-    </div>
+    </>
   )
 }
 

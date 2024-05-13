@@ -18,18 +18,6 @@ const navigation = () => {
       ]
     },
     {
-      title: 'File Manager',
-      icon: 'tabler:folders',
-      badgeContent: 'new',
-      badgeColor: 'error',
-      children: [
-        {
-          title: 'File Manager',
-          path: '/apps/filemanager'
-        }
-      ]
-    },
-    {
       sectionTitle: 'Blog & Posts'
     },
     {
@@ -193,6 +181,16 @@ const navigation = () => {
           path: '/apps/transaction/list'
         }
       ]
+    },
+    {
+      sectionTitle: 'Media'
+    },
+    {
+      title: 'File Manager',
+      icon: 'tabler:folders',
+      badgeContent: 'new',
+      badgeColor: 'error',
+      path: '/apps/filemanager',
     },
     {
       sectionTitle: 'Users'
