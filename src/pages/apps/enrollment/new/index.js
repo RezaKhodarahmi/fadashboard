@@ -30,7 +30,7 @@ export default function NewEnroll() {
           title={
             <Typography variant='h5'>
               <MuiLink href='#' target='_blank'>
-                New Order
+                New Enrollment
               </MuiLink>
             </Typography>
           }

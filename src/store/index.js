@@ -12,6 +12,7 @@ import posts from 'src/store/apps/post'
 import video from 'src/store/apps/video'
 import test from 'src/store/apps/test'
 import question from 'src/store/apps/question'
+import media from 'src/store/apps/media'
 import answer from 'src/store/apps/answer'
 import coupon from 'src/store/apps/coupon'
 import transaction from 'src/store/apps/transaction'
@@ -39,7 +40,8 @@ export const store = configureStore({
     categoryListReducer,
     blogCategory,
     blogCategoryList,
-    blogTag
+    blogTag,
+    media
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

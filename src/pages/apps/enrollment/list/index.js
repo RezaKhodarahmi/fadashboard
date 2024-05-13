@@ -34,27 +34,25 @@ const EnrollmentList = () => {
 
   const handelStatus = status => {
     switch (status.formattedValue) {
-      case '0':
+      case 0:
         return (
-          <span className='warning-label' style={{ background: '#E08C3B' }}>
-            Canceled
+          <span className='warning-label' style={{ background: '#E08C3B', padding: '5px', borderRadius: '5px' }}>
+            pending
           </span>
         )
-      case '1':
+      case 1:
         return (
-          <span className='success-label' color='success' style={{ background: '#28C76F' }}>
+          <span
+            className='success-label'
+            color='success'
+            style={{ background: '#28C76F', padding: '5px', borderRadius: '5px' }}
+          >
             Active
-          </span>
-        )
-      case '3':
-        return (
-          <span className='success-label' color='success' style={{ background: '#808080' }}>
-            Pending
           </span>
         )
       default:
         return (
-          <span className='danger-label' style={{ background: '#808080' }}>
+          <span className='danger-label' style={{ background: '#808080', padding: '5px', borderRadius: '5px' }}>
             Canceled
           </span>
         )
@@ -74,16 +72,10 @@ const EnrollmentList = () => {
   }
 
   const handelTransaction = transaction => {
-    switch (transaction.value.Transaction_Type) {
-      case 'Stripe':
-        return 'Stripe'
-        break
-      case 'partially':
-        return 'Partially'
-        break
-      default:
-        return 'Manually'
-        break
+    if (transaction.value) {
+      return <Link href={`/apps/transaction/edit/${transaction.value}`}>{transaction.value + '' || 'Unknown'}</Link>
+    } else {
+      return 'Manual'
     }
   }
 
@@ -92,8 +84,8 @@ const EnrollmentList = () => {
     { field: 'user', headerName: 'User', width: 150, renderCell: handelUserEmail },
     { field: 'course', headerName: 'Course', width: 250, renderCell: handelEnrolledCourse },
     { field: 'status', headerName: 'Status', renderCell: handelStatus },
-    { field: 'transaction', headerName: 'Type', width: 100, renderCell: handelTransaction },
-    { field: 'enrollmentDate', headerName: 'Date', width: 150, renderCell: handelConvertDate },
+    { field: 'Transaction_ID', headerName: 'Transaction', renderCell: handelTransaction },
+
     {
       field: 'edit',
       headerName: 'Edit',
@@ -115,10 +107,17 @@ const EnrollmentList = () => {
       )
     }
   ]
+  useEffect(() => {
+    console.log(enrollments)
+  }, [enrollments])
 
   const filteredEnrollment = Array.isArray(enrollments?.data?.data)
     ? enrollments?.data?.data
-        ?.filter(enrollment => enrollment.user.email.includes(searchTerm) || enrollment.user.phone.includes(searchTerm))
+        ?.filter(
+          enrollment =>
+            enrollment.user?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            enrollment?.user?.phone?.toLowerCase().includes(searchTerm.toLowerCase())
+        )
         .map(enrollment => ({
           ...enrollment,
           id: enrollment.Transaction_ID

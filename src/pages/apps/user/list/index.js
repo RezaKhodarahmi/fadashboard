@@ -73,6 +73,7 @@ const UserList = () => {
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
     { field: 'firstName', headerName: 'First Name', width: 100 },
+    { field: 'lastName', headerName: 'Last Name', width: 100 },
     { field: 'email', headerName: 'Email', width: 150 },
     { field: 'phone', headerName: 'Phone', width: 150 },
     { field: 'role', headerName: 'Role', width: 70, renderCell: handelRole },
@@ -103,8 +104,8 @@ const UserList = () => {
   const filteredUsers = Array.isArray(users?.data?.data)
     ? users?.data?.data?.filter(user => {
         const searchTermMatch =
-          user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          user.phone.toLowerCase().includes(searchTerm.toLowerCase())
+          user?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          user?.phone?.toLowerCase().includes(searchTerm.toLowerCase())
 
         if (serchUserRole === '0') {
           const searchRoleMatch = serchUserRole

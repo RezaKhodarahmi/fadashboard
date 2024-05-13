@@ -18,6 +18,18 @@ const navigation = () => {
       ]
     },
     {
+      title: 'File Manager',
+      icon: 'tabler:folders',
+      badgeContent: 'new',
+      badgeColor: 'error',
+      children: [
+        {
+          title: 'File Manager',
+          path: '/apps/filemanager'
+        }
+      ]
+    },
+    {
       sectionTitle: 'Blog & Posts'
     },
     {
@@ -53,6 +65,7 @@ const navigation = () => {
     {
       sectionTitle: 'Courses'
     },
+
     // Course
     {
       title: 'Courses',
@@ -68,6 +81,7 @@ const navigation = () => {
         }
       ]
     },
+
     // Course Category
     {
       title: 'Course Categories',
@@ -83,6 +97,7 @@ const navigation = () => {
         }
       ]
     },
+
     // Recorded Videos
     {
       title: 'Recorded Videos',
@@ -95,9 +110,10 @@ const navigation = () => {
         {
           title: 'All Recorded Videos',
           path: '/apps/video/list'
-        },
+        }
       ]
     },
+
     // Tests
     {
       title: 'Tests',
@@ -113,6 +129,7 @@ const navigation = () => {
         }
       ]
     },
+    
     // Enrollments
     {
       title: 'Enrollments',

@@ -59,7 +59,7 @@ const UserList = () => {
 
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'title', headerName: 'Title', width: 100 },
+    { field: 'title', headerName: 'Title', width: 200 },
     { field: 'slug', headerName: 'Slug', width: 150 },
     { field: 'keywords', headerName: 'Keywords', width: 150 },
     { field: 'type', headerName: 'Type', width: 70, renderCell: handelType },

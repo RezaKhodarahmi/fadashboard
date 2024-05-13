@@ -61,7 +61,16 @@ const TransactionList = () => {
   }
 
   const handelUserEmail = user => {
-    return <Link href={`/apps/user/edit/${user.formattedValue?.id}`}>{user.formattedValue?.email || 'Unknown'}</Link>
+    return (
+      <>
+        <Link href={`/apps/user/edit/${user.formattedValue?.id}`}>{user.formattedValue?.email || 'Unknown'}</Link>
+        <Link href={`/apps/user/edit/${user.formattedValue?.id}`}>{user.formattedValue?.firstName || 'Unknown'}</Link>
+        <span>,</span>
+        <Link href={`/apps/user/edit/${user.formattedValue?.id}`}>{user.formattedValue?.lastName || 'Unknown'}</Link>
+        <span>,</span>
+        <Link href={`/apps/user/edit/${user.formattedValue?.id}`}>{user.formattedValue?.phone || ''}</Link>
+      </>
+    )
   }
 
   const handelEnrolledCourse = course => {
@@ -109,7 +118,9 @@ const TransactionList = () => {
   const filteredTransaction = Array.isArray(transactions?.data?.data)
     ? transactions?.data?.data
         ?.filter(
-          transaction => transaction.user.email.includes(searchTerm) || transaction.user.phone.includes(searchTerm)
+          transaction =>
+            transaction.user?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            transaction.user?.phone?.toLowerCase().includes(searchTerm.toLowerCase())
         )
         .map(transaction => ({
           ...transaction,
