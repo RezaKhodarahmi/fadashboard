@@ -198,6 +198,8 @@ export default function EditForm(props) {
       time: '20:00',
       days: 'Sundays/Mondays',
       duration: '20 hours',
+      groupLink: '',
+      zoomLink: '',
       vipPrice: '0',
       certificate: '',
       vipAccess: '0',
@@ -615,6 +617,30 @@ export default function EditForm(props) {
                         {...register2(`cycles.${index}.duration`)}
                         defaultValue={cycle.duration}
                         label='Course duration'
+                        type='text'
+                        fullWidth
+                        InputLabelProps={{
+                          shrink: true
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6} marginTop={5}>
+                      <TextField
+                        {...register2(`cycles.${index}.groupLink`)}
+                        defaultValue={cycle.groupLink}
+                        label='Group Link'
+                        type='text'
+                        fullWidth
+                        InputLabelProps={{
+                          shrink: true
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6} marginTop={5}>
+                      <TextField
+                        {...register2(`cycles.${index}.zoomLink`)}
+                        defaultValue={cycle.zoomLink}
+                        label='Zoom Link'
                         type='text'
                         fullWidth
                         InputLabelProps={{

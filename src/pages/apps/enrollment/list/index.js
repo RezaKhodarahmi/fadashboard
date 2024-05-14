@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { DataGrid } from '@mui/x-data-grid'
-import { fetchEnrollmentData } from 'src/store/apps/enrollment'
+import { fetchEnrollmentData, deleteEnrollment } from 'src/store/apps/enrollment'
 import { TextField, Button, InputAdornment, IconButton } from '@mui/material'
 import { useRouter } from 'next/router'
 import DateFormat from 'src/utils/dateConverter'
@@ -21,10 +21,11 @@ const EnrollmentList = () => {
     dispatch(fetchEnrollmentData())
   }, [dispatch])
 
+
   const handleDelete = id => {
-    const confirmation = window.confirm('Are you sure you want to delete this Order?')
+    const confirmation = window.confirm('Are you sure you want to delete this Enrollment?')
     if (confirmation) {
-      dispatch(fetchEnrollmentData())
+      dispatch(deleteEnrollment(id))
     }
   }
 
@@ -101,26 +102,27 @@ const EnrollmentList = () => {
       headerName: 'Delete',
       width: 100,
       renderCell: params => (
-        <Button color='warning' variant='contained' onClick={() => handleDelete(params.row.id)}>
+        <Button
+          color='warning'
+          variant='contained'
+          onClick={() => handleDelete(params.row.id)} // Use row.id which is now correctly mapped to the enrollment id
+        >
           Delete
         </Button>
       )
     }
   ]
-  useEffect(() => {
-    console.log(enrollments)
-  }, [enrollments])
 
   const filteredEnrollment = Array.isArray(enrollments?.data?.data)
     ? enrollments?.data?.data
         ?.filter(
           enrollment =>
             enrollment.user?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            enrollment?.user?.phone?.toLowerCase().includes(searchTerm.toLowerCase())
+            enrollment?.user?.phone?.toLowerCase().includes(searchItinerary.toLowerCase())
         )
         .map(enrollment => ({
           ...enrollment,
-          id: enrollment.Transaction_ID
+          id: enrollment.id // This ensures the row uses the enrollment id
         }))
     : []
 

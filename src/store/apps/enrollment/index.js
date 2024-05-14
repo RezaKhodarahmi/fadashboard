@@ -110,4 +110,27 @@ export const updateEnrollment = params => async dispatch => {
   }
 }
 
+export const deleteEnrollment = id => async dispatch => {
+  dispatch(getDataStart())
+
+  try {
+    const token = window.localStorage.getItem('accessToken')
+
+    const response = await axios.delete(`${BASE_URL}/enrollment/delete/${id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      withCredentials: true
+    })
+
+    toast.success('Successfully deleted!')
+    dispatch(getDataSuccess(response.data))
+  } catch (error) {
+    toast.error('Error! message:' + error?.response?.data?.message)
+
+    dispatch(getDataFailure(error.message))
+  }
+}
+
 export default enrollmentSlice.reducer
