@@ -16,11 +16,6 @@ import { TextField, Select, MenuItem, InputLabel } from '@mui/material'
 import Button from '@mui/material/Button'
 import { useRouter } from 'next/router'
 
-const statusObj = {
-  1: { title: 'Active', color: 'primary' },
-  4: { title: 'Inactive', color: 'warning' },
-}
-
 const UserList = () => {
   const router = useRouter()
   const dispatch = useDispatch()

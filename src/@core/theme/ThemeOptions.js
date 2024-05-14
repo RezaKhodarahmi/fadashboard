@@ -31,8 +31,7 @@ const themeOptions = settings => {
           userFontFamily ||
           [
             'Public Sans',
-            'sans-serif',
-            '-apple-system',
+            "YekanBakh",
             'BlinkMacSystemFont',
             '"Segoe UI"',
             'Roboto',
