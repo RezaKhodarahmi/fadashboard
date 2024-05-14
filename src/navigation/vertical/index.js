@@ -21,6 +21,8 @@ const navigation = () => {
     },
     {
       title: 'Posts',
+      badgeContent: 'new',
+      badgeColor: 'error',
       icon: 'tabler:news',
       children: [
         {
@@ -29,6 +31,8 @@ const navigation = () => {
         },
         {
           title: 'All Posts',
+          badgeContent: 'new',
+          badgeColor: 'error',
           path: '/apps/post/list'
         }
       ]
