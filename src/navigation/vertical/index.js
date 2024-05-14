@@ -3,7 +3,6 @@ const navigation = () => {
     {
       title: 'Dashboards',
       icon: 'tabler:smart-home',
-      badgeContent: 'new',
       badgeColor: 'error',
       children: [
         {
@@ -18,22 +17,12 @@ const navigation = () => {
       ]
     },
     {
-      title: 'File Manager',
-      icon: 'tabler:folders',
-      badgeContent: 'new',
-      badgeColor: 'error',
-      children: [
-        {
-          title: 'File Manager',
-          path: '/apps/filemanager'
-        }
-      ]
-    },
-    {
       sectionTitle: 'Blog & Posts'
     },
     {
       title: 'Posts',
+      badgeContent: 'new',
+      badgeColor: 'error',
       icon: 'tabler:news',
       children: [
         {
@@ -42,6 +31,8 @@ const navigation = () => {
         },
         {
           title: 'All Posts',
+          badgeContent: 'new',
+          badgeColor: 'error',
           path: '/apps/post/list'
         }
       ]
@@ -70,6 +61,8 @@ const navigation = () => {
     {
       title: 'Courses',
       icon: 'tabler:certificate',
+      badgeContent: 'new',
+      badgeColor: 'error',
       children: [
         {
           title: 'Add New Course',
@@ -77,6 +70,8 @@ const navigation = () => {
         },
         {
           title: 'All Courses',
+          badgeContent: 'new',
+          badgeColor: 'error',
           path: '/apps/course/list'
         }
       ]
@@ -193,6 +188,16 @@ const navigation = () => {
           path: '/apps/transaction/list'
         }
       ]
+    },
+    {
+      sectionTitle: 'Media'
+    },
+    {
+      title: 'File Manager',
+      icon: 'tabler:folders',
+      badgeContent: 'new',
+      badgeColor: 'error',
+      path: '/apps/filemanager',
     },
     {
       sectionTitle: 'Users'

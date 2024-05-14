@@ -1,3 +1,35 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
+@font-face {
+  font-family: "YekanBakh";
+  font-style: normal;
+  font-weight: 300;
+  src: local("Ravi"), url("fonts/YekanBakh/YekanBakh-Light.woff") format("woff"), url("fonts/YekanBakh/YekanBakh-Light.ttf") format("truetype"), url("fonts/YekanBakh/YekanBakh-Light.eot") format("embedded-opentype");
+}
+@font-face {
+  font-family: "YekanBakh";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Ravi"), url("fonts/YekanBakh/YekanBakh-Regular.woff") format("woff"), url("fonts/YekanBakh/YekanBakh-Regular.ttf") format("truetype"), url("fonts/YekanBakh/YekanBakh-Regular.eot") format("embedded-opentype");
+}
+@font-face {
+  font-family: "YekanBakh";
+  font-style: normal;
+  font-weight: 500;
+  src: local("Ravi"), url("fonts/YekanBakh/YekanBakh-Medium.woff") format("woff"), url("fonts/YekanBakh/YekanBakh-Medium.ttf") format("truetype"), url("fonts/YekanBakh/YekanBakh-Medium.eot") format("embedded-opentype");
+}
+@font-face {
+  font-family: "YekanBakh";
+  font-style: normal;
+  font-weight: 700;
+  src: local("Ravi"), url("fonts/YekanBakh/YekanBakh-Bold.woff") format("woff"), url("fonts/YekanBakh/YekanBakh-Bold.ttf") format("truetype"), url("fonts/YekanBakh/YekanBakh-Bold.eot") format("embedded-opentype");
+}
+@font-face {
+  font-family: "YekanBakh";
+  font-style: normal;
+  font-weight: 800;
+  src: local("Ravi"), url("fonts/YekanBakh/YekanBakh-Fat.woff") format("woff"), url("fonts/YekanBakh/YekanBakh-Fat.ttf") format("truetype"), url("fonts/YekanBakh/YekanBakh-Fat.eot") format("embedded-opentype");
+}
+
 html,
 body {
   min-height: 100%;
