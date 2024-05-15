@@ -701,6 +701,46 @@ export default function EditForm(props) {
                       />
                     </Grid>
                     <Grid item xs={12} sm={6} marginTop={5}>
+                      <TextField
+                        {...register2(`cycles.${index}.discountPrice`)}
+                        defaultValue={cycle.discountPrice}
+                        label='Discount Price'
+                        fullWidth
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6} marginTop={5}>
+                      <TextField
+                        {...register2(`cycles.${index}.discountVipPrice`)}
+                        defaultValue={cycle.discountVipPrice}
+                        label='Discount VIP Price'
+                        fullWidth
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6} marginTop={5}>
+                      <TextField
+                        {...register2(`cycles.${index}.discountDate`)}
+                        defaultValue={cycle.discountDate}
+                        label='Discount date start'
+                        type='date'
+                        fullWidth
+                        InputLabelProps={{
+                          shrink: true
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6} marginTop={5}>
+                      <TextField
+                        {...register2(`cycles.${index}.discountDateEnd`)}
+                        defaultValue={cycle.discountDateEnd}
+                        label='Discount date End'
+                        type='date'
+                        fullWidth
+                        InputLabelProps={{
+                          shrink: true
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6} marginTop={5}>
                       <FormControl fullWidth>
                         <InputLabel id='vipAccess-select-label'>VIP Free Access</InputLabel>
                         <Select
