@@ -18,7 +18,7 @@ const UserList = () => {
 
   const vipExport = () => {
     const token = localStorage.getItem('accessToken')
-    const URL = `${BASE_URL}/users/download/vip`
+    const URL = `${BASE_URL}/users/download/vip?Authorization=Bearer+${token}`
 
     // Create a new tab and start loading the URL
     const newTab = window.open()
@@ -46,7 +46,7 @@ const UserList = () => {
 
   const usersExport = () => {
     const token = localStorage.getItem('accessToken')
-    const URL = `${BASE_URL}/users/download/all`
+    const URL = `${BASE_URL}/users/download/all?Authorization=Bearer+${token}`
 
     // Create a new tab and start loading the URL
     const newTab = window.open()
