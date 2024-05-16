@@ -12,25 +12,6 @@ import { useRouter } from 'next/router'
 const couponValidationSchema = yup.object().shape({
   code: yup.string().required('Coupon code is required'),
 
-  // discount_percentage: yup
-  //   .number()
-  //   .integer()
-  //   .min(1)
-  //   .max(100)
-  //   .when('discount_amount', {
-  //     is: undefined,
-  //     then: yup.number().required('Discount percentage is required'),
-  //     otherwise: yup.number()
-  //   }),
-  // discount_amount: yup
-  //   .number()
-  //   .positive()
-  //   .when('discount_percentage', {
-  //     is: undefined,
-  //     then: yup.number().required('Discount amount is required'),
-  //     otherwise: yup.number()
-  //   }),
-
   course_id: yup.array().of(yup.number()).nullable(),
   expires_at: yup.date().nullable(),
   is_used: yup.boolean().default(false),
@@ -59,7 +40,21 @@ export default function CrateUserForm() {
     reset,
     formState: { errors }
   } = useForm({
-    resolver: yupResolver(couponValidationSchema)
+    resolver: yupResolver(couponValidationSchema),
+    defaultValues: {
+      code: '',
+      course_id: [],
+      expires_at: null,
+      is_used: false,
+      minimum_spend: null,
+      maximum_spend: null,
+      individual_use_only: false,
+      exclude_products: [],
+      allowed_emails: [],
+      exclude_sale_items: false,
+      usage_limit_per_coupon: 10,
+      usage_limit_per_user: 10
+    }
   })
 
   //Check if coupon created successfully

@@ -101,7 +101,7 @@ export default function EditForm() {
           )}
         </Grid>
         <Grid marginTop={5} item xs={12} sm={6}>
-          {courses.data.data ? (
+          {courses?.data?.data ? (
             <FormControl fullWidth>
               <InputLabel id='courses-select-label'>Selet Course</InputLabel>
               <Select
@@ -112,7 +112,13 @@ export default function EditForm() {
               >
                 {courses?.data?.data?.map(course => (
                   <MenuItem key={course.id} value={course.id}>
-                    {course.title}
+                    {course.title +
+                      ' ' +
+                      '(' +
+                      course?.teachers[0]?.firstName +
+                      ' ' +
+                      course?.teachers[0]?.lastName +
+                      ')'}
                   </MenuItem>
                 ))}
               </Select>

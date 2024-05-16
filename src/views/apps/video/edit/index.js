@@ -126,7 +126,13 @@ export default function EditForm(props) {
               >
                 {courses.data.data?.map(course => (
                   <MenuItem key={course.id} value={course.id}>
-                    {course.title}
+                    {course.title +
+                      ' ' +
+                      '(' +
+                      course?.teachers[0]?.firstName +
+                      ' ' +
+                      course?.teachers[0]?.lastName +
+                      ')'}
                   </MenuItem>
                 ))}
               </Select>
