@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "cross-env TZ=America/Toronto next dev -p 7676",
     "build": "cross-env TZ=America/Toronto next build ",
-    "start": "cross-env TZ=America/Toronto next start",
+    "start": "cross-env TZ=America/Toronto next start -p 7676",
     "export": "cross-env TZ=America/Toronto next export",
     "lint": "eslint --fix \"src/**/*.{js,jsx}\"",
     "format": "prettier --write \"src/**/*.{js,jsx}\"",
