@@ -5,6 +5,7 @@ import { fetchData, deleteUser } from 'src/store/apps/user'
 import { TextField, Select, MenuItem, InputLabel } from '@mui/material'
 import Button from '@mui/material/Button'
 import { useRouter } from 'next/router'
+import BASE_URL from 'src/api/BASE_URL'
 
 const UserList = () => {
   const router = useRouter()
@@ -13,6 +14,63 @@ const UserList = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [serchUserRole, setSerchUserRole] = useState('0')
   const [pageSize, setPageSize] = useState(10)
+  const token = localStorage.getItem('token')
+
+  const vipExport = () => {
+    const token = localStorage.getItem('accessToken')
+    const URL = `${BASE_URL}/users/download/vip`
+
+    // Create a new tab and start loading the URL
+    const newTab = window.open()
+
+    // Create a form element
+    const form = document.createElement('form')
+    form.method = 'GET'
+    form.action = URL
+    form.target = newTab ? newTab.name : '_blank'
+
+    // Create an input element to hold the bearer token
+    const input = document.createElement('input')
+    input.type = 'hidden'
+    input.name = 'Authorization'
+    input.value = `Bearer ${token}`
+    form.appendChild(input)
+
+    // Append the form to the body and submit it
+    document.body.appendChild(form)
+    form.submit()
+
+    // Remove the form from the body after submission
+    document.body.removeChild(form)
+  }
+
+  const usersExport = () => {
+    const token = localStorage.getItem('accessToken')
+    const URL = `${BASE_URL}/users/download/all`
+
+    // Create a new tab and start loading the URL
+    const newTab = window.open()
+
+    // Create a form element
+    const form = document.createElement('form')
+    form.method = 'GET'
+    form.action = URL
+    form.target = newTab ? newTab.name : '_blank'
+
+    // Create an input element to hold the bearer token
+    const input = document.createElement('input')
+    input.type = 'hidden'
+    input.name = 'Authorization'
+    input.value = `Bearer ${token}`
+    form.appendChild(input)
+
+    // Append the form to the body and submit it
+    document.body.appendChild(form)
+    form.submit()
+
+    // Remove the form from the body after submission
+    document.body.removeChild(form)
+  }
 
   const handleDelete = id => {
     const confirmation = window.confirm('Are you sure you want to delete this User?')
@@ -143,6 +201,8 @@ const UserList = () => {
         <MenuItem value={'4000'}>Blog manager</MenuItem>
         <MenuItem value={'10000'}>Administrator</MenuItem>
       </Select>
+      <Button onClick={vipExport}>Export VIP</Button>
+      <Button onClick={usersExport}>Export All</Button>
       {filteredUsers ? (
         <DataGrid
           rows={filteredUsers}
