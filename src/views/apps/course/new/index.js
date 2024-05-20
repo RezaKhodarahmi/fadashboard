@@ -15,6 +15,7 @@ const SUPPORTED_FORMATS = ['image/jpg', 'image/jpeg', 'image/png']
 
 const validationSchema = yup.object().shape({
   title: yup.string().required('Title is required'),
+  subTitle: yup.string().nullable().notRequired(),
   slug: yup.string().required('Slug is required'),
   description: yup.string().nullable().notRequired(),
   abstract: yup.string().nullable().notRequired(),
@@ -115,6 +116,14 @@ export default function NewCourseForm() {
           {errors.title && (
             <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-title-helper'>
               {errors.title.message}
+            </FormHelperText>
+          )}
+        </Grid>
+        <Grid marginTop={5} item xs={12} sm={6}>
+          <TextField {...register('subTitle')} name='subTitle' label='Course Sub Title' fullWidth />
+          {errors.subTitle && (
+            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-subTitle-helper'>
+              {errors.subTitle.message}
             </FormHelperText>
           )}
         </Grid>

@@ -19,6 +19,7 @@ const SUPPORTED_FORMATS = ['image/jpg', 'image/jpeg', 'image/png']
 
 const validationSchema = yup.object().shape({
   title: yup.string().required('Title is required'),
+  subTitle: yup.string().nullable().notRequired(),
   slug: yup.string().required('Slug is required'),
   description: yup.string().nullable().notRequired(),
   abstract: yup.string().nullable().notRequired(),
@@ -30,35 +31,6 @@ const validationSchema = yup.object().shape({
   teacher: yup.string().required('Select Teacher is required'),
   type: yup.string().oneOf(['1', '0'], 'Invalid type').required('Type is required'),
   introURL: yup.string().url('Must be a valid URL').nullable().notRequired()
-
-  // image: yup
-  //   .mixed()
-  //   .nullable()
-  //   .notRequired()
-  //   .test(
-  //     'fileFormat',
-  //     'Unsupported Format',
-  //     value => !value || (value[0] && SUPPORTED_FORMATS.includes(value[0].type))
-  //   ),
-  // introPoster: yup
-  //   .mixed()
-  //   .nullable()
-  //   .notRequired()
-  //   .test(
-  //     'fileFormat',
-  //     'Unsupported Format',
-  //     value => !value || (value[0] && SUPPORTED_FORMATS.includes(value[0].type))
-  //   ),
-
-  // certificate: yup
-  //   .mixed()
-  //   .nullable()
-  //   .notRequired()
-  //   .test(
-  //     'fileFormat',
-  //     'Unsupported Format',
-  //     value => !value || (value[0] && SUPPORTED_FORMATS.includes(value[0].type))
-  //   )
 })
 
 export default function EditForm(props) {
@@ -80,7 +52,7 @@ export default function EditForm(props) {
   const courseCycles = useSelector(state => state.cycleListReducer)
   const allCategories = useSelector(state => state.categoryListReducer)
 
-  //Set state
+  // Set state
   const [status, setStatus] = useState(null)
   const [courseId, setCourseId] = useState(null)
   const [type, setType] = useState(null)
@@ -97,7 +69,7 @@ export default function EditForm(props) {
   const [videoImageFile, setVideoImageFile] = useState(null)
   const [videoImageUrl, setVideoImageUrl] = useState(null)
 
-  //Get teachers from API
+  // Get teachers from API
   const user = useSelector(state => state.user)
 
   const handleFileChange = e => {
@@ -251,6 +223,7 @@ export default function EditForm(props) {
   }
 
   const onSubmit = data => {
+    console.log(data)
     const formData = new FormData()
     data.slug = formatSlug(data.slug)
     if (file) {
@@ -283,6 +256,14 @@ export default function EditForm(props) {
             {errors.title && (
               <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-title-helper'>
                 {errors.title.message}
+              </FormHelperText>
+            )}
+          </Grid>
+          <Grid marginTop={5} item xs={12} sm={6}>
+            <TextField {...register('subTitle')} name='subTitle' label='Course sub title' fullWidth />
+            {errors.subTitle && (
+              <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-subTitle-helper'>
+                {errors.subTitle.message}
               </FormHelperText>
             )}
           </Grid>
