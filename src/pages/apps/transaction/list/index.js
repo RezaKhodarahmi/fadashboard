@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { DataGrid } from '@mui/x-data-grid'
 import { fetchTransactionData } from 'src/store/apps/transaction'
-import { TextField, Button, InputAdornment, IconButton } from '@mui/material'
+import { TextField, Button, InputAdornment, IconButton, Box } from '@mui/material'
+import { Select, MenuItem, FormControl, InputLabel } from '@mui/material'
 import DatePicker from '@mui/lab/DatePicker'
 import { useRouter } from 'next/router'
 import DateFormat from 'src/utils/dateConverter'
@@ -21,6 +22,17 @@ const TransactionList = () => {
   const [pageSize, setPageSize] = useState(10)
   const [exportStartDate, setExportStartDate] = useState(null)
   const [exportEndDate, setExportEndDate] = useState(null)
+  const [selectedStatus, setSelectedStatus] = useState('')
+  const [selectedType, setSelectedType] = useState('')
+  const [succeededTransactionSum, setSucceededTransactionSum] = useState(0)
+
+  const handleStatusChange = event => {
+    setSelectedStatus(event.target.value)
+  }
+
+  const handleTypeChange = event => {
+    setSelectedType(event.target.value)
+  }
 
   useEffect(() => {
     dispatch(fetchTransactionData())
@@ -117,29 +129,46 @@ const TransactionList = () => {
 
   const filteredTransaction = Array.isArray(transactions?.data?.data)
     ? transactions?.data?.data
-        ?.filter(
-          transaction =>
+        ?.filter(transaction => {
+          const matchesSearchTerm =
             transaction.user?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             transaction.user?.phone?.toLowerCase().includes(searchTerm.toLowerCase())
-        )
+          const matchesStatus = selectedStatus ? transaction.Transaction_Status === selectedStatus : true
+          const matchesType = selectedType ? transaction.Transaction_Type === selectedType : true
+
+          const matchesDateRange = (() => {
+            if (!exportStartDate && !exportEndDate) return true
+            const transactionDate = new Date(transaction.Transaction_Date).getTime()
+            const start = exportStartDate ? new Date(exportStartDate).setHours(0, 0, 0, 0) : null
+            const end = exportEndDate ? new Date(exportEndDate).setHours(23, 59, 59, 999) : null
+
+            return (!start || transactionDate >= start) && (!end || transactionDate <= end)
+          })()
+
+          return matchesSearchTerm && matchesStatus && matchesType && matchesDateRange
+        })
         .map(transaction => ({
           ...transaction,
           id: transaction.Transaction_ID
         }))
     : []
 
+  useEffect(() => {
+    const calculateSucceededTransactionSum = () => {
+      let sum = 0
+      filteredTransaction.forEach(transaction => {
+        if (transaction.Transaction_Status === 'succeeded') {
+          sum += parseFloat(transaction.Amount)
+        }
+      })
+      setSucceededTransactionSum(sum)
+    }
+
+    calculateSucceededTransactionSum()
+  }, [filteredTransaction])
+
   const exportTransactions = () => {
     let filteredExportTransactions = filteredTransaction
-
-    if (exportStartDate && exportEndDate) {
-      filteredExportTransactions = filteredExportTransactions.filter(transaction => {
-        const transactionDate = new Date(transaction.Transaction_Date).getTime() // convert to timestamp
-        const start = new Date(exportStartDate).setHours(0, 0, 0, 0) // ensure time is set to start of day
-        const end = new Date(exportEndDate).setHours(23, 59, 59, 999) // ensure time is set to end of day
-
-        return transactionDate >= start && transactionDate <= end
-      })
-    }
 
     const processedData = filteredExportTransactions.map(transaction => {
       const { Transaction_ID, Amount, Transaction_Date, Transaction_Status, Transaction_Type, courses, cycles, user } =
@@ -202,6 +231,23 @@ const TransactionList = () => {
           }}
         />
 
+        <FormControl style={{ minWidth: 200, margin: '0 10px' }}>
+          <InputLabel>Status</InputLabel>
+          <Select value={selectedStatus} onChange={handleStatusChange}>
+            <MenuItem value=''>All</MenuItem>
+            <MenuItem value='succeeded'>Succeeded</MenuItem>
+            <MenuItem value='requires_payment_method'>requires_payment_method</MenuItem>
+            <MenuItem value='pending'>pending</MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl style={{ minWidth: 200, margin: '0 10px' }}>
+          <InputLabel>Transaction Type</InputLabel>
+          <Select value={selectedType} onChange={handleTypeChange}>
+            <MenuItem value=''>All</MenuItem>
+            <MenuItem value='Partially'>Partially</MenuItem>
+            <MenuItem value='Stripe'>Stripe</MenuItem>
+          </Select>
+        </FormControl>
         <DatePicker
           value={exportStartDate}
           onChange={setExportStartDate}
@@ -219,7 +265,9 @@ const TransactionList = () => {
         />
 
         <Button onClick={exportTransactions}>Export</Button>
-
+        <Box sx={{ marginTop: 2, padding: 2, backgroundColor: '#f0f0f0', borderRadius: '4px' }}>
+          <h3>Succeeded Transactions Sum: ${succeededTransactionSum.toFixed(2)}</h3>
+        </Box>
         <div style={{ height: 400, width: '100%' }}>
           <DataGrid
             rows={filteredTransaction}
