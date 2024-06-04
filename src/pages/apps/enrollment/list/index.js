@@ -10,6 +10,15 @@ import { Search } from '@mui/icons-material'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
 import LocalizationProvider from '@mui/lab/LocalizationProvider'
 
+// ** MUI Imports
+import Box from '@mui/material/Box'
+import Card from '@mui/material/Card'
+import CardHeader from '@mui/material/CardHeader'
+import Chip from '@mui/material/Chip'
+
+// ** Icon Imports
+import Icon from 'src/@core/components/icon'
+
 const EnrollmentList = () => {
   const router = useRouter()
   const dispatch = useDispatch()
@@ -33,7 +42,7 @@ const EnrollmentList = () => {
     router.push('/apps/transaction/edit/' + id)
   }
 
-  const handelStatus = status => {
+  const handleStatus = status => {
     switch (status.formattedValue) {
       case 0:
         return (
@@ -80,37 +89,59 @@ const EnrollmentList = () => {
     }
   }
 
-  const columns = [
-    { field: 'id', headerName: 'ID', width: 10 },
-    { field: 'user', headerName: 'User', width: 150, renderCell: handelUserEmail },
-    { field: 'course', headerName: 'Course', width: 250, renderCell: handelEnrolledCourse },
-    { field: 'status', headerName: 'Status', renderCell: handelStatus },
-    { field: 'Transaction_ID', headerName: 'Transaction', renderCell: handelTransaction },
+  const renderStatusCell = (params) => {
+    const { value } = params;
+    const statusText = handleStatus(value);
+  
+    return (
+      <div>
+        {statusText && (
+          <Chip label={ value == '1' ? 'Accepted' : value == '0' ? 'Pending' : value == '2' ? 'Pending Review' : 'Pending Review' } color={ value == '1' ? 'success' : value == '0' ? 'warning' : value == '2' ? 'warning' : 'secondary'} sx={{ width: '100%' } } />
+        )}
+      </div>
+    );
+  };
 
+  const columns = [
+    { field: 'id', headerName: 'ID', flex: 0.05, minWidth: 50 },
+    { field: 'user', headerName: 'User', flex: 0.2, minWidth: 50, renderCell: handelUserEmail },
+    { field: 'course', headerName: 'Course', flex: 0.2, minWidth: 50, renderCell: handelEnrolledCourse },
+    { field: 'Transaction_ID', headerName: 'Transaction Id', flex: 0.1, minWidth: 50, renderCell: handelTransaction },
+    { field: 'status', headerName: 'Status', flex: 0.06, minWidth: 50, renderCell: renderStatusCell },
     {
       field: 'edit',
       headerName: 'Edit',
-      width: 100,
+      flex: 0.1,
+      minWidth: 100,
       renderCell: params => (
-        <Button color='success' variant='contained' onClick={() => handleEdit(params.row.id)}>
-          Edit
-        </Button>
+        <Chip
+          label='Edit'
+          color='warning'
+          variant='outlined'
+          onClick={()=> handleEdit(params.row.id)}
+          icon={<Icon icon='tabler:edit' />}
+          fontSize={14}
+          sx={{ width: '100%' }}
+        />
       )
     },
     {
       field: 'delete',
       headerName: 'Delete',
-      width: 100,
+      flex: 0.1,
+      minWidth: 100,
       renderCell: params => (
-        <Button
-          color='warning'
-          variant='contained'
-          onClick={() => handleDelete(params.row.id)} // Use row.id which is now correctly mapped to the enrollment id
-        >
-          Delete
-        </Button>
+        <Chip
+            label='Delete'
+            color='error'
+            variant='outlined'
+            onClick={()=> handleDelete(params.row.id)}
+            icon={<Icon icon='tabler:trash' />}
+            fontSize={14}
+            sx={{ width: '100%' }}
+        />
       )
-    }
+    },
   ]
 
   const filteredEnrollment = Array.isArray(enrollments?.data?.data)
@@ -129,33 +160,41 @@ const EnrollmentList = () => {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <>
-        <TextField
-          id='searchTerm'
-          name='searchTerm'
-          value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
-          placeholder='Search'
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position='end'>
-                <IconButton>
-                  <Search />
-                </IconButton>
-              </InputAdornment>
-            )
-          }}
-        />
-
-        <div style={{ height: 400, width: '100%' }}>
-          <DataGrid
-            rows={filteredEnrollment}
-            columns={columns}
-            pageSize={pageSize}
-            rowsPerPageOptions={[5, 10, 20]}
-            onPageSizeChange={newPageSize => setPageSize(newPageSize)}
-            pagination
+        <Card>
+          <CardHeader 
+            title='All Enrollments' 
+            action={
+              <div>
+                <TextField
+                  id='searchTerm'
+                  name='searchTerm'
+                  value={searchTerm}
+                  onChange={e => setSearchTerm(e.target.value)}
+                  placeholder='Search'
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position='end'>
+                        <IconButton>
+                          <Search />
+                        </IconButton>
+                      </InputAdornment>
+                    )
+                  }}
+                />
+              </div>
+            }
           />
-        </div>
+          <Box sx={{ height: 650 }}>
+            <DataGrid
+              rows={filteredEnrollment}
+              columns={columns}
+              pageSize={pageSize}
+              rowsPerPageOptions={[5, 10, 20]}
+              onPageSizeChange={newPageSize => setPageSize(newPageSize)}
+              pagination
+            />
+          </Box>
+        </Card>
       </>
     </LocalizationProvider>
   )
