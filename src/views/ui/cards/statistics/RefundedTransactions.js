@@ -16,7 +16,7 @@ import ReactApexcharts from 'src/@core/components/react-apexcharts'
 // ** Util Import
 import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 
-const series = [32, 41, 41, 70]
+const series = [0]
 
 const SucceededTransactions = () => {
   const transactions = useSelector(state => state.transaction)
@@ -135,10 +135,10 @@ const SucceededTransactions = () => {
 
   const options = {
     colors: [
-      theme.palette.success.main,
-      hexToRGBA(theme.palette.success.main, 0.7),
-      hexToRGBA(theme.palette.success.main, 0.5),
-      hexToRGBA(theme.palette.success.main, 0.16)
+      theme.palette.error.main,
+      hexToRGBA(theme.palette.error.main, 0.7),
+      hexToRGBA(theme.palette.error.main, 0.5),
+      hexToRGBA(theme.palette.error.main, 0.16)
     ],
     stroke: { width: 0 },
     legend: { show: false },
@@ -204,14 +204,15 @@ const SucceededTransactions = () => {
               </Typography>
             </div>
             <div>
-              <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 1, color: 'warning.main' } }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', '& svg': { mr: 1, color: 'error.main' } }}>
                 <Icon icon='tabler:currency-dollar-canadian' fontSize='3rem' />
-                <Typography variant='h3' sx={{ color: 'warning.main' }}>
+                <Typography variant='h3' sx={{ color: 'error.main' }}>
                   {refundedTransactionSum.toFixed(2)}
                 </Typography>
               </Box>
             </div>
           </Box>
+          <ReactApexcharts type='donut' width={150} height={175} series={series} options={options} />
         </Box>
       </CardContent>
     </Card>

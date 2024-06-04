@@ -168,23 +168,37 @@ const TransactionList = () => {
     {
       field: 'edit',
       headerName: 'Edit',
-      width: 100,
+      flex: 0.1,
+      minWidth: 100,
       renderCell: params => (
-        <Button color='success' variant='contained' onClick={() => handleEdit(params.row.id)}>
-          Edit
-        </Button>
+        <Chip
+          label='Edit'
+          color='warning'
+          variant='outlined'
+          onClick={()=> handleEdit(params.row.id)}
+          icon={<Icon icon='tabler:edit' />}
+          fontSize={14}
+          sx={{ width: '100%' }}
+        />
       )
     },
     {
       field: 'delete',
       headerName: 'Delete',
-      width: 100,
+      flex: 0.1,
+      minWidth: 100,
       renderCell: params => (
-        <Button color='warning' variant='contained' onClick={() => handleDelete(params.row.id)}>
-          Delete
-        </Button>
+        <Chip
+            label='Delete'
+            color='error'
+            variant='outlined'
+            onClick={()=> handleDelete(params.row.id)}
+            icon={<Icon icon='tabler:trash' />}
+            fontSize={14}
+            sx={{ width: '100%' }}
+        />
       )
-    }
+    },
   ]
 
   const filteredTransaction = Array.isArray(transactions?.data?.data)
@@ -420,7 +434,7 @@ const TransactionList = () => {
           </Card>
         </Grid>
 
-        <Grid container spacing={5} sx={{ marginBottom: 5}}>
+        <Grid container spacing={5}>
           <Grid item xs={12} md={6}>
             <SucceededTransactions />
           </Grid>
@@ -430,19 +444,44 @@ const TransactionList = () => {
           </Grid>
         </Grid>
 
+        <Grid item xs={12} sx={{ marginBottom: 5 }}>
+          <Card>
+            <CardContent>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <Box sx={{ padding: 2, backgroundColor: '#e0ffe0', borderRadius: 1 }}>
+                    <Typography variant='body1'>Succeeded Transactions Sum:</Typography>
+                    <Typography variant='h6' color='green'>
+                      ${succeededTransactionSum.toFixed(2)}
+                    </Typography>
+                  </Box>
+                </Grid>
+
+                <Grid item xs={12} sm={6}>
+                  <Box sx={{ padding: 2, backgroundColor: '#ffe0cc', borderRadius: 1 }}>
+                    <Typography variant='body1'>Refunded Transactions Sum:</Typography>
+                    <Typography variant='h6' color='orange'>
+                      ${refundedTransactionSum.toFixed(2)}
+                    </Typography>
+                  </Box>
+                </Grid>
+
+              </Grid>
+            </CardContent>
+          </Card>
+        </Grid>
+
         <Card>
           <CardHeader title='Transaction List' />
-          <Box sx={{ padding: 3 }}>
-            <div style={{ height: 400, width: '100%' }}>
-              <DataGrid
-                rows={filteredTransaction}
-                columns={columns}
-                pageSize={pageSize}
-                rowsPerPageOptions={[5, 10, 20]}
-                onPageSizeChange={newPageSize => setPageSize(newPageSize)}
-                pagination
-              />
-            </div>
+          <Box sx={{ height: 650 }}>
+            <DataGrid
+              rows={filteredTransaction}
+              columns={columns}
+              pageSize={pageSize}
+              rowsPerPageOptions={[5, 10, 20]}
+              onPageSizeChange={newPageSize => setPageSize(newPageSize)}
+              pagination
+            />
           </Box>
         </Card>
       </LocalizationProvider>

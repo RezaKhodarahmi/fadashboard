@@ -16,7 +16,7 @@ import ReactApexcharts from 'src/@core/components/react-apexcharts'
 // ** Util Import
 import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 
-const series = [32, 41, 41, 70]
+const series = [430]
 
 const SucceededTransactions = () => {
   const transactions = useSelector(state => state.transaction)
@@ -212,6 +212,7 @@ const SucceededTransactions = () => {
               </Box>
             </div>
           </Box>
+          <ReactApexcharts type='donut' width={150} height={175} series={series} options={options} />
         </Box>
       </CardContent>
     </Card>
