@@ -47,6 +47,19 @@ const UserList = () => {
     }
   }
 
+  //Handel post Created At and Updated At
+  const handleDate = createdAt => {
+    // Create a new Date object using your date string
+    const date = new Date(createdAt.formattedValue)
+
+    // Format the date 05/10/2023 10:44
+    const formattedDate = `${('0' + (date.getMonth() + 1)).slice(-2)}/${('0' + date.getDate()).slice(
+      -2
+    )}/${date.getFullYear()} ${('0' + date.getHours()).slice(-2)}:${('0' + date.getMinutes()).slice(-2)}`
+
+    return formattedDate
+  }
+
   useEffect(() => {
     dispatch(fetchData())
   }, [])
@@ -68,8 +81,8 @@ const UserList = () => {
     { field: 'id', headerName: 'ID', flex: 0.01, minWidth: 50 },
     { field: 'title', headerName: 'Title', flex: 0.3, minWidth: 50 },
     { field: 'url', headerName: 'url', flex: 0.3, minWidth: 50 },
-    { field: 'createdAt', headerName: 'Created At', flex: 0.25, minWidth: 50 },
-    { field: 'needEnroll', headerName: 'Enroll Status', flex: 0.15, minWidth: 50, renderCell: renderStatusCell },
+    { field: 'createdAt', headerName: 'Created At', flex: 0.15, minWidth: 50 , renderCell: handleDate },
+    { field: 'needEnroll', headerName: 'Enroll Status', flex: 0.12, minWidth: 50, renderCell: renderStatusCell },
     {
       field: 'edit',
       headerName: 'Edit',

@@ -77,6 +77,19 @@ const TestList = () => {
     }
   }
 
+  //Handel post Created At and Updated At
+  const handleDate = createdAt => {
+    // Create a new Date object using your date string
+    const date = new Date(createdAt.formattedValue)
+
+    // Format the date 05/10/2023 10:44
+    const formattedDate = `${('0' + (date.getMonth() + 1)).slice(-2)}/${('0' + date.getDate()).slice(
+      -2
+    )}/${date.getFullYear()} ${('0' + date.getHours()).slice(-2)}:${('0' + date.getMinutes()).slice(-2)}`
+
+    return formattedDate
+  }
+
   useEffect(() => {
     dispatch(fetchTestData())
     dispatch(fetchCycleData())
@@ -112,7 +125,7 @@ const TestList = () => {
     { field: 'id', headerName: 'ID', flex: 0.01, minWidth: 50 },
     { field: 'title', headerName: 'Title', flex: 0.2, minWidth: 50 },
     { field: 'cycle', headerName: 'cycle', width: 120, renderCell: handelCycle },
-    { field: 'createdAt', headerName: 'Created At', flex: 0.15, minWidth: 50 },
+    { field: 'createdAt', headerName: 'Created At', flex: 0.1, minWidth: 50 , renderCell: handleDate},
     { field: 'needEnroll', headerName: 'Enroll Status', flex: 0.1, minWidth: 50, renderCell: renderEnrollCell },
     { field: 'status', headerName: 'Status', flex: 0.06, minWidth: 50, renderCell: renderStatusCell },
     {
