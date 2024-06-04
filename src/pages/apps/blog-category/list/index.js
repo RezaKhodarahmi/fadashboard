@@ -146,7 +146,7 @@ const CategoryList = () => {
                 <TextField
                   id='search'
                   variant='outlined'
-                  label='Search by title or slug'
+                  label='Search'
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
                 />
