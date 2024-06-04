@@ -82,35 +82,37 @@ const CategoryList = () => {
 
   const filteredCategiries = Array.isArray(categories?.data?.data)
     ? categories?.data?.data?.filter(category => {
-        const searchTermMatch =
-          category.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          category.slug.toLowerCase().includes(searchTerm.toLowerCase())
+      const searchTermMatch =
+        category.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        category.slug.toLowerCase().includes(searchTerm.toLowerCase())
 
-        return searchTermMatch
-      })
+      return searchTermMatch
+    })
     : []
 
   return (
-    <div style={{ height: 400, width: '100%' }}>
-      <TextField
-        id='search'
-        variant='outlined'
-        label='Search by title or slug'
-        value={searchTerm}
-        onChange={e => setSearchTerm(e.target.value)}
-      />
-
-      {filteredCategiries ? (
-        <DataGrid
-          rows={filteredCategiries}
-          columns={columns}
-          pageSize={Number(pageSize)}
-          onPageSizeChange={newPageSize => setPageSize(newPageSize)}
-          rowsPerPageOptions={[5, 10, 25, 50, 100]}
-          checkboxSelection
+    <>
+      <div style={{ height: 400, width: '100%' }}>
+        <TextField
+          id='search'
+          variant='outlined'
+          label='Search by title or slug'
+          value={searchTerm}
+          onChange={e => setSearchTerm(e.target.value)}
         />
-      ) : null}
-    </div>
+
+        {filteredCategiries ? (
+          <DataGrid
+            rows={filteredCategiries}
+            columns={columns}
+            pageSize={Number(pageSize)}
+            onPageSizeChange={newPageSize => setPageSize(newPageSize)}
+            rowsPerPageOptions={[5, 10, 25, 50, 100]}
+            checkboxSelection
+          />
+        ) : null}
+      </div>
+    </>
   )
 }
 
