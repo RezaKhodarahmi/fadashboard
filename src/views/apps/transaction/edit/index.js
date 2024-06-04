@@ -121,8 +121,9 @@ export default function OrderView(props) {
             <InputLabel>Status</InputLabel>
             <Select value={selectedStatus} label='Status' onChange={handleStatusChange}>
               <MenuItem value='succeeded'>Succeeded</MenuItem>
-              <MenuItem value='cancelled'>Cancelled</MenuItem>
+              <MenuItem value='canceled'>Cancelled</MenuItem>
               <MenuItem value='requires_payment_method'>Pending</MenuItem>
+              <MenuItem value='Refund'>Refund</MenuItem>
             </Select>
           </FormControl>
         </Grid>
@@ -179,7 +180,7 @@ export default function OrderView(props) {
       <Divider style={{ margin: '20px 0' }} />
 
       <Typography variant='h6'>Total: {transactionData.Amount}</Typography>
-      {Array.isArray(transactionData.coupons.length) && transactionData.coupons.length > 0 && (
+      {Array.isArray(transactionData?.coupons?.length) && transactionData?.coupons?.length > 0 && (
         <Typography variant='body1'>Coupon Used: Yes</Typography>
       )}
 

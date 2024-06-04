@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { DataGrid } from '@mui/x-data-grid'
 import { fetchTransactionData } from 'src/store/apps/transaction'
-import { TextField, Button, InputAdornment, IconButton, Box } from '@mui/material'
+import { TextField, Button, InputAdornment, IconButton, Box, Typography, Grid, Paper } from '@mui/material'
 import { Select, MenuItem, FormControl, InputLabel } from '@mui/material'
 import DatePicker from '@mui/lab/DatePicker'
 import { useRouter } from 'next/router'
+import { fetchData } from 'src/store/apps/course'
 import DateFormat from 'src/utils/dateConverter'
 import Link from 'next/link'
 import { Search } from '@mui/icons-material'
@@ -13,11 +14,13 @@ import { saveAs } from 'file-saver'
 import AdapterDateFns from '@mui/lab/AdapterDateFns'
 import LocalizationProvider from '@mui/lab/LocalizationProvider'
 import { Parser } from 'json2csv'
+import { MultiSelect } from 'react-multi-select-component'
 
 const TransactionList = () => {
   const router = useRouter()
   const dispatch = useDispatch()
   const transactions = useSelector(state => state.transaction)
+  const fetchCourses = useSelector(state => state.course)
   const [searchTerm, setSearchTerm] = useState('')
   const [pageSize, setPageSize] = useState(10)
   const [exportStartDate, setExportStartDate] = useState(null)
@@ -25,9 +28,26 @@ const TransactionList = () => {
   const [selectedStatus, setSelectedStatus] = useState('')
   const [selectedType, setSelectedType] = useState('')
   const [succeededTransactionSum, setSucceededTransactionSum] = useState(0)
+  const [refundedTransactionSum, setRefundedTransactionSum] = useState(0)
+  const [selectedCourses, setSelectedCourses] = useState([])
+  const [courses, setCourses] = useState([])
+
+  useEffect(() => {
+    if (fetchCourses?.data?.data) {
+      const courseOptions = fetchCourses.data.data.map(course => ({
+        label: course.title,
+        value: course.id
+      }))
+      setCourses(courseOptions)
+    }
+  }, [fetchCourses])
 
   const handleStatusChange = event => {
     setSelectedStatus(event.target.value)
+  }
+
+  const handleCourseChange = selected => {
+    setSelectedCourses(selected)
   }
 
   const handleTypeChange = event => {
@@ -36,6 +56,7 @@ const TransactionList = () => {
 
   useEffect(() => {
     dispatch(fetchTransactionData())
+    dispatch(fetchData())
   }, [dispatch])
 
   const handleDelete = id => {
@@ -61,6 +82,12 @@ const TransactionList = () => {
         return (
           <span className='success-label' color='success' style={{ background: '#28C76F' }}>
             Succeeded
+          </span>
+        )
+      case 'Refund':
+        return (
+          <span className='success-label' style={{ background: '#FF9F43' }}>
+            Refunded
           </span>
         )
       default:
@@ -99,11 +126,11 @@ const TransactionList = () => {
 
   const columns = [
     { field: 'Transaction_ID', headerName: 'ID', width: 10 },
-    { field: 'user', headerName: 'User', width: 150, renderCell: handelUserEmail },
+    { field: 'user', headerName: 'User', width: 200, renderCell: handelUserEmail },
     { field: 'courses', headerName: 'Course', width: 250, renderCell: handelEnrolledCourse },
-    { field: 'Amount', headerName: 'Amount', width: 70 },
+    { field: 'Amount', headerName: 'Amount', width: 120 },
     { field: 'Transaction_Status', headerName: 'Status', renderCell: handelStatus },
-    { field: 'Transaction_Type', headerName: 'Type', width: 100 },
+    { field: 'Transaction_Type', headerName: 'Type', width: 120 },
     { field: 'Transaction_Date', headerName: 'Date', width: 150, renderCell: handelConvertDate },
     {
       field: 'edit',
@@ -136,6 +163,10 @@ const TransactionList = () => {
           const matchesStatus = selectedStatus ? transaction.Transaction_Status === selectedStatus : true
           const matchesType = selectedType ? transaction.Transaction_Type === selectedType : true
 
+          const matchesCourse = selectedCourses.length
+            ? transaction.courses.some(course => selectedCourses.some(selected => selected.value === course.id))
+            : true
+
           const matchesDateRange = (() => {
             if (!exportStartDate && !exportEndDate) return true
             const transactionDate = new Date(transaction.Transaction_Date).getTime()
@@ -145,7 +176,7 @@ const TransactionList = () => {
             return (!start || transactionDate >= start) && (!end || transactionDate <= end)
           })()
 
-          return matchesSearchTerm && matchesStatus && matchesType && matchesDateRange
+          return matchesSearchTerm && matchesStatus && matchesType && matchesCourse && matchesDateRange
         })
         .map(transaction => ({
           ...transaction,
@@ -164,7 +195,18 @@ const TransactionList = () => {
       setSucceededTransactionSum(sum)
     }
 
+    const calculateRefundedTransactionSum = () => {
+      let sum = 0
+      filteredTransaction.forEach(transaction => {
+        if (transaction.Transaction_Status === 'Refund') {
+          sum += parseFloat(transaction.Amount)
+        }
+      })
+      setRefundedTransactionSum(sum)
+    }
+
     calculateSucceededTransactionSum()
+    calculateRefundedTransactionSum()
   }, [filteredTransaction])
 
   const exportTransactions = () => {
@@ -213,61 +255,108 @@ const TransactionList = () => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <>
-        <TextField
-          id='searchTerm'
-          name='searchTerm'
-          value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
-          placeholder='Search'
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position='end'>
-                <IconButton>
-                  <Search />
-                </IconButton>
-              </InputAdornment>
-            )
-          }}
-        />
-
-        <FormControl style={{ minWidth: 200, margin: '0 10px' }}>
-          <InputLabel>Status</InputLabel>
-          <Select value={selectedStatus} onChange={handleStatusChange}>
-            <MenuItem value=''>All</MenuItem>
-            <MenuItem value='succeeded'>Succeeded</MenuItem>
-            <MenuItem value='requires_payment_method'>requires_payment_method</MenuItem>
-            <MenuItem value='pending'>pending</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl style={{ minWidth: 200, margin: '0 10px' }}>
-          <InputLabel>Transaction Type</InputLabel>
-          <Select value={selectedType} onChange={handleTypeChange}>
-            <MenuItem value=''>All</MenuItem>
-            <MenuItem value='Partially'>Partially</MenuItem>
-            <MenuItem value='Stripe'>Stripe</MenuItem>
-          </Select>
-        </FormControl>
-        <DatePicker
-          value={exportStartDate}
-          onChange={setExportStartDate}
-          inputFormat='MM/dd/yyyy'
-          label='Export Start Date'
-          renderInput={params => <TextField {...params} />}
-        />
-
-        <DatePicker
-          value={exportEndDate}
-          onChange={setExportEndDate}
-          inputFormat='MM/dd/yyyy'
-          label='Export End Date'
-          renderInput={params => <TextField {...params} />}
-        />
-
-        <Button onClick={exportTransactions}>Export</Button>
-        <Box sx={{ marginTop: 2, padding: 2, backgroundColor: '#f0f0f0', borderRadius: '4px' }}>
-          <h3>Succeeded Transactions Sum: ${succeededTransactionSum.toFixed(2)}</h3>
-        </Box>
+      <Box sx={{ padding: 3 }}>
+        <Paper elevation={3} sx={{ padding: 2, marginBottom: 3 }}>
+          <Grid container spacing={2} alignItems='center'>
+            <Grid item xs={12} sm={6} md={4}>
+              <TextField
+                fullWidth
+                id='searchTerm'
+                name='searchTerm'
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+                placeholder='Search'
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position='end'>
+                      <IconButton>
+                        <Search />
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <FormControl fullWidth>
+                <InputLabel>Status</InputLabel>
+                <Select value={selectedStatus} onChange={handleStatusChange}>
+                  <MenuItem value=''>All</MenuItem>
+                  <MenuItem value='succeeded'>Succeeded</MenuItem>
+                  <MenuItem value='requires_payment_method'>requires_payment_method</MenuItem>
+                  <MenuItem value='pending'>Pending</MenuItem>
+                  <MenuItem value='Refund'>Refunded</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <FormControl fullWidth>
+                <InputLabel>Transaction Type</InputLabel>
+                <Select value={selectedType} onChange={handleTypeChange}>
+                  <MenuItem value=''>All</MenuItem>
+                  <MenuItem value='Partially'>Partially</MenuItem>
+                  <MenuItem value='Stripe'>Stripe</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <FormControl fullWidth>
+                <InputLabel>Course</InputLabel>
+                <MultiSelect
+                  options={courses}
+                  value={selectedCourses}
+                  onChange={handleCourseChange}
+                  labelledBy='Select Courses'
+                  hasSelectAll={true}
+                />
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <DatePicker
+                value={exportStartDate}
+                onChange={setExportStartDate}
+                inputFormat='MM/dd/yyyy'
+                label='Export Start Date'
+                renderInput={params => <TextField {...params} fullWidth />}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={4}>
+              <DatePicker
+                value={exportEndDate}
+                onChange={setExportEndDate}
+                inputFormat='MM/dd/yyyy'
+                label='Export End Date'
+                renderInput={params => <TextField {...params} fullWidth />}
+              />
+            </Grid>
+          </Grid>
+          <Box mt={2} display='flex' justifyContent='flex-end'>
+            <Button variant='contained' color='primary' onClick={exportTransactions}>
+              Export
+            </Button>
+          </Box>
+        </Paper>
+        <Paper elevation={3} sx={{ padding: 2, marginBottom: 3 }}>
+          <Typography variant='h6'>Summary</Typography>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <Box sx={{ padding: 2, backgroundColor: '#e0ffe0', borderRadius: 1 }}>
+                <Typography variant='body1'>Succeeded Transactions Sum:</Typography>
+                <Typography variant='h6' color='green'>
+                  ${succeededTransactionSum.toFixed(2)}
+                </Typography>
+              </Box>
+            </Grid>
+            <Grid item xs={6}>
+              <Box sx={{ padding: 2, backgroundColor: '#ffe0cc', borderRadius: 1 }}>
+                <Typography variant='body1'>Refunded Transactions Sum:</Typography>
+                <Typography variant='h6' color='orange'>
+                  ${refundedTransactionSum.toFixed(2)}
+                </Typography>
+              </Box>
+            </Grid>
+          </Grid>
+        </Paper>
         <div style={{ height: 400, width: '100%' }}>
           <DataGrid
             rows={filteredTransaction}
@@ -278,7 +367,7 @@ const TransactionList = () => {
             pagination
           />
         </div>
-      </>
+      </Box>
     </LocalizationProvider>
   )
 }
