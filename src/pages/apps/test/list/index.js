@@ -4,6 +4,15 @@ import { DataGrid } from '@mui/x-data-grid'
 import { fetchTestData, deleteTest } from 'src/store/apps/test'
 import { fetchCycleData } from 'src/store/apps/cycle'
 
+// ** MUI Imports
+import Box from '@mui/material/Box'
+import Card from '@mui/material/Card'
+import CardHeader from '@mui/material/CardHeader'
+import Chip from '@mui/material/Chip'
+
+// ** Icon Imports
+import Icon from 'src/@core/components/icon'
+
 import { TextField } from '@mui/material'
 import Button from '@mui/material/Button'
 import { useRouter } from 'next/router'
@@ -28,7 +37,7 @@ const TestList = () => {
     router.push('/apps/test/edit/' + id)
   }
 
-  const handelEnroll = needEnroll => {
+  const handleEnroll = needEnroll => {
     switch (needEnroll.formattedValue) {
       case '1':
         return 'Need Enroll'
@@ -42,7 +51,7 @@ const TestList = () => {
     }
   }
 
-  const handelStatus = status => {
+  const handleStatus = status => {
     switch (status.formattedValue) {
       case '1':
         return 'Active'
@@ -73,34 +82,73 @@ const TestList = () => {
     dispatch(fetchCycleData())
   }, [dispatch])
 
-  const columns = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'title', headerName: 'Title', width: 180 },
-    { field: 'cycle', headerName: 'cycle', width: 120, renderCell: handelCycle },
-    { field: 'needEnroll', headerName: 'needEnroll', width: 100, renderCell: handelEnroll },
-    { field: 'status', headerName: 'status', width: 70, renderCell: handelStatus },
-    { field: 'createdAt', headerName: 'createdAt', width: 150 },
+  const renderEnrollCell = (params) => {
+    const { value } = params;
+    const statusText = handleEnroll(value);
+  
+    return (
+      <div>
+        {statusText && (
+          <Chip label={ value == '1' ? 'Need Enroll' : value == '0' ? 'Free' : value == '2' ? 'Pending Review' : 'Pending Review' } color={ value == '1' ? 'primary' : value == '0' ? 'info' : value == '2' ? 'warning' : 'secondary'} sx={{ width: '100%' }} />
+        )}
+      </div>
+    );
+  };
 
+  const renderStatusCell = (params) => {
+    const { value } = params;
+    const statusText = handleStatus(value);
+  
+    return (
+      <div>
+        {statusText && (
+          <Chip label={ value == '1' ? 'Active' : value == '0' ? 'Inactive' : value == '2' ? 'Pending Review' : 'Pending Review' } color={ value == '1' ? 'success' : value == '0' ? 'secondary' : value == '2' ? 'warning' : 'secondary'} sx={{ width: '100%' }} />
+        )}
+      </div>
+    );
+  };
+
+  const columns = [
+    { field: 'id', headerName: 'ID', flex: 0.01, minWidth: 50 },
+    { field: 'title', headerName: 'Title', flex: 0.2, minWidth: 50 },
+    { field: 'cycle', headerName: 'cycle', width: 120, renderCell: handelCycle },
+    { field: 'createdAt', headerName: 'Created At', flex: 0.15, minWidth: 50 },
+    { field: 'needEnroll', headerName: 'Enroll Status', flex: 0.1, minWidth: 50, renderCell: renderEnrollCell },
+    { field: 'status', headerName: 'Status', flex: 0.06, minWidth: 50, renderCell: renderStatusCell },
     {
       field: 'edit',
       headerName: 'Edit',
-      width: 100,
+      flex: 0.1,
+      minWidth: 100,
       renderCell: params => (
-        <Button color='success' variant='contained' onClick={() => handleEdit(params.row.id)}>
-          Edit
-        </Button>
+        <Chip
+          label='Edit'
+          color='warning'
+          variant='outlined'
+          onClick={()=> handleEdit(params.row.id)}
+          icon={<Icon icon='tabler:edit' />}
+          fontSize={14}
+          sx={{ width: '100%' }}
+        />
       )
     },
     {
       field: 'delete',
       headerName: 'Delete',
-      width: 100,
+      flex: 0.1,
+      minWidth: 100,
       renderCell: params => (
-        <Button color='warning' variant='contained' onClick={() => handleDelete(params.row.id)}>
-          Delete
-        </Button>
+        <Chip
+            label='Delete'
+            color='error'
+            variant='outlined'
+            onClick={()=> handleDelete(params.row.id)}
+            icon={<Icon icon='tabler:trash' />}
+            fontSize={14}
+            sx={{ width: '100%' }}
+        />
       )
-    }
+    },
   ]
 
   const filteredTests = Array.isArray(tests?.data?.data)
@@ -114,26 +162,36 @@ const TestList = () => {
     : []
 
   return (
-    <div style={{ height: 400, width: '100%' }}>
-      <TextField
-        id='search'
-        variant='outlined'
-        label='Search by title or slug'
-        value={searchTerm}
-        onChange={e => setSearchTerm(e.target.value)}
-      />
-
-      {filteredTests ? (
-        <DataGrid
-          rows={filteredTests}
-          columns={columns}
-          pageSize={Number(pageSize)}
-          onPageSizeChange={newPageSize => setPageSize(newPageSize)}
-          rowsPerPageOptions={[5, 10, 25, 50, 100]}
-          checkboxSelection
+    <>
+      <Card>
+        <CardHeader 
+          title='All Tests' 
+          action={
+            <div>
+              <TextField
+                id='search'
+                variant='outlined'
+                label='Search'
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+              />
+            </div>
+          }
         />
-      ) : null}
-    </div>
+        <Box sx={{ height: 650 }}>
+          {filteredTests ? (
+              <DataGrid
+                rows={filteredTests}
+                columns={columns}
+                pageSize={Number(pageSize)}
+                onPageSizeChange={newPageSize => setPageSize(newPageSize)}
+                rowsPerPageOptions={[5, 10, 25, 50, 100]}
+                checkboxSelection
+              />
+            ) : null}
+        </Box>
+      </Card>
+    </>
   )
 }
 
