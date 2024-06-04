@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { DataGrid } from '@mui/x-data-grid'
 import { fetchTransactionData } from 'src/store/apps/transaction'
-import { TextField, Button, InputAdornment, IconButton, Box, Typography, Grid, Paper } from '@mui/material'
+
+// ** MUI Imports
+import { TextField, Button, Card, CardHeader, CardContent, InputAdornment, IconButton, Box, Typography, Grid, Paper, Chip } from '@mui/material'
 import { Select, MenuItem, FormControl, InputLabel } from '@mui/material'
 import DatePicker from '@mui/lab/DatePicker'
 import { useRouter } from 'next/router'
@@ -15,6 +17,13 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns'
 import LocalizationProvider from '@mui/lab/LocalizationProvider'
 import { Parser } from 'json2csv'
 import { MultiSelect } from 'react-multi-select-component'
+
+// ** Icon Imports
+import Icon from 'src/@core/components/icon'
+
+// ** Components Imports
+import SucceededTransactions from 'src/views/ui/cards/statistics/SucceededTransactions'
+import RefundedTransactions from 'src/views/ui/cards/statistics/RefundedTransactions'
 
 const TransactionList = () => {
   const router = useRouter()
@@ -180,32 +189,32 @@ const TransactionList = () => {
 
   const filteredTransaction = Array.isArray(transactions?.data?.data)
     ? transactions?.data?.data
-        ?.filter(transaction => {
-          const matchesSearchTerm =
-            transaction.user?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            transaction.user?.phone?.toLowerCase().includes(searchTerm.toLowerCase())
-          const matchesStatus = selectedStatus ? transaction.Transaction_Status === selectedStatus : true
-          const matchesType = selectedType ? transaction.Transaction_Type === selectedType : true
+      ?.filter(transaction => {
+        const matchesSearchTerm =
+          transaction.user?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          transaction.user?.phone?.toLowerCase().includes(searchTerm.toLowerCase())
+        const matchesStatus = selectedStatus ? transaction.Transaction_Status === selectedStatus : true
+        const matchesType = selectedType ? transaction.Transaction_Type === selectedType : true
 
-          const matchesCourse = selectedCourses.length
-            ? transaction.courses.some(course => selectedCourses.some(selected => selected.value === course.id))
-            : true
+        const matchesCourse = selectedCourses.length
+          ? transaction.courses.some(course => selectedCourses.some(selected => selected.value === course.id))
+          : true
 
-          const matchesDateRange = (() => {
-            if (!exportStartDate && !exportEndDate) return true
-            const transactionDate = new Date(transaction.Transaction_Date).getTime()
-            const start = exportStartDate ? new Date(exportStartDate).setHours(0, 0, 0, 0) : null
-            const end = exportEndDate ? new Date(exportEndDate).setHours(23, 59, 59, 999) : null
+        const matchesDateRange = (() => {
+          if (!exportStartDate && !exportEndDate) return true
+          const transactionDate = new Date(transaction.Transaction_Date).getTime()
+          const start = exportStartDate ? new Date(exportStartDate).setHours(0, 0, 0, 0) : null
+          const end = exportEndDate ? new Date(exportEndDate).setHours(23, 59, 59, 999) : null
 
-            return (!start || transactionDate >= start) && (!end || transactionDate <= end)
-          })()
+          return (!start || transactionDate >= start) && (!end || transactionDate <= end)
+        })()
 
-          return matchesSearchTerm && matchesStatus && matchesType && matchesCourse && matchesDateRange
-        })
-        .map(transaction => ({
-          ...transaction,
-          id: transaction.Transaction_ID
-        }))
+        return matchesSearchTerm && matchesStatus && matchesType && matchesCourse && matchesDateRange
+      })
+      .map(transaction => ({
+        ...transaction,
+        id: transaction.Transaction_ID
+      }))
     : []
 
   useEffect(() => {
@@ -278,147 +287,166 @@ const TransactionList = () => {
   }
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <Box sx={{ padding: 3 }}>
-        <Paper elevation={3} sx={{ padding: 2, marginBottom: 3 }}>
-          <Grid container spacing={2} alignItems='center'>
-            <Grid item xs={12} sm={6} md={4}>
-              <TextField
-                fullWidth
-                id='searchTerm'
-                name='searchTerm'
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
-                placeholder='Search'
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position='end'>
-                      <IconButton>
-                        <Search />
-                      </IconButton>
-                    </InputAdornment>
-                  )
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4}>
-              <FormControl fullWidth>
-                <InputLabel>Status</InputLabel>
-                <Select value={selectedStatus} onChange={handleStatusChange}>
-                  <MenuItem value=''>All</MenuItem>
-                  <MenuItem value='succeeded'>Succeeded</MenuItem>
-                  <MenuItem value='requires_payment_method'>requires_payment_method</MenuItem>
-                  <MenuItem value='pending'>Pending</MenuItem>
-                  <MenuItem value='Refund'>Refunded</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={6} md={4}>
-              <FormControl fullWidth>
-                <InputLabel>Transaction Type</InputLabel>
-                <Select value={selectedType} onChange={handleTypeChange}>
-                  <MenuItem value=''>All</MenuItem>
-                  <MenuItem value='Partially'>Partially</MenuItem>
-                  <MenuItem value='Stripe'>Stripe</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={6} md={4}>
-              <FormControl fullWidth>
-                <InputLabel>Course</InputLabel>
-                <MultiSelect
-                  options={courses}
-                  value={selectedCourses}
-                  onChange={handleCourseChange}
-                  labelledBy='Select Courses'
-                  hasSelectAll={true}
-                />
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={6} md={4}>
-              <DatePicker
-                value={exportStartDate}
-                onChange={setExportStartDate}
-                inputFormat='MM/dd/yyyy'
-                label='Export Start Date'
-                renderInput={params => <TextField {...params} fullWidth />}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} md={4}>
-              <DatePicker
-                value={exportEndDate}
-                onChange={setExportEndDate}
-                inputFormat='MM/dd/yyyy'
-                label='Export End Date'
-                renderInput={params => <TextField {...params} fullWidth />}
-              />
-            </Grid>
+    <>
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <Grid item xs={12} sx={{ marginBottom: 5 }}>
+          <Card>
+            <CardHeader title='Filters' />
+            <CardContent>
+              <Grid container spacing={6}>
+                <Grid item xs={12} sm={4}>
+                  <InputLabel>Search</InputLabel>
+                  <TextField
+                    fullWidth
+                    id='searchTerm'
+                    name='searchTerm'
+                    value={searchTerm}
+                    onChange={e => setSearchTerm(e.target.value)}
+                    placeholder='Search'
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position='end'>
+                          <IconButton>
+                            <Search />
+                          </IconButton>
+                        </InputAdornment>
+                      )
+                    }}
+                  />
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
+                  <InputLabel>Status</InputLabel>
+                  <FormControl fullWidth>
+                    <Select value={selectedStatus} onChange={handleStatusChange}>
+                      <MenuItem value=''>All</MenuItem>
+                      <MenuItem value='succeeded'>Succeeded</MenuItem>
+                      <MenuItem value='pending'>Pending</MenuItem>
+                      <MenuItem value='Refund'>Refunded</MenuItem>
+                      <MenuItem value='requires_payment_method'>Requires Payment Method</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
+                  <InputLabel>Transaction Type</InputLabel>
+                  <FormControl fullWidth>
+                    <Select value={selectedType} onChange={handleTypeChange}>
+                      <MenuItem value=''>All</MenuItem>
+                      <MenuItem value='Stripe'>Stripe</MenuItem>
+                      <MenuItem value='Partially'>Partially</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
+                  <InputLabel>Course</InputLabel>
+                  <FormControl fullWidth>
+                    <MultiSelect
+                      options={courses}
+                      value={selectedCourses}
+                      onChange={handleCourseChange}
+                      labelledBy='Course'
+                      hasSelectAll={true}
+                    />
+                  </FormControl>
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
+                  <InputLabel>Date From</InputLabel>
+                  <DatePicker
+                    value={exportStartDate}
+                    onChange={setExportStartDate}
+                    inputFormat='MM/dd/yyyy'
+                    label='Export Start Date'
+                    renderInput={params => <TextField {...params} fullWidth />}
+                  />
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
+                  <InputLabel>Date To</InputLabel>
+                  <DatePicker
+                    value={exportEndDate}
+                    onChange={setExportEndDate}
+                    inputFormat='MM/dd/yyyy'
+                    label='Export End Date'
+                    renderInput={params => <TextField {...params} fullWidth />}
+                  />
+                </Grid>
+
+                <Grid item xs={2}>
+                  <Typography variant='h6'>Quick Filters</Typography>
+                </Grid>
+
+                <Grid item xs={2}>
+                  <Button fullWidth
+                    variant={activeFilter === 'last_week' ? 'contained' : 'outlined'}
+                    color='primary'
+                    onClick={() => handleDateFilter('last_week')}
+                  >
+                    Last Week
+                  </Button>
+                </Grid>
+
+                <Grid item xs={2}>
+                  <Button fullWidth
+                    variant={activeFilter === 'last_month' ? 'contained' : 'outlined'}
+                    color='primary'
+                    onClick={() => handleDateFilter('last_month')}
+                  >
+                    Last Month
+                  </Button>
+                </Grid>
+
+                <Grid item xs={2}>
+                  <Button fullWidth
+                    variant={activeFilter === 'last_3_months' ? 'contained' : 'outlined'}
+                    color='primary'
+                    onClick={() => handleDateFilter('last_3_months')}
+                  >
+                    Last 3 Months
+                  </Button>
+                </Grid>
+
+                <Grid item xs={1}></Grid>
+                
+                <Grid item xs={3} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <Button fullWidth variant='contained' color='primary' onClick={exportTransactions}>
+                    Export
+                  </Button>
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid container spacing={5} sx={{ marginBottom: 5}}>
+          <Grid item xs={12} md={6}>
+            <SucceededTransactions />
           </Grid>
-          <Box mt={2} display='flex' justifyContent='flex-end'>
-            <Button variant='contained' color='primary' onClick={exportTransactions}>
-              Export
-            </Button>
-          </Box>
-        </Paper>
-        <Paper elevation={3} sx={{ padding: 2, marginBottom: 3 }}>
-          <Typography variant='h6'>Quick Filters</Typography>
-          <Box mt={2} display='flex' justifyContent='space-around'>
-            <Button
-              variant={activeFilter === 'last_week' ? 'contained' : 'outlined'}
-              color='primary'
-              onClick={() => handleDateFilter('last_week')}
-            >
-              Last Week
-            </Button>
-            <Button
-              variant={activeFilter === 'last_month' ? 'contained' : 'outlined'}
-              color='primary'
-              onClick={() => handleDateFilter('last_month')}
-            >
-              Last Month
-            </Button>
-            <Button
-              variant={activeFilter === 'last_3_months' ? 'contained' : 'outlined'}
-              color='primary'
-              onClick={() => handleDateFilter('last_3_months')}
-            >
-              Last 3 Months
-            </Button>
-          </Box>
-        </Paper>
-        <Paper elevation={3} sx={{ padding: 2, marginBottom: 3 }}>
-          <Typography variant='h6'>Summary</Typography>
-          <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <Box sx={{ padding: 2, backgroundColor: '#e0ffe0', borderRadius: 1 }}>
-                <Typography variant='body1'>Succeeded Transactions Sum:</Typography>
-                <Typography variant='h6' color='green'>
-                  ${succeededTransactionSum.toFixed(2)}
-                </Typography>
-              </Box>
-            </Grid>
-            <Grid item xs={6}>
-              <Box sx={{ padding: 2, backgroundColor: '#ffe0cc', borderRadius: 1 }}>
-                <Typography variant='body1'>Refunded Transactions Sum:</Typography>
-                <Typography variant='h6' color='orange'>
-                  ${refundedTransactionSum.toFixed(2)}
-                </Typography>
-              </Box>
-            </Grid>
+
+          <Grid item xs={12} md={6}>
+            <RefundedTransactions />
           </Grid>
-        </Paper>
-        <div style={{ height: 400, width: '100%' }}>
-          <DataGrid
-            rows={filteredTransaction}
-            columns={columns}
-            pageSize={pageSize}
-            rowsPerPageOptions={[5, 10, 20]}
-            onPageSizeChange={newPageSize => setPageSize(newPageSize)}
-            pagination
-          />
-        </div>
-      </Box>
-    </LocalizationProvider>
+        </Grid>
+
+        <Card>
+          <CardHeader title='Transaction List' />
+          <Box sx={{ padding: 3 }}>
+            <div style={{ height: 400, width: '100%' }}>
+              <DataGrid
+                rows={filteredTransaction}
+                columns={columns}
+                pageSize={pageSize}
+                rowsPerPageOptions={[5, 10, 20]}
+                onPageSizeChange={newPageSize => setPageSize(newPageSize)}
+                pagination
+              />
+            </div>
+          </Box>
+        </Card>
+      </LocalizationProvider>
+    </>
   )
 }
 
