@@ -71,9 +71,9 @@ const CategoryList = () => {
 
   const columns = [
     { field: 'id', headerName: 'ID', flex: 0.01, minWidth: 50 },
-    { field: 'title', headerName: 'Title', flex: 0.3, minWidth: 50 },
-    { field: 'slug', headerName: 'Slug', flex: 0.3, minWidth: 50 },
-    { field: 'keywords', headerName: 'Keywords', width: 150 },
+    { field: 'title', headerName: 'Title', flex: 0.2, minWidth: 50 },
+    { field: 'slug', headerName: 'Slug', flex: 0.2, minWidth: 50 },
+    { field: 'keywords', headerName: 'Keywords', flex: 0.2, minWidth: 50 },
     { field: 'status', headerName: 'Status', flex: 0.10, minWidth: 50, renderCell: renderStatusCell },
     {
       field: 'edit',
