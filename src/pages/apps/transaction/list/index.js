@@ -25,12 +25,13 @@ const TransactionList = () => {
   const [pageSize, setPageSize] = useState(10)
   const [exportStartDate, setExportStartDate] = useState(null)
   const [exportEndDate, setExportEndDate] = useState(null)
-  const [selectedStatus, setSelectedStatus] = useState('')
+  const [selectedStatus, setSelectedStatus] = useState('succeeded')
   const [selectedType, setSelectedType] = useState('')
   const [succeededTransactionSum, setSucceededTransactionSum] = useState(0)
   const [refundedTransactionSum, setRefundedTransactionSum] = useState(0)
   const [selectedCourses, setSelectedCourses] = useState([])
   const [courses, setCourses] = useState([])
+  const [activeFilter, setActiveFilter] = useState('')
 
   useEffect(() => {
     if (fetchCourses?.data?.data) {
@@ -52,6 +53,29 @@ const TransactionList = () => {
 
   const handleTypeChange = event => {
     setSelectedType(event.target.value)
+  }
+
+  const handleDateFilter = period => {
+    const end = new Date()
+    let start = new Date()
+
+    switch (period) {
+      case 'last_week':
+        start.setDate(end.getDate() - 7)
+        break
+      case 'last_month':
+        start.setMonth(end.getMonth() - 1)
+        break
+      case 'last_3_months':
+        start.setMonth(end.getMonth() - 3)
+        break
+      default:
+        start = null
+    }
+
+    setExportStartDate(start)
+    setExportEndDate(end)
+    setActiveFilter(period)
   }
 
   useEffect(() => {
@@ -333,6 +357,32 @@ const TransactionList = () => {
           <Box mt={2} display='flex' justifyContent='flex-end'>
             <Button variant='contained' color='primary' onClick={exportTransactions}>
               Export
+            </Button>
+          </Box>
+        </Paper>
+        <Paper elevation={3} sx={{ padding: 2, marginBottom: 3 }}>
+          <Typography variant='h6'>Quick Filters</Typography>
+          <Box mt={2} display='flex' justifyContent='space-around'>
+            <Button
+              variant={activeFilter === 'last_week' ? 'contained' : 'outlined'}
+              color='primary'
+              onClick={() => handleDateFilter('last_week')}
+            >
+              Last Week
+            </Button>
+            <Button
+              variant={activeFilter === 'last_month' ? 'contained' : 'outlined'}
+              color='primary'
+              onClick={() => handleDateFilter('last_month')}
+            >
+              Last Month
+            </Button>
+            <Button
+              variant={activeFilter === 'last_3_months' ? 'contained' : 'outlined'}
+              color='primary'
+              onClick={() => handleDateFilter('last_3_months')}
+            >
+              Last 3 Months
             </Button>
           </Box>
         </Paper>
