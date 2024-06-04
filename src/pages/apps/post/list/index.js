@@ -78,7 +78,7 @@ const CourseList = () => {
     return (
       <div>
         {statusText && (
-          <Chip label={ value == '1' ? 'Published' : value == '0' ? 'Draft' : value == '2' ? 'Pending Review' : 'Pending Review' } color={ value == '1' ? 'primary' : value == '0' ? 'info' : value == '2' ? 'warning' : 'secondary'} sx={{ width: '100%' }} />
+          <Chip label={ value == '1' ? 'Published' : value == '0' ? 'Draft' : value == '2' ? 'Pending Review' : 'Pending Review' } color={ value == '1' ? 'primary' : value == '0' ? 'info' : value == '2' ? 'warning' : 'secondary'} sx={{ width: '100%' } } />
         )}
       </div>
     );
@@ -89,13 +89,13 @@ const CourseList = () => {
     { field: 'id', headerName: 'ID', flex: 0.01, minWidth: 50 },
     { field: 'title', headerName: 'Title', flex: 0.3, minWidth: 50 },
     { field: 'slug', headerName: 'Slug', flex: 0.3, minWidth: 50 },
-    { field: 'createdAt', headerName: 'createdAt', flex: 0.15, minWidth: 50, renderCell: handleDate },
-    { field: 'updatedAt', headerName: 'updatedAt', flex: 0.15, minWidth: 50, renderCell: handleDate },
-    { field: 'published', headerName: 'published', flex: 0.11, minWidth: 50, renderCell: renderStatusCell },
+    { field: 'createdAt', headerName: 'Created At', flex: 0.15, minWidth: 50, renderCell: handleDate },
+    { field: 'updatedAt', headerName: 'Modified At', flex: 0.15, minWidth: 50, renderCell: handleDate },
+    { field: 'published', headerName: 'Status', flex: 0.15, minWidth: 50, renderCell: renderStatusCell },
     {
       field: 'edit',
       headerName: 'Edit',
-      flex: 0.10,
+      flex: 0.12,
       minWidth: 100,
       renderCell: params => (
         <Chip
@@ -158,14 +158,14 @@ const CourseList = () => {
             }
           />
           <Box sx={{ height: 650 }}>
-          <DataGrid
-              rows={filteredCourses}
-              columns={columns}
-              pageSize={Number(pageSize)}
-              onPageSizeChange={newPageSize => setPageSize(newPageSize)}
-              rowsPerPageOptions={[5, 10, 25, 50, 100]}
-              checkboxSelection
-            />
+            <DataGrid
+                rows={filteredCourses}
+                columns={columns}
+                pageSize={Number(pageSize)}
+                onPageSizeChange={newPageSize => setPageSize(newPageSize)}
+                rowsPerPageOptions={[5, 10, 25, 50, 100]}
+                checkboxSelection
+              />
           </Box>
         </Card>
       ) : null}

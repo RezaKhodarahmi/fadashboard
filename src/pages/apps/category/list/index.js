@@ -6,6 +6,15 @@ import { TextField } from '@mui/material'
 import Button from '@mui/material/Button'
 import { useRouter } from 'next/router'
 
+// ** MUI Imports
+import Box from '@mui/material/Box'
+import Card from '@mui/material/Card'
+import CardHeader from '@mui/material/CardHeader'
+import Chip from '@mui/material/Chip'
+
+// ** Icon Imports
+import Icon from 'src/@core/components/icon'
+
 const CategoryList = () => {
   const router = useRouter()
   const dispatch = useDispatch()
@@ -29,7 +38,7 @@ const CategoryList = () => {
     router.push('/apps/category/edit/' + id)
   }
 
-  const handelStatus = status => {
+  const handleStatus = status => {
     switch (status.formattedValue) {
       case '1':
         return 'Active'
@@ -47,70 +56,102 @@ const CategoryList = () => {
     dispatch(fetchData())
   }, [dispatch])
 
+  const renderStatusCell = (params) => {
+    const { value } = params;
+    const statusText = handleStatus(value);
+  
+    return (
+      <div>
+        {statusText && (
+          <Chip label={ value == '1' ? 'Active' : value == '0' ? 'Inactive' : value == '2' ? 'Pending Review' : 'Pending Review' } color={ value == '1' ? 'success' : value == '0' ? 'secondary' : value == '2' ? 'warning' : 'secondary'} sx={{ width: '100%' }} />
+        )}
+      </div>
+    );
+  };
+
   const columns = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'title', headerName: 'Title', width: 100 },
-    { field: 'slug', headerName: 'Slug', width: 150 },
-    { field: 'keywords', headerName: 'Keywords', width: 150 },
-    { field: 'status', headerName: 'Status', width: 90, renderCell: handelStatus },
+    { field: 'id', headerName: 'ID', flex: 0.01, minWidth: 50 },
+    { field: 'title', headerName: 'Title', flex: 0.2, minWidth: 50 },
+    { field: 'slug', headerName: 'Slug', flex: 0.2, minWidth: 50 },
+    { field: 'keywords', headerName: 'Keywords', flex: 0.2, minWidth: 50 },
+    { field: 'status', headerName: 'Status', flex: 0.10, minWidth: 50, renderCell: renderStatusCell },
     {
       field: 'edit',
       headerName: 'Edit',
-      width: 100,
+      flex: 0.12,
+      minWidth: 100,
       renderCell: params => (
-        <Button color='success' variant='contained' onClick={() => handleEdit(params.row.id)}>
-          Edit
-        </Button>
+        <Chip
+          label='Edit'
+          color='warning'
+          variant='outlined'
+          onClick={()=> handleEdit(params.row.id)}
+          icon={<Icon icon='tabler:edit' />}
+          fontSize={14}
+          sx={{ width: '100%' }}
+        />
       )
     },
     {
       field: 'delete',
       headerName: 'Delete',
-      width: 100,
+      flex: 0.12,
+      minWidth: 100,
       renderCell: params => (
-        <Button
-          color='warning'
-          variant='contained'
-          disabled={params.row.id === 1 ? true : false}
-          onClick={() => handleDelete(params.row.id)}
-        >
-          Delete
-        </Button>
+        <Chip
+            label='Delete'
+            color='error'
+            variant='outlined'
+            onClick={()=> handleDelete(params.row.id)}
+            icon={<Icon icon='tabler:trash' />}
+            fontSize={14}
+            sx={{ width: '100%' }}
+        />
       )
-    }
+    },
   ]
 
   const filteredCategiries = Array.isArray(categories?.data?.data)
     ? categories?.data?.data?.filter(category => {
-        const searchTermMatch =
-          category.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          category.slug.toLowerCase().includes(searchTerm.toLowerCase())
+      const searchTermMatch =
+        category.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        category.slug.toLowerCase().includes(searchTerm.toLowerCase())
 
-        return searchTermMatch
-      })
+      return searchTermMatch
+    })
     : []
 
   return (
-    <div style={{ height: 400, width: '100%' }}>
-      <TextField
-        id='search'
-        variant='outlined'
-        label='Search by title or slug'
-        value={searchTerm}
-        onChange={e => setSearchTerm(e.target.value)}
-      />
-
-      {filteredCategiries ? (
-        <DataGrid
-          rows={filteredCategiries}
-          columns={columns}
-          pageSize={Number(pageSize)}
-          onPageSizeChange={newPageSize => setPageSize(newPageSize)}
-          rowsPerPageOptions={[5, 10, 25, 50, 100]}
-          checkboxSelection
+    <>
+      <Card>
+        <CardHeader 
+          title='All Courses Category' 
+          action={
+            <div>
+              <TextField
+                id='search'
+                variant='outlined'
+                label='Search by title or slug'
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+              />
+            </div>
+          }
         />
-      ) : null}
-    </div>
+        <Box sx={{ height: 650 }}>
+          {filteredCategiries ? (
+            <DataGrid
+              rows={filteredCategiries}
+              columns={columns}
+              pageSize={Number(pageSize)}
+              onPageSizeChange={newPageSize => setPageSize(newPageSize)}
+              rowsPerPageOptions={[5, 10, 25, 50, 100]}
+              checkboxSelection
+            />
+          ) : null}
+        </Box>
+      </Card>
+    </>
   )
 }
 
