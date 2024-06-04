@@ -6,6 +6,15 @@ import { TextField } from '@mui/material'
 import Button from '@mui/material/Button'
 import { useRouter } from 'next/router'
 
+// ** MUI Imports
+import Box from '@mui/material/Box'
+import Card from '@mui/material/Card'
+import CardHeader from '@mui/material/CardHeader'
+import Chip from '@mui/material/Chip'
+
+// ** Icon Imports
+import Icon from 'src/@core/components/icon'
+
 const CourseList = () => {
   const router = useRouter()
   const dispatch = useDispatch()
@@ -32,7 +41,7 @@ const CourseList = () => {
   }
 
   //Handel Course published status
-  const handelStatus = status => {
+  const handleStatus = status => {
     switch (status.formattedValue) {
       case 1:
         return 'Published'
@@ -50,7 +59,7 @@ const CourseList = () => {
   }
 
   //Handel webinar Created At and Updated At
-  const handelDate = createdAt => {
+  const handleDate = createdAt => {
     // Create a new Date object using your date string
     const date = new Date(createdAt.formattedValue)
 
@@ -67,33 +76,28 @@ const CourseList = () => {
     dispatch(fetchWebinarData())
   }, [dispatch])
 
+  const renderStatusCell = (params) => {
+    const { value } = params;
+    const statusText = handleStatus(value);
+  
+    return (
+      <div>
+        {statusText && (
+          <Chip label={ value == '1' ? 'Published' : value == '0' ? 'Draft' : value == '2' ? 'Pending Review' : 'Pending Review' } color={ value == '1' ? 'primary' : value == '0' ? 'info' : value == '2' ? 'warning' : 'secondary'} sx={{ width: '100%' } } />
+        )}
+      </div>
+    );
+  };
+
   //Columns of  data
   const columns = [
-    { field: 'id', headerName: 'ID', width: 30 },
-    { field: 'title', headerName: 'Title', width: 200 },
-    { field: 'slug', headerName: 'Slug', width: 100 },
-    { field: 'date', headerName: 'Date', width: 100, renderCell: handelDate },
-    { field: 'status', headerName: 'Status', width: 90, renderCell: handelStatus },
-    {
-      field: 'edit',
-      headerName: 'Edit',
-      width: 100,
-      renderCell: params => (
-        <Button color='success' variant='contained' onClick={() => handleEdit(params.row.id)}>
-          Edit
-        </Button>
-      )
-    },
-    {
-      field: 'delete',
-      headerName: 'Delete',
-      width: 100,
-      renderCell: params => (
-        <Button color='warning' variant='contained' onClick={() => handleDelete(params.row.id)}>
-          Delete
-        </Button>
-      )
-    },
+    { field: 'id', headerName: 'ID', flex: 0.01, minWidth: 50 },
+    { field: 'title', headerName: 'Title', flex: 0.2, minWidth: 50 },
+    { field: 'slug', headerName: 'Slug', flex: 0.12, minWidth: 50 },
+    { field: 'date', headerName: 'Start Date', flex: 0.13, minWidth: 50, renderCell: handleDate },
+    { field: 'createdAt', headerName: 'Created At', flex: 0.13, minWidth: 50, renderCell: handleDate },
+    { field: 'updatedAt', headerName: 'Modified At', flex: 0.13, minWidth: 50, renderCell: handleDate },
+    { field: 'status', headerName: 'Status', flex: 0.11, minWidth: 50, renderCell: renderStatusCell },
     {
       field: 'enrollments',
       headerName: 'Enrollments',
@@ -104,8 +108,40 @@ const CourseList = () => {
         </Button>
       )
     },
-    { field: 'createdAt', headerName: 'createdAt', width: 100, renderCell: handelDate },
-    { field: 'updatedAt', headerName: 'updatedAt', width: 100, renderCell: handelDate }
+    {
+      field: 'edit',
+      headerName: 'Edit',
+      flex: 0.10,
+      minWidth: 100,
+      renderCell: params => (
+        <Chip
+          label='Edit'
+          color='warning'
+          variant='outlined'
+          onClick={()=> handleEdit(params.row.id)}
+          icon={<Icon icon='tabler:edit' />}
+          fontSize={14}
+          sx={{ width: '100%' }}
+        />
+      )
+    },
+    {
+      field: 'delete',
+      headerName: 'Delete',
+      flex: 0.10,
+      minWidth: 100,
+      renderCell: params => (
+        <Chip
+            label='Delete'
+            color='error'
+            variant='outlined'
+            onClick={()=> handleDelete(params.row.id)}
+            icon={<Icon icon='tabler:trash' />}
+            fontSize={14}
+            sx={{ width: '100%' }}
+        />
+      )
+    },
   ]
 
   //Filter the data for search box
@@ -120,26 +156,36 @@ const CourseList = () => {
     : []
 
   return (
-    <div style={{ height: 400, width: '100%' }}>
-      <TextField
-        id='search'
-        variant='outlined'
-        label='Search by title or slug'
-        value={searchTerm}
-        onChange={e => setSearchTerm(e.target.value)}
-      />
-
-      {filteredWebinar ? (
-        <DataGrid
-          rows={filteredWebinar}
-          columns={columns}
-          pageSize={Number(pageSize)}
-          onPageSizeChange={newPageSize => setPageSize(newPageSize)}
-          rowsPerPageOptions={[5, 10, 25, 50, 100]}
-          checkboxSelection
+    <>
+      <Card>
+        <CardHeader 
+          title='All Posts' 
+          action={
+            <div>
+              <TextField
+                id='search'
+                variant='outlined'
+                label='Search'
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+              />
+            </div>
+          }
         />
-      ) : null}
-    </div>
+        <Box sx={{ height: 650 }}>
+          {filteredWebinar ? (
+            <DataGrid
+              rows={filteredWebinar}
+              columns={columns}
+              pageSize={Number(pageSize)}
+              onPageSizeChange={newPageSize => setPageSize(newPageSize)}
+              rowsPerPageOptions={[5, 10, 25, 50, 100]}
+              checkboxSelection
+            />
+          ) : null}
+        </Box>
+      </Card>
+    </>
   )
 }
 
