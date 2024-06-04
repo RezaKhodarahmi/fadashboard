@@ -137,38 +137,34 @@ const CategoryList = () => {
 
   return (
     <>
-      <div style={{ height: 400, width: '100%' }}>
-
-
-        {filteredCategories ? (
-          <Card>
-            <CardHeader
-              title='All Categories'
-              action={
-                <div>
-                  <TextField
-                    id='search'
-                    variant='outlined'
-                    label='Search by title or slug'
-                    value={searchTerm}
-                    onChange={e => setSearchTerm(e.target.value)}
-                  />
-                </div>
-              }
+      {filteredCategories ? (
+        <Card>
+          <CardHeader
+            title='All Post Categories'
+            action={
+              <div>
+                <TextField
+                  id='search'
+                  variant='outlined'
+                  label='Search by title or slug'
+                  value={searchTerm}
+                  onChange={e => setSearchTerm(e.target.value)}
+                />
+              </div>
+            }
+          />
+          <Box sx={{ height: 650 }}>
+            <DataGrid
+              rows={filteredCategories}
+              columns={columns}
+              pageSize={Number(pageSize)}
+              onPageSizeChange={newPageSize => setPageSize(newPageSize)}
+              rowsPerPageOptions={[5, 10, 25, 50, 100]}
+              checkboxSelection
             />
-            <Box sx={{ height: 650 }}>
-              <DataGrid
-                rows={filteredCategories}
-                columns={columns}
-                pageSize={Number(pageSize)}
-                onPageSizeChange={newPageSize => setPageSize(newPageSize)}
-                rowsPerPageOptions={[5, 10, 25, 50, 100]}
-                checkboxSelection
-              />
-            </Box>
-          </Card>
-        ) : null}
-      </div>
+          </Box>
+        </Card>
+      ) : null}
     </>
   )
 }
