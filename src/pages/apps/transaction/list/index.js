@@ -4,7 +4,20 @@ import { DataGrid } from '@mui/x-data-grid'
 import { fetchTransactionData } from 'src/store/apps/transaction'
 
 // ** MUI Imports
-import { TextField, Button, Card, CardHeader, CardContent, InputAdornment, IconButton, Box, Typography, Grid, Paper, Chip } from '@mui/material'
+import {
+  TextField,
+  Button,
+  Card,
+  CardHeader,
+  CardContent,
+  InputAdornment,
+  IconButton,
+  Box,
+  Typography,
+  Grid,
+  Paper,
+  Chip
+} from '@mui/material'
 import { Select, MenuItem, FormControl, InputLabel } from '@mui/material'
 import DatePicker from '@mui/lab/DatePicker'
 import { useRouter } from 'next/router'
@@ -38,6 +51,8 @@ const TransactionList = () => {
   const [selectedType, setSelectedType] = useState('')
   const [succeededTransactionSum, setSucceededTransactionSum] = useState(0)
   const [refundedTransactionSum, setRefundedTransactionSum] = useState(0)
+  const [succeededTransactionCount, setSucceededTransactionCount] = useState(0)
+  const [refundedTransactionCount, setRefundedTransactionCount] = useState(0)
   const [selectedCourses, setSelectedCourses] = useState([])
   const [courses, setCourses] = useState([])
   const [activeFilter, setActiveFilter] = useState('')
@@ -175,7 +190,7 @@ const TransactionList = () => {
           label='Edit'
           color='warning'
           variant='outlined'
-          onClick={()=> handleEdit(params.row.id)}
+          onClick={() => handleEdit(params.row.id)}
           icon={<Icon icon='tabler:edit' />}
           fontSize={14}
           sx={{ width: '100%' }}
@@ -189,70 +204,76 @@ const TransactionList = () => {
       minWidth: 100,
       renderCell: params => (
         <Chip
-            label='Delete'
-            color='error'
-            variant='outlined'
-            onClick={()=> handleDelete(params.row.id)}
-            icon={<Icon icon='tabler:trash' />}
-            fontSize={14}
-            sx={{ width: '100%' }}
+          label='Delete'
+          color='error'
+          variant='outlined'
+          onClick={() => handleDelete(params.row.id)}
+          icon={<Icon icon='tabler:trash' />}
+          fontSize={14}
+          sx={{ width: '100%' }}
         />
       )
-    },
+    }
   ]
 
   const filteredTransaction = Array.isArray(transactions?.data?.data)
     ? transactions?.data?.data
-      ?.filter(transaction => {
-        const matchesSearchTerm =
-          transaction.user?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          transaction.user?.phone?.toLowerCase().includes(searchTerm.toLowerCase())
-        const matchesStatus = selectedStatus ? transaction.Transaction_Status === selectedStatus : true
-        const matchesType = selectedType ? transaction.Transaction_Type === selectedType : true
+        ?.filter(transaction => {
+          const matchesSearchTerm =
+            transaction.user?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            transaction.user?.phone?.toLowerCase().includes(searchTerm.toLowerCase())
+          const matchesStatus = selectedStatus ? transaction.Transaction_Status === selectedStatus : true
+          const matchesType = selectedType ? transaction.Transaction_Type === selectedType : true
 
-        const matchesCourse = selectedCourses.length
-          ? transaction.courses.some(course => selectedCourses.some(selected => selected.value === course.id))
-          : true
+          const matchesCourse = selectedCourses.length
+            ? transaction.courses.some(course => selectedCourses.some(selected => selected.value === course.id))
+            : true
 
-        const matchesDateRange = (() => {
-          if (!exportStartDate && !exportEndDate) return true
-          const transactionDate = new Date(transaction.Transaction_Date).getTime()
-          const start = exportStartDate ? new Date(exportStartDate).setHours(0, 0, 0, 0) : null
-          const end = exportEndDate ? new Date(exportEndDate).setHours(23, 59, 59, 999) : null
+          const matchesDateRange = (() => {
+            if (!exportStartDate && !exportEndDate) return true
+            const transactionDate = new Date(transaction.Transaction_Date).getTime()
+            const start = exportStartDate ? new Date(exportStartDate).setHours(0, 0, 0, 0) : null
+            const end = exportEndDate ? new Date(exportEndDate).setHours(23, 59, 59, 999) : null
 
-          return (!start || transactionDate >= start) && (!end || transactionDate <= end)
-        })()
+            return (!start || transactionDate >= start) && (!end || transactionDate <= end)
+          })()
 
-        return matchesSearchTerm && matchesStatus && matchesType && matchesCourse && matchesDateRange
-      })
-      .map(transaction => ({
-        ...transaction,
-        id: transaction.Transaction_ID
-      }))
+          return matchesSearchTerm && matchesStatus && matchesType && matchesCourse && matchesDateRange
+        })
+        .map(transaction => ({
+          ...transaction,
+          id: transaction.Transaction_ID
+        }))
     : []
 
   useEffect(() => {
-    const calculateSucceededTransactionSum = () => {
+    const calculateSucceededTransactionSumAndCount = () => {
       let sum = 0
+      let count = 0
       filteredTransaction.forEach(transaction => {
         if (transaction.Transaction_Status === 'succeeded') {
           sum += parseFloat(transaction.Amount)
+          count += 1
         }
       })
       setSucceededTransactionSum(sum)
+      setSucceededTransactionCount(count)
     }
 
     const calculateRefundedTransactionSum = () => {
       let sum = 0
+      let count = 0
       filteredTransaction.forEach(transaction => {
         if (transaction.Transaction_Status === 'Refund') {
           sum += parseFloat(transaction.Amount)
+          count += 1
         }
       })
       setRefundedTransactionSum(sum)
+      setRefundedTransactionCount(count)
     }
 
-    calculateSucceededTransactionSum()
+    calculateSucceededTransactionSumAndCount()
     calculateRefundedTransactionSum()
   }, [filteredTransaction])
 
@@ -393,7 +414,8 @@ const TransactionList = () => {
                 </Grid>
 
                 <Grid item xs={2}>
-                  <Button fullWidth
+                  <Button
+                    fullWidth
                     variant={activeFilter === 'last_week' ? 'contained' : 'outlined'}
                     color='primary'
                     onClick={() => handleDateFilter('last_week')}
@@ -403,7 +425,8 @@ const TransactionList = () => {
                 </Grid>
 
                 <Grid item xs={2}>
-                  <Button fullWidth
+                  <Button
+                    fullWidth
                     variant={activeFilter === 'last_month' ? 'contained' : 'outlined'}
                     color='primary'
                     onClick={() => handleDateFilter('last_month')}
@@ -413,7 +436,8 @@ const TransactionList = () => {
                 </Grid>
 
                 <Grid item xs={2}>
-                  <Button fullWidth
+                  <Button
+                    fullWidth
                     variant={activeFilter === 'last_3_months' ? 'contained' : 'outlined'}
                     color='primary'
                     onClick={() => handleDateFilter('last_3_months')}
@@ -423,7 +447,7 @@ const TransactionList = () => {
                 </Grid>
 
                 <Grid item xs={1}></Grid>
-                
+
                 <Grid item xs={3} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                   <Button fullWidth variant='contained' color='primary' onClick={exportTransactions}>
                     Export
@@ -436,39 +460,12 @@ const TransactionList = () => {
 
         <Grid container spacing={5}>
           <Grid item xs={12} md={6}>
-            <SucceededTransactions />
+            <SucceededTransactions total={succeededTransactionSum.toFixed(2)} count={succeededTransactionCount} />
           </Grid>
 
           <Grid item xs={12} md={6}>
-            <RefundedTransactions />
+            <RefundedTransactions total={refundedTransactionSum.toFixed(2)} count={refundedTransactionCount} />
           </Grid>
-        </Grid>
-
-        <Grid item xs={12} sx={{ marginBottom: 5 }}>
-          <Card>
-            <CardContent>
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <Box sx={{ padding: 2, backgroundColor: '#e0ffe0', borderRadius: 1 }}>
-                    <Typography variant='body1'>Succeeded Transactions Sum:</Typography>
-                    <Typography variant='h6' color='green'>
-                      ${succeededTransactionSum.toFixed(2)}
-                    </Typography>
-                  </Box>
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <Box sx={{ padding: 2, backgroundColor: '#ffe0cc', borderRadius: 1 }}>
-                    <Typography variant='body1'>Refunded Transactions Sum:</Typography>
-                    <Typography variant='h6' color='orange'>
-                      ${refundedTransactionSum.toFixed(2)}
-                    </Typography>
-                  </Box>
-                </Grid>
-
-              </Grid>
-            </CardContent>
-          </Card>
         </Grid>
 
         <Card>
