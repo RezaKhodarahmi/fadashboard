@@ -5,7 +5,7 @@ import FormHelperText from '@mui/material/FormHelperText'
 import { Editor } from '@tinymce/tinymce-react'
 import * as yup from 'yup'
 import AppConfig from 'src/configs/appConfg'
-import { TextField, Button, Grid, Select, MenuItem, FormControl, InputLabel, Box } from '@mui/material'
+import { Card, CardHeader, CardContent, TextField, Button, Grid, Select, MenuItem, FormControl, InputLabel, Box } from '@mui/material'
 import { newCourse } from 'src/store/apps/course'
 import { useDispatch, useSelector } from 'react-redux'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -109,202 +109,214 @@ export default function NewCourseForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <Grid container spacing={2}>
-        <Grid marginTop={5} item xs={12} sm={6}>
-          <TextField {...register('title')} name='title' label='Course title' fullWidth />
-          {errors.title && (
-            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-title-helper'>
-              {errors.title.message}
-            </FormHelperText>
-          )}
-        </Grid>
-        <Grid marginTop={5} item xs={12} sm={6}>
-          <TextField {...register('subTitle')} name='subTitle' label='Course Sub Title' fullWidth />
-          {errors.subTitle && (
-            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-subTitle-helper'>
-              {errors.subTitle.message}
-            </FormHelperText>
-          )}
-        </Grid>
-        <Grid marginTop={5} item xs={12} sm={6}>
-          <TextField {...register('slug')} name='slug' label='Course slug' fullWidth />
-          {errors.slug && (
-            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-slug-helper'>
-              {errors.slug.message}
-            </FormHelperText>
-          )}
-        </Grid>
-        <Grid marginTop={5} item xs={12} sm={12}>
-          <InputLabel id='description'>Description</InputLabel>
-          <Controller
-            name='description'
-            labelId='description'
-            control={control}
-            rules={validationSchema.content}
-            render={({ field, fieldState }) => (
-              <Box sx={{ mt: 2 }}>
-                <Editor
-                  apiKey={AppConfig.TINYMCE_KEY}
-                  value={field.value}
-                  onEditorChange={value => field.onChange(value)}
-                  onBlur={field.onBlur}
-                  init={AppConfig.TINYMCE_INIT}
-                />
-                {fieldState.error && <Box sx={{ color: 'red', mt: 1 }}>{fieldState.error.message}</Box>}
-              </Box>
-            )}
-          />
-        </Grid>
-        <Grid marginTop={5} item xs={12} sm={12}>
-          <InputLabel id='abstract'>Abstract</InputLabel>
-          <Controller
-            name='abstract'
-            labelId='abstract'
-            control={control}
-            rules={validationSchema.content}
-            render={({ field, fieldState }) => (
-              <Box sx={{ mt: 2 }}>
-                <Editor
-                  apiKey={AppConfig.TINYMCE_KEY}
-                  value={field.value}
-                  onEditorChange={value => field.onChange(value)}
-                  onBlur={field.onBlur}
-                  init={AppConfig.TINYMCE_INIT}
-                />
-                {fieldState.error && <Box sx={{ color: 'red', mt: 1 }}>{fieldState.error.message}</Box>}
-              </Box>
-            )}
-          />
-        </Grid>
-        <Grid marginTop={5} item xs={12} sm={6}>
-          <TextField {...register('keywords')} name='keywords' label='Course keywords' fullWidth />
-          {errors.keywords && (
-            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-keywords-helper'>
-              {errors.keywords.message}
-            </FormHelperText>
-          )}
-        </Grid>
-        <Grid marginTop={5} item xs={12} sm={6}>
-          <TextField {...register('metaTitle')} name='metaTitle' label='Course metaTitle' fullWidth />
-          {errors.metaTitle && (
-            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-metaTitle-helper'>
-              {errors.metaTitle.message}
-            </FormHelperText>
-          )}
-        </Grid>
-        <Grid marginTop={5} item xs={12} sm={6}>
-          <TextField {...register('metaDescription')} name='metaDescription' label='Course metaDescription' fullWidth />
-          {errors.metaDescription && (
-            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-metaDescription-helper'>
-              {errors.metaDescription.message}
-            </FormHelperText>
-          )}
-        </Grid>
-        <Grid marginTop={5} item xs={12} sm={6}>
-          <FormControl fullWidth>
-            <InputLabel id='status-select-label'>Status</InputLabel>
-            <Select {...register('status')} name='status' labelId='status-select-label' label='Status'>
-              <MenuItem value={'1'}>Active</MenuItem>
-              <MenuItem value={'0'}>Inactive</MenuItem>
-            </Select>
-          </FormControl>
+    <>
+    <Card>
+        <CardHeader title='Add New Course' />
+          <CardContent>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <Grid container spacing={2}>
+                <Grid marginTop={5} item xs={12} sm={12}>
+                  <TextField {...register('title')} name='title' label='Enter Course Title' fullWidth />
+                  {errors.title && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-title-helper'>
+                      {errors.title.message}
+                    </FormHelperText>
+                  )}
+                </Grid>
+                <Grid marginTop={5} item xs={12} sm={12}>
+                  <TextField {...register('subTitle')} name='subTitle' label='Course Search Keywords' fullWidth />
+                  {errors.subTitle && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-subTitle-helper'>
+                      {errors.subTitle.message}
+                    </FormHelperText>
+                  )}
+                </Grid>
+                <Grid marginTop={5} item xs={12} sm={8}>
+                  <TextField {...register('slug')} name='slug' label='Course slug' fullWidth />
+                  {errors.slug && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-slug-helper'>
+                      {errors.slug.message}
+                    </FormHelperText>
+                  )}
+                </Grid>
+                <Grid marginTop={5} item xs={12} sm={12}>
+                  <InputLabel id='description'>Short Description</InputLabel>
+                  <Controller
+                    name='description'
+                    labelId='description'
+                    control={control}
+                    rules={validationSchema.content}
+                    render={({ field, fieldState }) => (
+                      <Box sx={{ mt: 2 }}>
+                        <Editor
+                          apiKey={AppConfig.TINYMCE_KEY}
+                          value={field.value}
+                          onEditorChange={value => field.onChange(value)}
+                          onBlur={field.onBlur}
+                          init={AppConfig.TINYMCE_INIT}
+                        />
+                        {fieldState.error && <Box sx={{ color: 'red', mt: 1 }}>{fieldState.error.message}</Box>}
+                      </Box>
+                    )}
+                  />
+                </Grid>
+                <Grid marginTop={5} item xs={12} sm={12}>
+                  <InputLabel id='abstract'>Full Description</InputLabel>
+                  <Controller
+                    name='abstract'
+                    labelId='abstract'
+                    control={control}
+                    rules={validationSchema.content}
+                    render={({ field, fieldState }) => (
+                      <Box sx={{ mt: 2 }}>
+                        <Editor
+                          apiKey={AppConfig.TINYMCE_KEY}
+                          value={field.value}
+                          onEditorChange={value => field.onChange(value)}
+                          onBlur={field.onBlur}
+                          init={AppConfig.TINYMCE_INIT}
+                        />
+                        {fieldState.error && <Box sx={{ color: 'red', mt: 1 }}>{fieldState.error.message}</Box>}
+                      </Box>
+                    )}
+                  />
+                </Grid>
 
-          {errors.status && (
-            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-status-helper'>
-              {errors.status.message}
-            </FormHelperText>
-          )}
-        </Grid>
-        <Grid marginTop={5} item xs={12} sm={6}>
-          <FormControl fullWidth>
-            <InputLabel id='type-select-label'>Type</InputLabel>
-            <Select {...register('type')} name='type' labelId='type-select-label' label='type'>
-              <MenuItem value={'1'}>Online</MenuItem>
-              <MenuItem value={'0'}>Recorded</MenuItem>
-            </Select>
-          </FormControl>
-          {errors.type && (
-            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-type-helper'>
-              {errors.type.message}
-            </FormHelperText>
-          )}
-        </Grid>
-        <Grid marginTop={5} item xs={12} sm={6}>
-          <TextField {...register('introURL')} name='introURL' label='Intro URL' fullWidth />
-          {errors.introURL && (
-            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-introURL-helper'>
-              {errors.introURL.message}
-            </FormHelperText>
-          )}
-        </Grid>
-        <Grid marginTop={5} item xs={12} sm={6} flex>
-          {imageUrl ? (
-            <>
-              <img alt='Image' src={imageUrl} width='100' />
-              <br />
-            </>
-          ) : null}
+                <Grid marginTop={5} item xs={12} sm={12} sx={{ backgroundColor: "#f8f7fa", borderRadius: "5px", padding: "10px" }}>
+                  <Grid marginTop={5} item xs={12} sm={12}>
+                    <InputLabel sx={{ marginBottom: 5 }}>SEO</InputLabel>
+                    <TextField {...register('keywords')} name='keywords' label='SEO Keywords' fullWidth />
+                    {errors.keywords && (
+                      <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-keywords-helper'>
+                        {errors.keywords.message}
+                      </FormHelperText>
+                    )}
+                  </Grid>
+                  <Grid marginTop={5} item xs={12} sm={12}>
+                    <TextField {...register('metaTitle')} name='metaTitle' label='SEO Meta Title' fullWidth />
+                    {errors.metaTitle && (
+                      <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-metaTitle-helper'>
+                        {errors.metaTitle.message}
+                      </FormHelperText>
+                    )}
+                  </Grid>
+                  <Grid marginTop={5} item xs={12} sm={12}>
+                    <TextField {...register('metaDescription')} name='metaDescription' label='SEO Meta Description' fullWidth />
+                    {errors.metaDescription && (
+                      <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-metaDescription-helper'>
+                        {errors.metaDescription.message}
+                      </FormHelperText>
+                    )}
+                  </Grid>
+                </Grid>
 
-          <label>Course Poster</label>
-          <TextField {...register('image')} type='file' name='image' fullWidth onChange={handleFileChange} />
-          {errors.image && (
-            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-image-helper'>
-              {errors.image.message}
-            </FormHelperText>
-          )}
-        </Grid>
-        <Grid marginTop={5} item xs={12} sm={6} flex>
-          {videoImageUrl ? (
-            <>
-              <img alt='Image' src={videoImageUrl} width='100' />
-              <br />
-            </>
-          ) : null}
+                <Grid marginTop={5} item xs={12} sm={6}>
+                  <FormControl fullWidth>
+                    <InputLabel id='status-select-label'>Status</InputLabel>
+                    <Select {...register('status')} name='status' labelId='status-select-label' label='Status'>
+                      <MenuItem value={'1'}>Active</MenuItem>
+                      <MenuItem value={'0'}>Inactive</MenuItem>
+                    </Select>
+                  </FormControl>
 
-          <label>Intro Poster</label>
-          <TextField
-            {...register('introPoster')}
-            type='file'
-            name='introPoster'
-            fullWidth
-            onChange={handleVideoPhotoChange}
-          />
-          {errors.introPoster && (
-            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-introPoster-helper'>
-              {errors.introPoster.message}
-            </FormHelperText>
-          )}
-        </Grid>
-        <Grid marginTop={5} item xs={12} sm={6} flex>
-          {certificateURL ? (
-            <>
-              <img alt='Image' src={certificateURL} width='100' />
-              <br />
-            </>
-          ) : null}
+                  {errors.status && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-status-helper'>
+                      {errors.status.message}
+                    </FormHelperText>
+                  )}
+                </Grid>
+                <Grid marginTop={5} item xs={12} sm={6}>
+                  <FormControl fullWidth>
+                    <InputLabel id='type-select-label'>Type</InputLabel>
+                    <Select {...register('type')} name='type' labelId='type-select-label' label='type'>
+                      <MenuItem value={'1'}>Online</MenuItem>
+                      <MenuItem value={'0'}>Recorded</MenuItem>
+                    </Select>
+                  </FormControl>
+                  {errors.type && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-type-helper'>
+                      {errors.type.message}
+                    </FormHelperText>
+                  )}
+                </Grid>
+                <Grid marginTop={5} item xs={12} sm={6}>
+                  <TextField {...register('introURL')} name='introURL' label='Intro URL' fullWidth />
+                  {errors.introURL && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-introURL-helper'>
+                      {errors.introURL.message}
+                    </FormHelperText>
+                  )}
+                </Grid>
+                <Grid marginTop={5} item xs={12} sm={6} flex>
+                  {imageUrl ? (
+                    <>
+                      <img alt='Image' src={imageUrl} width='100' />
+                      <br />
+                    </>
+                  ) : null}
 
-          <label>Certificate</label>
-          <TextField
-            {...register('certificate')}
-            type='file'
-            name='certificate'
-            fullWidth
-            onChange={handleCertificateChange}
-          />
-          {errors.certificate && (
-            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-certificate-helper'>
-              {errors.certificate.message}
-            </FormHelperText>
-          )}
-        </Grid>
-      </Grid>
+                  <label>Course Poster</label>
+                  <TextField {...register('image')} type='file' name='image' fullWidth onChange={handleFileChange} />
+                  {errors.image && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-image-helper'>
+                      {errors.image.message}
+                    </FormHelperText>
+                  )}
+                </Grid>
+                <Grid marginTop={5} item xs={12} sm={6} flex>
+                  {videoImageUrl ? (
+                    <>
+                      <img alt='Image' src={videoImageUrl} width='100' />
+                      <br />
+                    </>
+                  ) : null}
 
-      <Grid marginTop={10} item xs={12} sm={6}>
-        <Button type='submit' size='large' variant='contained' color='success'>
-          Submit
-        </Button>
-      </Grid>
-    </form>
+                  <label>Intro Poster</label>
+                  <TextField
+                    {...register('introPoster')}
+                    type='file'
+                    name='introPoster'
+                    fullWidth
+                    onChange={handleVideoPhotoChange}
+                  />
+                  {errors.introPoster && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-introPoster-helper'>
+                      {errors.introPoster.message}
+                    </FormHelperText>
+                  )}
+                </Grid>
+                <Grid marginTop={5} item xs={12} sm={6} flex>
+                  {certificateURL ? (
+                    <>
+                      <img alt='Image' src={certificateURL} width='100' />
+                      <br />
+                    </>
+                  ) : null}
+
+                  <label>Certificate</label>
+                  <TextField
+                    {...register('certificate')}
+                    type='file'
+                    name='certificate'
+                    fullWidth
+                    onChange={handleCertificateChange}
+                  />
+                  {errors.certificate && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-certificate-helper'>
+                      {errors.certificate.message}
+                    </FormHelperText>
+                  )}
+                </Grid>
+              </Grid>
+
+              <Grid marginTop={10} item xs={12} sm={6}>
+                <Button type='submit' size='large' variant='contained' color='success'>
+                  Submit
+                </Button>
+              </Grid>
+            </form>
+          </CardContent>
+      </Card>
+    </>
   )
 }

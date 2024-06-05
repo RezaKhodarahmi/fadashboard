@@ -317,7 +317,7 @@ const TransactionList = () => {
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <Grid item xs={12} sx={{ marginBottom: 5 }}>
+        <Grid item xs={12} sx={{ marginBottom: 5, zIndex: 10 }}>
           <Card>
             <CardHeader title='Filters' />
             <CardContent>
@@ -376,6 +376,7 @@ const TransactionList = () => {
                       onChange={handleCourseChange}
                       labelledBy='Course'
                       hasSelectAll={true}
+                      sx={{ zIndex: "5", position: 'relative' }}
                     />
                   </FormControl>
                 </Grid>
