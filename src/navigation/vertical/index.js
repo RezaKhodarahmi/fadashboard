@@ -21,7 +21,6 @@ const navigation = () => {
     },
     {
       title: 'Posts',
-      badgeColor: 'error',
       icon: 'tabler:news',
       children: [
         {
@@ -30,7 +29,6 @@ const navigation = () => {
         },
         {
           title: 'All Posts',
-          badgeColor: 'error',
           path: '/apps/post/list'
         }
       ]
@@ -39,8 +37,6 @@ const navigation = () => {
     // Post Categories
     {
       title: 'Post Categories',
-      badgeColor: 'error',
-      badgeContent: 'new',
       icon: 'tabler:layout-grid',
       children: [
         {
@@ -49,8 +45,6 @@ const navigation = () => {
         },
         {
           title: 'All Categories',
-          badgeColor: 'error',
-          badgeContent: 'new',
           path: '/apps/blog-category/list'
         }
       ]
@@ -71,8 +65,6 @@ const navigation = () => {
         },
         {
           title: 'All Courses',
-          badgeColor: 'error',
-          badgeContent: 'new',
           path: '/apps/course/list'
         }
       ]
@@ -89,8 +81,6 @@ const navigation = () => {
         },
         {
           title: 'All Categories',
-          badgeColor: 'error',
-          badgeContent: 'new',
           path: '/apps/category/list'
         }
       ]
@@ -100,8 +90,6 @@ const navigation = () => {
     {
       title: 'Recorded Videos',
       icon: 'tabler:brand-zoom',
-      badgeColor: 'error',
-      badgeContent: 'new',
       children: [
         {
           title: 'Add New Video',
@@ -109,8 +97,6 @@ const navigation = () => {
         },
         {
           title: 'All Recorded Videos',
-          badgeColor: 'error',
-          badgeContent: 'new',
           path: '/apps/video/list'
         }
       ]
@@ -120,8 +106,6 @@ const navigation = () => {
     {
       title: 'Tests',
       icon: 'tabler:a-b',
-      badgeColor: 'error',
-      badgeContent: 'new',
       children: [
         {
           title: 'Add New Test',
@@ -129,8 +113,6 @@ const navigation = () => {
         },
         {
           title: 'All Tests',
-          badgeColor: 'error',
-          badgeContent: 'new',
           path: '/apps/test/list'
         }
       ]
@@ -140,8 +122,6 @@ const navigation = () => {
     {
       title: 'Enrollments',
       icon: 'tabler:list-numbers',
-      badgeColor: 'error',
-      badgeContent: 'new',
       children: [
         {
           title: 'Add New Enrollment',
@@ -149,8 +129,6 @@ const navigation = () => {
         },
         {
           title: 'All Enrollments',
-          badgeColor: 'error',
-          badgeContent: 'new',
           path: '/apps/enrollment/list'
         }
       ]
@@ -163,8 +141,6 @@ const navigation = () => {
     {
       title: 'Webinars',
       icon: 'tabler:steam',
-      badgeColor: 'error',
-      badgeContent: 'new',
       children: [
         {
           title: 'Add New Webinar',
@@ -172,8 +148,6 @@ const navigation = () => {
         },
         {
           title: 'All Webinars',
-          badgeColor: 'error',
-          badgeContent: 'new',
           path: '/apps/webinar/list'
         }
       ]
@@ -187,8 +161,6 @@ const navigation = () => {
     {
       title: 'Coupons',
       icon: 'tabler:ticket',
-      badgeColor: 'error',
-      badgeContent: 'new',
       children: [
         {
           title: 'Add New Coupon',
@@ -196,8 +168,6 @@ const navigation = () => {
         },
         {
           title: 'All Coupons',
-          badgeColor: 'error',
-          badgeContent: 'new',
           path: '/apps/coupon/list'
         }
       ]
@@ -205,13 +175,9 @@ const navigation = () => {
     {
       title: 'Transactions',
       icon: 'tabler:file-dollar',
-      badgeColor: 'error',
-      badgeContent: 'new',
       children: [
         {
           title: 'Transaction List',
-          badgeColor: 'error',
-          badgeContent: 'new',
           path: '/apps/transaction/list'
         }
       ]
@@ -222,7 +188,6 @@ const navigation = () => {
     {
       title: 'File Manager',
       icon: 'tabler:folders',
-      badgeColor: 'error',
       path: '/apps/filemanager',
     },
     {

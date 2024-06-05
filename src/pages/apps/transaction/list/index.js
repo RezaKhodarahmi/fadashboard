@@ -118,31 +118,23 @@ const TransactionList = () => {
     router.push('/apps/transaction/edit/' + id)
   }
 
-  const handelStatus = status => {
+  const handleStatus = status => {
     switch (status.formattedValue) {
       case 'requires_confirmation':
         return (
-          <span className='warning-label' style={{ background: '#E08C3B' }}>
-            Pending
-          </span>
+          <Chip label="Pending" color="warning" />
         )
       case 'succeeded':
         return (
-          <span className='success-label' color='success' style={{ background: '#28C76F' }}>
-            Succeeded
-          </span>
+          <Chip label="Succeeded" color="success" />
         )
       case 'Refund':
         return (
-          <span className='success-label' style={{ background: '#FF9F43' }}>
-            Refunded
-          </span>
+          <Chip label="Refunded" color="error" />
         )
       default:
         return (
-          <span className='danger-label' style={{ background: '#808080' }}>
-            Canceled
-          </span>
+          <Chip label="Canceled" color="secondary" />
         )
     }
   }
@@ -151,10 +143,11 @@ const TransactionList = () => {
     return (
       <>
         <Link href={`/apps/user/edit/${user.formattedValue?.id}`}>{user.formattedValue?.email || 'Unknown'}</Link>
+        <span>&nbsp;,&nbsp;</span>
         <Link href={`/apps/user/edit/${user.formattedValue?.id}`}>{user.formattedValue?.firstName || 'Unknown'}</Link>
-        <span>,</span>
+        <span>&nbsp;,&nbsp;</span>
         <Link href={`/apps/user/edit/${user.formattedValue?.id}`}>{user.formattedValue?.lastName || 'Unknown'}</Link>
-        <span>,</span>
+        <span>&nbsp;,&nbsp;</span>
         <Link href={`/apps/user/edit/${user.formattedValue?.id}`}>{user.formattedValue?.phone || ''}</Link>
       </>
     )
@@ -173,13 +166,13 @@ const TransactionList = () => {
   }
 
   const columns = [
-    { field: 'Transaction_ID', headerName: 'ID', width: 10 },
-    { field: 'user', headerName: 'User', width: 200, renderCell: handelUserEmail },
+    { field: 'Transaction_ID', headerName: 'ID', flex: 0.04, minWidth: 50 },
+    { field: 'user', headerName: 'User', flex: 0.2, minWidth: 50, renderCell: handelUserEmail },
     { field: 'courses', headerName: 'Course', width: 250, renderCell: handelEnrolledCourse },
     { field: 'Amount', headerName: 'Amount', width: 120 },
-    { field: 'Transaction_Status', headerName: 'Status', renderCell: handelStatus },
-    { field: 'Transaction_Type', headerName: 'Type', width: 120 },
     { field: 'Transaction_Date', headerName: 'Date', width: 150, renderCell: handelConvertDate },
+    { field: 'Transaction_Type', headerName: 'Type', width: 120 },
+    { field: 'Transaction_Status', headerName: 'Status', flex: 0.1, minWidth: 50, renderCell: handleStatus },
     {
       field: 'edit',
       headerName: 'Edit',
@@ -458,7 +451,7 @@ const TransactionList = () => {
           </Card>
         </Grid>
 
-        <Grid container spacing={5}>
+        <Grid container spacing={5} sx={{ marginBottom: 5 }}>
           <Grid item xs={12} md={6}>
             <SucceededTransactions total={succeededTransactionSum.toFixed(2)} count={succeededTransactionCount} />
           </Grid>
