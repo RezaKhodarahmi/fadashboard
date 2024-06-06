@@ -72,13 +72,13 @@ const CategoryList = () => {
   const columns = [
     { field: 'id', headerName: 'ID', flex: 0.01, minWidth: 50 },
     { field: 'title', headerName: 'Title', flex: 0.2, minWidth: 50 },
-    { field: 'slug', headerName: 'Slug', flex: 0.2, minWidth: 50 },
-    { field: 'keywords', headerName: 'Keywords', flex: 0.2, minWidth: 50 },
-    { field: 'status', headerName: 'Status', flex: 0.10, minWidth: 50, renderCell: renderStatusCell },
+    { field: 'slug', headerName: 'Slug', flex: 0.15, minWidth: 50 },
+    { field: 'keywords', headerName: 'Keywords', flex: 0.12, minWidth: 50 },
+    { field: 'status', headerName: 'Status', flex: 0.06, minWidth: 50, renderCell: renderStatusCell },
     {
       field: 'edit',
       headerName: 'Edit',
-      flex: 0.12,
+      flex: 0.08,
       minWidth: 100,
       renderCell: params => (
         <Chip
@@ -95,7 +95,7 @@ const CategoryList = () => {
     {
       field: 'delete',
       headerName: 'Delete',
-      flex: 0.12,
+      flex: 0.08,
       minWidth: 100,
       renderCell: params => (
         <Chip

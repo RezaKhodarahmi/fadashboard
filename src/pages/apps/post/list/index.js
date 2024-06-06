@@ -91,7 +91,7 @@ const CourseList = () => {
     { field: 'slug', headerName: 'Slug', flex: 0.3, minWidth: 50 },
     { field: 'createdAt', headerName: 'Created At', flex: 0.15, minWidth: 50, renderCell: handleDate },
     { field: 'updatedAt', headerName: 'Modified At', flex: 0.15, minWidth: 50, renderCell: handleDate },
-    { field: 'published', headerName: 'Status', flex: 0.15, minWidth: 50, renderCell: renderStatusCell },
+    { field: 'published', headerName: 'Status', flex: 0.12, minWidth: 50, renderCell: renderStatusCell },
     {
       field: 'edit',
       headerName: 'Edit',
