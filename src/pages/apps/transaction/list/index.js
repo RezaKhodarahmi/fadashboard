@@ -167,11 +167,11 @@ const TransactionList = () => {
 
   const columns = [
     { field: 'Transaction_ID', headerName: 'ID', flex: 0.04, minWidth: 50 },
-    { field: 'user', headerName: 'User', flex: 0.2, minWidth: 50, renderCell: handelUserEmail },
-    { field: 'courses', headerName: 'Course', width: 250, renderCell: handelEnrolledCourse },
-    { field: 'Amount', headerName: 'Amount', width: 120 },
+    { field: 'user', headerName: 'User', flex: 0.25, minWidth: 50, renderCell: handelUserEmail },
+    { field: 'courses', headerName: 'Course', flex: 0.22, minWidth: 50, renderCell: handelEnrolledCourse },
+    { field: 'Amount', headerName: 'Amount', flex: 0.08, minWidth: 50 },
     { field: 'Transaction_Date', headerName: 'Date', width: 150, renderCell: handelConvertDate },
-    { field: 'Transaction_Type', headerName: 'Type', width: 120 },
+    { field: 'Transaction_Type', headerName: 'Type', flex: 0.08, minWidth: 50 },
     { field: 'Transaction_Status', headerName: 'Status', flex: 0.1, minWidth: 50, renderCell: handleStatus },
     {
       field: 'edit',
@@ -317,8 +317,8 @@ const TransactionList = () => {
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <Grid item xs={12} sx={{ marginBottom: 5, zIndex: 10 }}>
-          <Card>
+        <Grid item xs={12} sx={{ marginBottom: 5, overflow: "visible" }}>
+          <Card sx={{ overflow: "visible" }}>
             <CardHeader title='Filters' />
             <CardContent>
               <Grid container spacing={6}>
