@@ -115,6 +115,7 @@ export default function NewCourseForm() {
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)}>
               <Grid container spacing={2}>
+                {/* Title */}
                 <Grid marginTop={5} item xs={12} sm={12}>
                   <TextField {...register('title')} name='title' label='Enter Course Title' fullWidth />
                   {errors.title && (
@@ -123,6 +124,7 @@ export default function NewCourseForm() {
                     </FormHelperText>
                   )}
                 </Grid>
+                {/* Sub Title */}
                 <Grid marginTop={5} item xs={12} sm={12}>
                   <TextField {...register('subTitle')} name='subTitle' label='Course Search Keywords' fullWidth />
                   {errors.subTitle && (
@@ -131,6 +133,7 @@ export default function NewCourseForm() {
                     </FormHelperText>
                   )}
                 </Grid>
+                {/* Slug */}
                 <Grid marginTop={5} item xs={12} sm={8}>
                   <TextField {...register('slug')} name='slug' label='Course slug' fullWidth />
                   {errors.slug && (
@@ -139,6 +142,7 @@ export default function NewCourseForm() {
                     </FormHelperText>
                   )}
                 </Grid>
+                {/* Short Description */}
                 <Grid marginTop={5} item xs={12} sm={12}>
                   <InputLabel id='description'>Short Description</InputLabel>
                   <Controller
@@ -160,6 +164,7 @@ export default function NewCourseForm() {
                     )}
                   />
                 </Grid>
+                {/* Full Description */}
                 <Grid marginTop={5} item xs={12} sm={12}>
                   <InputLabel id='abstract'>Full Description</InputLabel>
                   <Controller
@@ -181,8 +186,9 @@ export default function NewCourseForm() {
                     )}
                   />
                 </Grid>
-
+                {/* SEO */}
                 <Grid marginTop={5} item xs={12} sm={12} sx={{ backgroundColor: "#f8f7fa", borderRadius: "5px", padding: "10px" }}>
+                  {/* SEO Keywords */}
                   <Grid marginTop={5} item xs={12} sm={12}>
                     <InputLabel sx={{ marginBottom: 5 }}>SEO</InputLabel>
                     <TextField {...register('keywords')} name='keywords' label='SEO Keywords' fullWidth />
@@ -192,6 +198,7 @@ export default function NewCourseForm() {
                       </FormHelperText>
                     )}
                   </Grid>
+                  {/* SEO Meta Title */}
                   <Grid marginTop={5} item xs={12} sm={12}>
                     <TextField {...register('metaTitle')} name='metaTitle' label='SEO Meta Title' fullWidth />
                     {errors.metaTitle && (
@@ -200,6 +207,7 @@ export default function NewCourseForm() {
                       </FormHelperText>
                     )}
                   </Grid>
+                  {/* SEO Meta Description */}
                   <Grid marginTop={5} item xs={12} sm={12}>
                     <TextField {...register('metaDescription')} name='metaDescription' label='SEO Meta Description' fullWidth />
                     {errors.metaDescription && (
@@ -209,8 +217,8 @@ export default function NewCourseForm() {
                     )}
                   </Grid>
                 </Grid>
-
-                <Grid marginTop={5} item xs={12} sm={6}>
+                {/* Status */}
+                <Grid marginTop={5} item xs={12} sm={2}>
                   <FormControl fullWidth>
                     <InputLabel id='status-select-label'>Status</InputLabel>
                     <Select {...register('status')} name='status' labelId='status-select-label' label='Status'>
@@ -225,7 +233,9 @@ export default function NewCourseForm() {
                     </FormHelperText>
                   )}
                 </Grid>
-                <Grid marginTop={5} item xs={12} sm={6}>
+                <Grid marginTop={5} item xs={12} sm={10}></Grid>
+                {/* Type */}
+                <Grid marginTop={5} item xs={12} sm={2}>
                   <FormControl fullWidth>
                     <InputLabel id='type-select-label'>Type</InputLabel>
                     <Select {...register('type')} name='type' labelId='type-select-label' label='type'>
@@ -239,7 +249,9 @@ export default function NewCourseForm() {
                     </FormHelperText>
                   )}
                 </Grid>
-                <Grid marginTop={5} item xs={12} sm={6}>
+                <Grid marginTop={5} item xs={12} sm={10}></Grid>
+                {/* Intro URL */}
+                <Grid marginTop={5} item xs={12} sm={12}>
                   <TextField {...register('introURL')} name='introURL' label='Intro URL' fullWidth />
                   {errors.introURL && (
                     <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-introURL-helper'>
@@ -247,6 +259,7 @@ export default function NewCourseForm() {
                     </FormHelperText>
                   )}
                 </Grid>
+                {/* Course Poster */}
                 <Grid marginTop={5} item xs={12} sm={6} flex>
                   {imageUrl ? (
                     <>
@@ -263,6 +276,8 @@ export default function NewCourseForm() {
                     </FormHelperText>
                   )}
                 </Grid>
+                <Grid marginTop={5} item xs={12} sm={6}></Grid>
+                {/* Intro Poster */}
                 <Grid marginTop={5} item xs={12} sm={6} flex>
                   {videoImageUrl ? (
                     <>
@@ -285,6 +300,8 @@ export default function NewCourseForm() {
                     </FormHelperText>
                   )}
                 </Grid>
+                <Grid marginTop={5} item xs={12} sm={6}></Grid>
+                {/* Certificate */}
                 <Grid marginTop={5} item xs={12} sm={6} flex>
                   {certificateURL ? (
                     <>
