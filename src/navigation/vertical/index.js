@@ -117,7 +117,7 @@ const navigation = () => {
         }
       ]
     },
-    
+
     // Enrollments
     {
       title: 'Enrollments',
@@ -188,7 +188,7 @@ const navigation = () => {
     {
       title: 'File Manager',
       icon: 'tabler:folders',
-      path: '/apps/filemanager',
+      path: '/apps/filemanager'
     },
     {
       sectionTitle: 'Users'
@@ -204,6 +204,24 @@ const navigation = () => {
         {
           title: 'Users List',
           path: '/apps/user/list'
+        }
+      ]
+    },
+    {
+      title: 'Appointments',
+      icon: 'tabler:calendar',
+      children: [
+        {
+          title: 'Add New Book',
+          path: '/apps/appointment/new'
+        },
+        {
+          title: 'Experiences Appointments List',
+          path: '/apps/appointments/experience'
+        },
+        {
+          title: 'Work-study Appointments List',
+          path: '/apps/appointments/work'
         }
       ]
     },

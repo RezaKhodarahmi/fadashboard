@@ -19,6 +19,7 @@ import transaction from 'src/store/apps/transaction'
 import enrollment from 'src/store/apps/enrollment'
 import activecamp from 'src/store/apps/activecampaing'
 import webinar from 'src/store/apps/webinar'
+import appointment from 'src/store/apps/appointment'
 
 export const store = configureStore({
   reducer: {
@@ -41,7 +42,8 @@ export const store = configureStore({
     blogCategory,
     blogCategoryList,
     blogTag,
-    media
+    media,
+    appointment
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
