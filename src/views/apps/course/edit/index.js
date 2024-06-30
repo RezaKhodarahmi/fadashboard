@@ -1,11 +1,26 @@
+// ** React Imports
 import { useEffect, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
+
 import FormHelperText from '@mui/material/FormHelperText'
+
 import { Editor } from '@tinymce/tinymce-react'
 import * as yup from 'yup'
 import { useRouter } from 'next/router'
 import AppConfig from 'src/configs/appConfg'
+
+// ** MUI Imports
 import { Card, CardHeader, CardContent, TextField, Button, Grid, Select, MenuItem, FormControl, InputLabel, Box, Badge } from '@mui/material'
+import Checkbox from '@mui/material/Checkbox'
+import Accordion from '@mui/material/Accordion'
+import Typography from '@mui/material/Typography'
+import AccordionSummary from '@mui/material/AccordionSummary'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import AccordionDetails from '@mui/material/AccordionDetails'
+
+// ** Icon Imports
+import Icon from 'src/@core/components/icon'
+
 import { updateCourse, deleteCourseCategory } from 'src/store/apps/course'
 import { getTeachers } from 'src/store/apps/user'
 import { newCycle, updateCycle, getCourseCycles, deleteCycle } from 'src/store/apps/cycle'
@@ -562,268 +577,283 @@ export default function EditForm(props) {
             </Grid>
           </form>
 
-          {/* Cycle */}
           <Grid marginTop={5} item xs={12} sm={12} flex>
             {isApiLoaded
               ? cycles.map((cycle, index) => {
                 return (
-                  <form
-                    key={cycle.id}
-                    style={{ background: '#fff', marginBottom: '1rem', borderRadius: '15px', padding: '10px 10px' }}
-                    onSubmit={handleSubmit2(onSubmit2)}
-                  >
-                    <TextField
-                      style={{ display: 'none' }}
-                      {...register2(`cycles.${index}.id`)}
-                      defaultValue={cycle.id}
-                      label='id'
-                      type='hidden'
-                      InputLabelProps={{
-                        shrink: true
-                      }}
-                    />
-                    <TextField
-                      style={{ display: 'none' }}
-                      {...register2(`cycles.${index}.secId`)}
-                      defaultValue={cycle.secId}
-                      label='secId'
-                      type='hidden'
-                      InputLabelProps={{
-                        shrink: true
-                      }}
-                    />
-                    <Grid key={cycle.secId} container sx={{ border: 0 }} spacing={2}>
-                      <Grid item xs={12} marginTop={5}>
-                        <TextField
-                          {...register2(`cycles.${index}.name`)}
-                          defaultValue={cycle.name}
-                          label='Cycle Name'
-                          fullWidth
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={6} marginTop={5}>
-                        <TextField
-                          {...register2(`cycles.${index}.startDate`)}
-                          defaultValue={cycle.startDate}
-                          label='Start Date'
-                          type='date'
-                          fullWidth
-                          InputLabelProps={{
-                            shrink: true
-                          }}
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={6} marginTop={5}>
-                        <TextField
-                          {...register2(`cycles.${index}.time`)}
-                          defaultValue={cycle.time}
-                          label='Course time'
-                          type='text'
-                          fullWidth
-                          InputLabelProps={{
-                            shrink: true
-                          }}
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={6} marginTop={5}>
-                        <TextField
-                          {...register2(`cycles.${index}.days`)}
-                          defaultValue={cycle.days}
-                          label='Course days'
-                          type='text'
-                          fullWidth
-                          InputLabelProps={{
-                            shrink: true
-                          }}
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={6} marginTop={5}>
-                        <TextField
-                          {...register2(`cycles.${index}.duration`)}
-                          defaultValue={cycle.duration}
-                          label='Course duration'
-                          type='text'
-                          fullWidth
-                          InputLabelProps={{
-                            shrink: true
-                          }}
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={6} marginTop={5}>
-                        <TextField
-                          {...register2(`cycles.${index}.groupLink`)}
-                          defaultValue={cycle.groupLink}
-                          label='Group Link'
-                          type='text'
-                          fullWidth
-                          InputLabelProps={{
-                            shrink: true
-                          }}
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={6} marginTop={5}>
-                        <TextField
-                          {...register2(`cycles.${index}.zoomLink`)}
-                          defaultValue={cycle.zoomLink}
-                          label='Zoom Link'
-                          type='text'
-                          fullWidth
-                          InputLabelProps={{
-                            shrink: true
-                          }}
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={6} marginTop={5}>
-                        <TextField
-                          {...register2(`cycles.${index}.endDate`)}
-                          defaultValue={cycle.endDate}
-                          label='End Date'
-                          type='date'
-                          fullWidth
-                          InputLabelProps={{
-                            shrink: true
-                          }}
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={6} marginTop={5}>
-                        <TextField
-                          {...register2(`cycles.${index}.vacationStart`)}
-                          defaultValue={cycle.vacationStart}
-                          label='Vacation Start'
-                          type='date'
-                          fullWidth
-                          InputLabelProps={{
-                            shrink: true
-                          }}
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={6} marginTop={5}>
-                        <TextField
-                          {...register2(`cycles.${index}.vacationEnd`)}
-                          defaultValue={cycle.vacationEnd}
-                          label='Vacation End'
-                          type='date'
-                          fullWidth
-                          InputLabelProps={{
-                            shrink: true
-                          }}
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={6} marginTop={5}>
-                        <TextField
-                          {...register2(`cycles.${index}.regularPrice`)}
-                          defaultValue={cycle.regularPrice}
-                          label='Regular Price'
-                          fullWidth
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={6} marginTop={5}>
-                        <TextField
-                          {...register2(`cycles.${index}.vipPrice`)}
-                          defaultValue={cycle.vipPrice}
-                          label='VIP Price'
-                          fullWidth
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={6} marginTop={5}>
-                        <TextField
-                          {...register2(`cycles.${index}.discountPrice`)}
-                          defaultValue={cycle.discountPrice}
-                          label='Discount Price'
-                          fullWidth
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={6} marginTop={5}>
-                        <TextField
-                          {...register2(`cycles.${index}.discountVipPrice`)}
-                          defaultValue={cycle.discountVipPrice}
-                          label='Discount VIP Price'
-                          fullWidth
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={6} marginTop={5}>
-                        <TextField
-                          {...register2(`cycles.${index}.discountDate`)}
-                          defaultValue={cycle.discountDate}
-                          label='Discount date start'
-                          type='date'
-                          fullWidth
-                          InputLabelProps={{
-                            shrink: true
-                          }}
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={6} marginTop={5}>
-                        <TextField
-                          {...register2(`cycles.${index}.discountDateEnd`)}
-                          defaultValue={cycle.discountDateEnd}
-                          label='Discount date End'
-                          type='date'
-                          fullWidth
-                          InputLabelProps={{
-                            shrink: true
-                          }}
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={6} marginTop={5}>
-                        <FormControl fullWidth>
-                          <InputLabel id='vipAccess-select-label'>VIP Free Access</InputLabel>
-                          <Select
-                            {...register2(`cycles.${index}.vipAccess`)}
-                            defaultValue={cycle.vipAccess}
-                            labelId='vipAccess-select-label'
-                            label='VIP Free Access'
+                  <>
+                  <Accordion sx={{ marginTop: '2rem' }}>
+                    <AccordionSummary
+                      id='panel-header-1'
+                      aria-controls='panel-content-1'
+                      expandIcon={<Icon fontSize='1.25rem' icon='tabler:chevron-down' />}
+                    >
+                      <Typography sx={{ textTransform: "uppercase" }}>Cycle: {cycle.name}</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      
+                      {/* Form */}
+                      <form
+                      key={cycle.id}
+                      style={{ background: '#fff', marginBottom: '1rem', borderRadius: '15px', padding: '10px 10px' }}
+                      onSubmit={handleSubmit2(onSubmit2)}
+                    >
+                      <TextField
+                        style={{ display: 'none' }}
+                        {...register2(`cycles.${index}.id`)}
+                        defaultValue={cycle.id}
+                        label='id'
+                        type='hidden'
+                        InputLabelProps={{
+                          shrink: true
+                        }}
+                      />
+                      <TextField
+                        style={{ display: 'none' }}
+                        {...register2(`cycles.${index}.secId`)}
+                        defaultValue={cycle.secId}
+                        label='secId'
+                        type='hidden'
+                        InputLabelProps={{
+                          shrink: true
+                        }}
+                      />
+                      <Grid key={cycle.secId} container sx={{ border: 0 }} spacing={2}>
+                        <Grid item xs={12} marginTop={5}>
+                          <TextField
+                            {...register2(`cycles.${index}.name`)}
+                            defaultValue={cycle.name}
+                            label='Cycle Name'
+                            fullWidth
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={6} marginTop={5}>
+                          <TextField
+                            {...register2(`cycles.${index}.startDate`)}
+                            defaultValue={cycle.startDate}
+                            label='Start Date'
+                            type='date'
+                            fullWidth
+                            InputLabelProps={{
+                              shrink: true
+                            }}
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={6} marginTop={5}>
+                          <TextField
+                            {...register2(`cycles.${index}.time`)}
+                            defaultValue={cycle.time}
+                            label='Course time'
+                            type='text'
+                            fullWidth
+                            InputLabelProps={{
+                              shrink: true
+                            }}
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={6} marginTop={5}>
+                          <TextField
+                            {...register2(`cycles.${index}.days`)}
+                            defaultValue={cycle.days}
+                            label='Course days'
+                            type='text'
+                            fullWidth
+                            InputLabelProps={{
+                              shrink: true
+                            }}
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={6} marginTop={5}>
+                          <TextField
+                            {...register2(`cycles.${index}.duration`)}
+                            defaultValue={cycle.duration}
+                            label='Course duration'
+                            type='text'
+                            fullWidth
+                            InputLabelProps={{
+                              shrink: true
+                            }}
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={6} marginTop={5}>
+                          <TextField
+                            {...register2(`cycles.${index}.groupLink`)}
+                            defaultValue={cycle.groupLink}
+                            label='Group Link'
+                            type='text'
+                            fullWidth
+                            InputLabelProps={{
+                              shrink: true
+                            }}
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={6} marginTop={5}>
+                          <TextField
+                            {...register2(`cycles.${index}.zoomLink`)}
+                            defaultValue={cycle.zoomLink}
+                            label='Zoom Link'
+                            type='text'
+                            fullWidth
+                            InputLabelProps={{
+                              shrink: true
+                            }}
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={6} marginTop={5}>
+                          <TextField
+                            {...register2(`cycles.${index}.endDate`)}
+                            defaultValue={cycle.endDate}
+                            label='End Date'
+                            type='date'
+                            fullWidth
+                            InputLabelProps={{
+                              shrink: true
+                            }}
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={6} marginTop={5}>
+                          <TextField
+                            {...register2(`cycles.${index}.vacationStart`)}
+                            defaultValue={cycle.vacationStart}
+                            label='Vacation Start'
+                            type='date'
+                            fullWidth
+                            InputLabelProps={{
+                              shrink: true
+                            }}
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={6} marginTop={5}>
+                          <TextField
+                            {...register2(`cycles.${index}.vacationEnd`)}
+                            defaultValue={cycle.vacationEnd}
+                            label='Vacation End'
+                            type='date'
+                            fullWidth
+                            InputLabelProps={{
+                              shrink: true
+                            }}
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={6} marginTop={5}>
+                          <TextField
+                            {...register2(`cycles.${index}.regularPrice`)}
+                            defaultValue={cycle.regularPrice}
+                            label='Regular Price'
+                            fullWidth
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={6} marginTop={5}>
+                          <TextField
+                            {...register2(`cycles.${index}.vipPrice`)}
+                            defaultValue={cycle.vipPrice}
+                            label='VIP Price'
+                            fullWidth
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={6} marginTop={5}>
+                          <TextField
+                            {...register2(`cycles.${index}.discountPrice`)}
+                            defaultValue={cycle.discountPrice}
+                            label='Discount Price'
+                            fullWidth
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={6} marginTop={5}>
+                          <TextField
+                            {...register2(`cycles.${index}.discountVipPrice`)}
+                            defaultValue={cycle.discountVipPrice}
+                            label='Discount VIP Price'
+                            fullWidth
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={6} marginTop={5}>
+                          <TextField
+                            {...register2(`cycles.${index}.discountDate`)}
+                            defaultValue={cycle.discountDate}
+                            label='Discount date start'
+                            type='date'
+                            fullWidth
+                            InputLabelProps={{
+                              shrink: true
+                            }}
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={6} marginTop={5}>
+                          <TextField
+                            {...register2(`cycles.${index}.discountDateEnd`)}
+                            defaultValue={cycle.discountDateEnd}
+                            label='Discount date End'
+                            type='date'
+                            fullWidth
+                            InputLabelProps={{
+                              shrink: true
+                            }}
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={6} marginTop={5}>
+                          <FormControl fullWidth>
+                            <InputLabel id='vipAccess-select-label'>VIP Free Access</InputLabel>
+                            <Select
+                              {...register2(`cycles.${index}.vipAccess`)}
+                              defaultValue={cycle.vipAccess}
+                              labelId='vipAccess-select-label'
+                              label='VIP Free Access'
+                            >
+                              <MenuItem value={'1'}>Active</MenuItem>
+                              <MenuItem value={'0'}>Inactive</MenuItem>
+                            </Select>
+                          </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={6} marginTop={5}>
+                          <TextField
+                            {...register2(`cycles.${index}.retake`)}
+                            defaultValue={cycle.retake}
+                            label='Retake'
+                            fullWidth
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={6} marginTop={5}>
+                          <FormControl fullWidth>
+                            <InputLabel id='status-select-label'>Status</InputLabel>
+                            <Select
+                              {...register2(`cycles.${index}.status`)}
+                              defaultValue={cycle.status}
+                              labelId='status-select-label'
+                              label='Status'
+                            >
+                              <MenuItem value={'1'}>Active</MenuItem>
+                              <MenuItem value={'0'}>Inactive</MenuItem>
+                            </Select>
+                          </FormControl>
+                        </Grid>
+                        <Grid margin={10} item xs={12} sm={6}>
+                          <Button type='submit' size='large' variant='contained' color='success'>
+                            Save Cycle
+                          </Button>
+                        </Grid>
+                        <Grid margin={10} item xs={12} sm={6}>
+                          <Button
+                            type='button'
+                            size='small'
+                            variant='contained'
+                            color='primary'
+                            onClick={e => handleDeleteCycle(cycle.id)}
                           >
-                            <MenuItem value={'1'}>Active</MenuItem>
-                            <MenuItem value={'0'}>Inactive</MenuItem>
-                          </Select>
-                        </FormControl>
+                            Delete Cycle
+                          </Button>
+                        </Grid>
                       </Grid>
-                      <Grid item xs={12} sm={6} marginTop={5}>
-                        <TextField
-                          {...register2(`cycles.${index}.retake`)}
-                          defaultValue={cycle.retake}
-                          label='Retake'
-                          fullWidth
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={6} marginTop={5}>
-                        <FormControl fullWidth>
-                          <InputLabel id='status-select-label'>Status</InputLabel>
-                          <Select
-                            {...register2(`cycles.${index}.status`)}
-                            defaultValue={cycle.status}
-                            labelId='status-select-label'
-                            label='Status'
-                          >
-                            <MenuItem value={'1'}>Active</MenuItem>
-                            <MenuItem value={'0'}>Inactive</MenuItem>
-                          </Select>
-                        </FormControl>
-                      </Grid>
-                      <Grid margin={10} item xs={12} sm={6}>
-                        <Button type='submit' size='large' variant='contained' color='success'>
-                          Save Cycle
-                        </Button>
-                      </Grid>
-                      <Grid margin={10} item xs={12} sm={6}>
-                        <Button
-                          type='button'
-                          size='small'
-                          variant='contained'
-                          color='primary'
-                          onClick={e => handleDeleteCycle(cycle.id)}
-                        >
-                          Delete Cycle
-                        </Button>
-                      </Grid>
-                    </Grid>
-                  </form>
+                    </form>
+
+                    </AccordionDetails>
+                  </Accordion>
+                  </>
                 )
               })
               : null}
 
-            <Button type='button' size='small' variant='contained' color='primary' onClick={handleCreateCycle}>
+            <Button type='button' size='large' variant='contained' color='primary' onClick={handleCreateCycle} sx={{ marginTop: "2rem" }}>
               Create new Cycle
             </Button>
           </Grid>
