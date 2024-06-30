@@ -272,6 +272,7 @@ export default function CreatePostForm() {
 
               {/* Select Category */}
               <Grid item xs={12} sm={6}>
+                <InputLabel>Category</InputLabel>
                 <MultiSelect options={showCategories} value={categoryId} onChange={setCategoryId} labelledBy='Select Category' />
                 <Grid xs={12} sm={12}>
                   {categoryId
