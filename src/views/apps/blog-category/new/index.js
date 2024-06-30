@@ -54,7 +54,7 @@ export default function NewCategoryForm() {
   return (
     <>
       <Card>
-        <CardHeader title='Add New Post' />
+        <CardHeader title='Add New Blog Category' />
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={2}>
