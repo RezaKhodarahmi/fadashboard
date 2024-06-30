@@ -13,6 +13,9 @@ import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import Chip from '@mui/material/Chip'
 
+// ** Icon Imports
+import Icon from 'src/@core/components/icon'
+
 const UserList = () => {
   const router = useRouter()
   const dispatch = useDispatch()
@@ -90,7 +93,7 @@ const UserList = () => {
     router.push('/apps/user/edit/' + id)
   }
 
-  const handelRole = role => {
+  const handleRole = role => {
     switch (role.formattedValue) {
       case '10000':
         return 'Administrator'
@@ -116,7 +119,7 @@ const UserList = () => {
     }
   }
 
-  const handelStatus = status => {
+  const handleStatus = status => {
     switch (status.formattedValue) {
       case '1':
         return 'Active'
@@ -134,35 +137,62 @@ const UserList = () => {
     dispatch(fetchData())
   }, [dispatch])
 
+  const renderStatusCell = (params) => {
+    const { value } = params;
+    const statusText = handleStatus(value);
+  
+    return (
+      <div>
+        {statusText && (
+          <Chip label={ value == '1' ? 'Active' : value == '0' ? 'Inactive' : 'Inactive' } color={ value == '1' ? 'success' : value == '0' ? 'secondary' : 'secondary'} sx={{ width: '100%' } } />
+        )}
+      </div>
+    );
+  };
+
   const columns = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'firstName', headerName: 'First Name', width: 100 },
-    { field: 'lastName', headerName: 'Last Name', width: 100 },
-    { field: 'email', headerName: 'Email', width: 150 },
-    { field: 'phone', headerName: 'Phone', width: 150 },
-    { field: 'role', headerName: 'Role', width: 70, renderCell: handelRole },
+    { field: 'id', headerName: 'ID', flex: 0.03, minWidth: 50, },
+    { field: 'firstName', headerName: 'First Name', flex: 0.06, minWidth: 50, },
+    { field: 'lastName', headerName: 'Last Name', flex: 0.06, minWidth: 50, },
+    { field: 'email', headerName: 'Email', flex: 0.10, minWidth: 50, },
+    { field: 'phone', headerName: 'Phone', flex: 0.08, minWidth: 50, },
+    { field: 'role', headerName: 'Role', flex: 0.05, minWidth: 50, renderCell: handleRole },
     { field: 'vip', headerName: 'VIP', flex: 0.05, minWidth: 50 },
-    { field: 'status', headerName: 'Status', flex: 0.12, minWidth: 50, renderCell: handelStatus },
+    { field: 'status', headerName: 'Status', flex: 0.05, minWidth: 50, renderCell: renderStatusCell },
     {
       field: 'edit',
       headerName: 'Edit',
-      flex: 0.05,
+      flex: 0.06,
+      minWidth: 100,
       renderCell: params => (
-        <Button color='success' variant='contained' onClick={() => handleEdit(params.row.id)}>
-          Edit
-        </Button>
+        <Chip
+          label='Edit'
+          color='warning'
+          variant='outlined'
+          onClick={()=> handleEdit(params.row.id)}
+          icon={<Icon icon='tabler:edit' />}
+          fontSize={14}
+          sx={{ width: '100%' }}
+        />
       )
     },
     {
       field: 'delete',
       headerName: 'Delete',
-      flex: 0.05,
+      flex: 0.06,
+      minWidth: 100,
       renderCell: params => (
-        <Button color='warning' variant='contained' onClick={() => handleDelete(params.row.id)}>
-          Delete
-        </Button>
+        <Chip
+            label='Delete'
+            color='error'
+            variant='outlined'
+            onClick={()=> handleDelete(params.row.id)}
+            icon={<Icon icon='tabler:trash' />}
+            fontSize={14}
+            sx={{ width: '100%' }}
+        />
       )
-    }
+    },
   ]
 
   const filteredUsers = Array.isArray(users?.data?.data)
