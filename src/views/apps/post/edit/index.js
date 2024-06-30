@@ -162,7 +162,7 @@ export default function EditForm(props) {
   return (
     <>
       <Card>
-        <CardHeader title='Add New Post' />
+        <CardHeader title='Edit Post' />
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)}>
             <input type='hidden' {...register('id')} />
@@ -170,7 +170,7 @@ export default function EditForm(props) {
             <Grid container spacing={2}>
               {/* Title */}
               <Grid marginTop={5} item xs={12} sm={12}>
-                <TextField {...register('title')} label='Title' fullWidth />
+                <TextField {...register('title')} label='Title' focused fullWidth />
                 {errors.title && (
                   <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-title-helper'>
                     {errors.title.message}
@@ -180,7 +180,7 @@ export default function EditForm(props) {
 
               {/* Slug */}
               <Grid marginTop={5} item xs={12} sm={12}>
-                <TextField {...register('slug')} label='Slug' fullWidth />
+                <TextField {...register('slug')} label='Slug' focused fullWidth />
                 {errors.slug && (
                   <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-slug-helper'>
                     {errors.slug.message}
@@ -236,7 +236,7 @@ export default function EditForm(props) {
 
               {/* Keywords */}
               <Grid marginTop={5} item xs={12} sm={6}>
-                <TextField {...register('keywords')} label='Keywords' fullWidth />
+                <TextField {...register('keywords')} label='Keywords' focused fullWidth />
                 {errors.keywords && (
                   <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-keywords-helper'>
                     {errors.keywords.message}
@@ -246,7 +246,7 @@ export default function EditForm(props) {
 
               {/* Meta Title */}
               <Grid marginTop={5} item xs={12} sm={12}>
-                <TextField {...register('metaTitle')} label='Meta Title' fullWidth />
+                <TextField {...register('metaTitle')} label='Meta Title' focused fullWidth />
                 {errors.metaTitle && (
                   <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-metaTitle-helper'>
                     {errors.metaTitle.message}
@@ -256,7 +256,7 @@ export default function EditForm(props) {
 
                 {/* Meta Description */}
               <Grid marginTop={5} item xs={12} sm={12}>
-                <TextField {...register('metaDescription')} label='Meta Description' fullWidth />
+                <TextField {...register('metaDescription')} label='Meta Description' focused fullWidth />
                 {errors.metaDescription && (
                   <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-metaDescription-helper'>
                     {errors.metaDescription.message}

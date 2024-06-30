@@ -156,8 +156,8 @@ const UserList = () => {
     { field: 'lastName', headerName: 'Last Name', flex: 0.06, minWidth: 50, },
     { field: 'email', headerName: 'Email', flex: 0.10, minWidth: 50, },
     { field: 'phone', headerName: 'Phone', flex: 0.08, minWidth: 50, },
-    { field: 'role', headerName: 'Role', flex: 0.05, minWidth: 50, renderCell: handleRole },
     { field: 'vip', headerName: 'VIP', flex: 0.05, minWidth: 50 },
+    { field: 'role', headerName: 'Role', flex: 0.05, minWidth: 50, renderCell: handleRole },
     { field: 'status', headerName: 'Status', flex: 0.05, minWidth: 50, renderCell: renderStatusCell },
     {
       field: 'edit',
