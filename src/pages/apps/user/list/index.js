@@ -7,6 +7,12 @@ import Button from '@mui/material/Button'
 import { useRouter } from 'next/router'
 import BASE_URL from 'src/api/BASE_URL'
 
+// ** MUI Imports
+import Box from '@mui/material/Box'
+import Card from '@mui/material/Card'
+import CardHeader from '@mui/material/CardHeader'
+import Chip from '@mui/material/Chip'
+
 const UserList = () => {
   const router = useRouter()
   const dispatch = useDispatch()
@@ -135,12 +141,12 @@ const UserList = () => {
     { field: 'email', headerName: 'Email', width: 150 },
     { field: 'phone', headerName: 'Phone', width: 150 },
     { field: 'role', headerName: 'Role', width: 70, renderCell: handelRole },
-    { field: 'vip', headerName: 'VIP', width: 90 },
-    { field: 'status', headerName: 'Status', width: 90, renderCell: handelStatus },
+    { field: 'vip', headerName: 'VIP', flex: 0.05, minWidth: 50 },
+    { field: 'status', headerName: 'Status', flex: 0.12, minWidth: 50, renderCell: handelStatus },
     {
       field: 'edit',
       headerName: 'Edit',
-      width: 100,
+      flex: 0.05,
       renderCell: params => (
         <Button color='success' variant='contained' onClick={() => handleEdit(params.row.id)}>
           Edit
@@ -150,7 +156,7 @@ const UserList = () => {
     {
       field: 'delete',
       headerName: 'Delete',
-      width: 100,
+      flex: 0.05,
       renderCell: params => (
         <Button color='warning' variant='contained' onClick={() => handleDelete(params.row.id)}>
           Delete
@@ -178,42 +184,52 @@ const UserList = () => {
     : []
 
   return (
-    <div style={{ height: 400, width: '100%' }}>
-      <TextField
-        id='search'
-        variant='outlined'
-        label='Search by email or phone'
-        value={searchTerm}
-        onChange={e => setSearchTerm(e.target.value)}
-      />
-
-      <Select
-        labelId='user-Role-select'
-        id='user-Role-select'
-        defaultValue={'0'}
-        onChange={e => setSerchUserRole(e.target.value)}
-        label='Role'
-      >
-        <MenuItem value={'0'}>All</MenuItem>
-        <MenuItem value={'2000'}>Customer</MenuItem>
-        <MenuItem value={'8000'}>Editor</MenuItem>
-        <MenuItem value={'6000'}>Financial manager</MenuItem>
-        <MenuItem value={'4000'}>Blog manager</MenuItem>
-        <MenuItem value={'10000'}>Administrator</MenuItem>
-      </Select>
-      <Button onClick={vipExport}>Export VIP</Button>
-      <Button onClick={usersExport}>Export All</Button>
+    <>
       {filteredUsers ? (
-        <DataGrid
-          rows={filteredUsers}
-          columns={columns}
-          pageSize={Number(pageSize)}
-          onPageSizeChange={newPageSize => setPageSize(newPageSize)}
-          rowsPerPageOptions={[5, 10, 25, 50, 100]}
-          checkboxSelection
-        />
+        <Card>
+          <CardHeader 
+            title='All Users' 
+            action={
+              <div>
+                <Select
+                  labelId='user-Role-select'
+                  id='user-Role-select'
+                  defaultValue={'0'}
+                  onChange={e => setSerchUserRole(e.target.value)}
+                >
+                  <MenuItem value={'0'}>All</MenuItem>
+                  <MenuItem value={'2000'}>Customer</MenuItem>
+                  <MenuItem value={'8000'}>Editor</MenuItem>
+                  <MenuItem value={'6000'}>Financial manager</MenuItem>
+                  <MenuItem value={'4000'}>Blog manager</MenuItem>
+                  <MenuItem value={'10000'}>Administrator</MenuItem>
+                </Select>
+                <Button onClick={vipExport}>Export VIP</Button>
+                <Button onClick={usersExport}>Export All</Button>
+
+                <TextField
+                  id='search'
+                  variant='outlined'
+                  label='Search'
+                  value={searchTerm}
+                  onChange={e => setSearchTerm(e.target.value)}
+                />
+            </div>
+            }
+          />
+          <Box sx={{ height: 650 }}>
+            <DataGrid
+              rows={filteredUsers}
+              columns={columns}
+              pageSize={Number(pageSize)}
+              onPageSizeChange={newPageSize => setPageSize(newPageSize)}
+              rowsPerPageOptions={[5, 10, 25, 50, 100]}
+              checkboxSelection
+            />
+          </Box>
+        </Card>
       ) : null}
-    </div>
+    </>
   )
 }
 
