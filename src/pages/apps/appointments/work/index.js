@@ -32,11 +32,13 @@ const EDAppointmentList = () => {
 
   const handleShowUser = params => {
     const user = params?.row?.user
+
     return <Link href={`/user/edit/${user.id}`}>{user.firstName + ' ' + user.lastName}</Link>
   }
 
   const handleShowEmployee = params => {
     const employee = params?.row?.employees
+
     return <Link href={`/user/edit/${employee.id}`}>{employee.firstName + ' ' + employee.lastName}</Link>
   }
 
@@ -53,7 +55,8 @@ const EDAppointmentList = () => {
         const searchTermMatch =
           appoint.user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
           appoint.user.firstName.toLowerCase().includes(searchTerm.toLowerCase())
-        return searchTermMatch
+
+          return searchTermMatch
       })
       setFilteredAppointment(filtered)
     }
@@ -63,6 +66,7 @@ const EDAppointmentList = () => {
     const fields = ['id', 'user', 'phone', 'employee', 'time', 'date']
     const opts = { fields }
     const parser = new Parser(opts)
+
     const csvData = filteredAppointment.map(row => ({
       id: row.id,
       user: `${row.user.firstName} ${row.user.lastName}`,
@@ -71,6 +75,7 @@ const EDAppointmentList = () => {
       time: formatTime(row.time),
       date: formatDate(row.date)
     }))
+
     const csv = parser.parse(csvData)
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
     saveAs(blob, 'Work-appointments.csv')

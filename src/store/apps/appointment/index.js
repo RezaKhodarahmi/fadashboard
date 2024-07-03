@@ -42,8 +42,10 @@ export const fetchEDData = () => async dispatch => {
       },
       withCredentials: true
     })
+
     dispatch(getDataSuccess(response.data))
   } catch (error) {
+
     dispatch(getDataFailure(error.message))
   }
 }
@@ -60,6 +62,7 @@ export const fetchEXData = () => async dispatch => {
       },
       withCredentials: true
     })
+
     dispatch(getDataSuccess(response.data))
   } catch (error) {
     dispatch(getDataFailure(error.message))
@@ -149,6 +152,7 @@ export const getEXAppointmentWithId = id => async dispatch => {
     dispatch(getDataFailure(error.message))
   }
 }
+
 export const updateEDAppointment = (params, id) => async dispatch => {
   dispatch(getDataStart())
   try {
@@ -171,6 +175,7 @@ export const updateEDAppointment = (params, id) => async dispatch => {
     dispatch(getDataFailure(error.response?.data?.message))
   }
 }
+
 export const updateEXAppointment = (params, id) => async dispatch => {
   dispatch(getDataStart())
   try {
@@ -193,6 +198,7 @@ export const updateEXAppointment = (params, id) => async dispatch => {
     dispatch(getDataFailure(error.response?.data?.message))
   }
 }
+
 export const deleteEDAppointment = id => async dispatch => {
   dispatch(getDataStart())
   try {
@@ -238,4 +244,5 @@ export const deleteEXAppointment = id => async dispatch => {
     dispatch(getDataFailure(error.message))
   }
 }
+
 export default appointmentSlice.reducer
