@@ -5,7 +5,7 @@ import { Editor } from '@tinymce/tinymce-react'
 import AppConfig from 'src/configs/appConfg'
 import { MultiSelect } from 'react-multi-select-component'
 import * as yup from 'yup'
-import { TextField, Button, Grid, Select, MenuItem, FormControl, InputLabel, Box, Badge } from '@mui/material'
+import { Card, CardHeader, CardContent, TextField, Button, Grid, Select, MenuItem, FormControl, InputLabel, Box, Badge } from '@mui/material'
 import { updatePost } from 'src/store/apps/post'
 import { fetchCategoriesData, deletePostCategory } from 'src/store/apps/blog-category'
 import { deleteTag, newTag } from 'src/store/apps/blog-tag'
@@ -160,185 +160,216 @@ export default function EditForm(props) {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <input type='hidden' {...register('id')} />
+    <>
+      <Card>
+        <CardHeader title='Edit Post' />
+        <CardContent>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <input type='hidden' {...register('id')} />
 
-      <Grid container spacing={2}>
-        <Grid marginTop={5} item xs={12} sm={6}>
-          <TextField {...register('title')} label='Title' fullWidth />
-          {errors.title && (
-            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-title-helper'>
-              {errors.title.message}
-            </FormHelperText>
-          )}
-        </Grid>
-        <Grid marginTop={5} item xs={12} sm={6}>
-          <TextField {...register('slug')} label='Slug' fullWidth />
-          {errors.slug && (
-            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-slug-helper'>
-              {errors.slug.message}
-            </FormHelperText>
-          )}
-        </Grid>
-        <Grid marginTop={5} item xs={12} sm={12}>
-          <InputLabel id='description'>Description</InputLabel>
-          <Controller
-            name='description'
-            labelId='description'
-            control={control}
-            rules={validationSchema.description}
-            render={({ field, fieldState }) => (
-              <Box sx={{ mt: 2 }}>
-                <Editor
-                  apiKey={AppConfig.TINYMCE_KEY}
-                  value={field.value}
-                  onEditorChange={value => field.onChange(value)}
-                  onBlur={field.onBlur}
-                  init={AppConfig.TINYMCE_INIT}
-                />
-                {fieldState.error && <Box sx={{ color: 'red', mt: 1 }}>{fieldState.error.message}</Box>}
-              </Box>
-            )}
-          />
-        </Grid>
-        <Grid marginTop={5} item xs={12} sm={12}>
-          <InputLabel id='description'>Summary</InputLabel>
-          <Controller
-            name='summary'
-            labelId='Summary'
-            control={control}
-            rules={validationSchema.summary}
-            render={({ field, fieldState }) => (
-              <Box sx={{ mt: 2 }}>
-                <Editor
-                  apiKey={AppConfig.TINYMCE_KEY}
-                  value={field.value}
-                  onEditorChange={value => field.onChange(value)}
-                  onBlur={field.onBlur}
-                  init={AppConfig.TINYMCE_INIT}
-                />
-                {fieldState.error && <Box sx={{ color: 'red', mt: 1 }}>{fieldState.error.message}</Box>}
-              </Box>
-            )}
-          />
-        </Grid>
-        <Grid marginTop={5} item xs={12} sm={6}>
-          <TextField {...register('keywords')} label='Keywords' fullWidth />
-          {errors.keywords && (
-            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-keywords-helper'>
-              {errors.keywords.message}
-            </FormHelperText>
-          )}
-        </Grid>
-        <Grid marginTop={5} item xs={12} sm={6}>
-          <TextField {...register('metaTitle')} label='Meta Title' fullWidth />
-          {errors.metaTitle && (
-            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-metaTitle-helper'>
-              {errors.metaTitle.message}
-            </FormHelperText>
-          )}
-        </Grid>
-        <Grid marginTop={5} item xs={12} sm={6}>
-          <TextField {...register('metaDescription')} label='Meta Description' fullWidth />
-          {errors.metaDescription && (
-            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-metaDescription-helper'>
-              {errors.metaDescription.message}
-            </FormHelperText>
-          )}
-        </Grid>
-        <Grid marginTop={5} item xs={12} sm={6}>
-          {published !== null ? (
-            <FormControl fullWidth>
-              <InputLabel id='enroll-select-label'>Published</InputLabel>
-              <Select
-                {...register('published')}
-                defaultValue={published}
-                labelId='published-select-label'
-                label='Status'
-              >
-                <MenuItem value={'1'}>Yes</MenuItem>
-                <MenuItem value={'0'}>No</MenuItem>
-                <MenuItem value={'2'}>Pending review</MenuItem>
-              </Select>
-            </FormControl>
-          ) : null}
-          {errors.published && (
-            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-published-helper'>
-              {errors.published.message}
-            </FormHelperText>
-          )}
-        </Grid>
+            <Grid container spacing={2}>
+              {/* Title */}
+              <Grid marginTop={5} item xs={12} sm={12}>
+                <TextField {...register('title')} label='Title' focused fullWidth />
+                {errors.title && (
+                  <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-title-helper'>
+                    {errors.title.message}
+                  </FormHelperText>
+                )}
+              </Grid>
 
-        {categoryId ? (
-          <Grid marginTop={5} item xs={12} sm={6} style={{ zIndex: '999' }}>
-            <MultiSelect options={showCategories} value={categoryId} onChange={setCategoryId} labelledBy='Select' />
-            <Grid marginTop={5} xs={12} sm={12}>
-              {categoryId?.map(cat => (
-                <Button
-                  color='primary'
-                  key={cat.value}
-                  onClick={e => handelRemoveCategory(cat.value)}
-                  style={{ backgroundColor: 'rgb(115 100 240 / 11%)', margin: '0 5px' }}
-                >
-                  {cat.label} <span className='badge  badge-sm' style={{ margin: '10px' }}></span>
-                  <Badge badgeContent={'x'} color='primary' />
-                </Button>
-              ))}
-            </Grid>
-          </Grid>
-        ) : null}
-        {authorId ? (
-          <Grid marginTop={5} item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel id='authorId-select-label'>Author</InputLabel>
-              <Select {...register('authorId')} defaultValue={authorId} labelId='authorId-select-label' label='Author'>
-                <MenuItem value={'0'}>Select Author</MenuItem>
-                {users
-                  ? users?.data?.data?.map(user => (
-                      <MenuItem key={user.id} value={user.id}>
-                        {user.firstName + ' ' + user.lastName}
-                      </MenuItem>
+              {/* Slug */}
+              <Grid marginTop={5} item xs={12} sm={12}>
+                <TextField {...register('slug')} label='Slug' focused fullWidth />
+                {errors.slug && (
+                  <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-slug-helper'>
+                    {errors.slug.message}
+                  </FormHelperText>
+                )}
+              </Grid>
+
+              {/* Description */}
+              <Grid marginTop={5} item xs={12} sm={12}>
+                <InputLabel id='description'>Description</InputLabel>
+                <Controller
+                  name='description'
+                  labelId='description'
+                  control={control}
+                  rules={validationSchema.description}
+                  render={({ field, fieldState }) => (
+                    <Box sx={{ mt: 2 }}>
+                      <Editor
+                        apiKey={AppConfig.TINYMCE_KEY}
+                        value={field.value}
+                        onEditorChange={value => field.onChange(value)}
+                        onBlur={field.onBlur}
+                        init={AppConfig.TINYMCE_INIT}
+                      />
+                      {fieldState.error && <Box sx={{ color: 'red', mt: 1 }}>{fieldState.error.message}</Box>}
+                    </Box>
+                  )}
+                />
+              </Grid>
+
+              {/* Summary */}
+              <Grid marginTop={5} item xs={12} sm={12}>
+                <InputLabel id='description'>Summary</InputLabel>
+                <Controller
+                  name='summary'
+                  labelId='Summary'
+                  control={control}
+                  rules={validationSchema.summary}
+                  render={({ field, fieldState }) => (
+                    <Box sx={{ mt: 2 }}>
+                      <Editor
+                        apiKey={AppConfig.TINYMCE_KEY}
+                        value={field.value}
+                        onEditorChange={value => field.onChange(value)}
+                        onBlur={field.onBlur}
+                        init={AppConfig.TINYMCE_INIT}
+                      />
+                      {fieldState.error && <Box sx={{ color: 'red', mt: 1 }}>{fieldState.error.message}</Box>}
+                    </Box>
+                  )}
+                />
+              </Grid>
+
+              {/* Keywords */}
+              <Grid marginTop={5} item xs={12} sm={6}>
+                <TextField {...register('keywords')} label='Keywords' focused fullWidth />
+                {errors.keywords && (
+                  <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-keywords-helper'>
+                    {errors.keywords.message}
+                  </FormHelperText>
+                )}
+              </Grid>
+
+              {/* Meta Title */}
+              <Grid marginTop={5} item xs={12} sm={12}>
+                <TextField {...register('metaTitle')} label='Meta Title' focused fullWidth />
+                {errors.metaTitle && (
+                  <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-metaTitle-helper'>
+                    {errors.metaTitle.message}
+                  </FormHelperText>
+                )}
+              </Grid>
+
+                {/* Meta Description */}
+              <Grid marginTop={5} item xs={12} sm={12}>
+                <TextField {...register('metaDescription')} label='Meta Description' focused fullWidth />
+                {errors.metaDescription && (
+                  <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-metaDescription-helper'>
+                    {errors.metaDescription.message}
+                  </FormHelperText>
+                )}
+              </Grid>
+
+              {/* Author */}
+              {authorId ? (
+                <Grid marginTop={5} item xs={12} sm={3}>
+                  <FormControl fullWidth>
+                    <InputLabel id='authorId-select-label'>Author</InputLabel>
+                    <Select {...register('authorId')} defaultValue={authorId} labelId='authorId-select-label' label='Author'>
+                      <MenuItem value={'0'}>Select Author</MenuItem>
+                      {users
+                        ? users?.data?.data?.map(user => (
+                          <MenuItem key={user.id} value={user.id}>
+                            {user.firstName + ' ' + user.lastName}
+                          </MenuItem>
+                        ))
+                        : null}
+                    </Select>
+                  </FormControl>
+
+                  {errors.authorId && (
+                    <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-authorId-helper'>
+                      {errors.authorId.message}
+                    </FormHelperText>
+                  )}
+                </Grid>
+              ) : null}
+              <Grid item xs={12} sm={9}></Grid>
+
+              {/* Publishing Status */}
+              <Grid marginTop={5} item xs={12} sm={3}>
+                {published !== null ? (
+                  <FormControl fullWidth>
+                    <InputLabel id='enroll-select-label'>Status</InputLabel>
+                    <Select
+                      {...register('published')}
+                      defaultValue={published}
+                      labelId='published-select-label'
+                      label='Status'
+                    >
+                      <MenuItem value={'1'}>Yes</MenuItem>
+                      <MenuItem value={'0'}>No</MenuItem>
+                      <MenuItem value={'2'}>Pending review</MenuItem>
+                    </Select>
+                  </FormControl>
+                ) : null}
+                {errors.published && (
+                  <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-published-helper'>
+                    {errors.published.message}
+                  </FormHelperText>
+                )}
+              </Grid>
+              <Grid item xs={12} sm={9}></Grid>
+
+              {/* Category */}
+              {categoryId ? (
+                <Grid marginTop={5} item xs={12} sm={6} style={{ zIndex: '999' }}>
+                  <InputLabel>Category</InputLabel>
+                  <MultiSelect options={showCategories} value={categoryId} onChange={setCategoryId} labelledBy='Select' />
+                  <Grid marginTop={5} xs={12} sm={12}>
+                    {categoryId?.map(cat => (
+                      <Button
+                        color='primary'
+                        key={cat.value}
+                        onClick={e => handelRemoveCategory(cat.value)}
+                        style={{ backgroundColor: 'rgb(115 100 240 / 11%)', margin: '0 5px' }}
+                      >
+                        {cat.label} <span className='badge  badge-sm' style={{ margin: '10px' }}></span>
+                        <Badge badgeContent={'x'} color='primary' />
+                      </Button>
+                    ))}
+                  </Grid>
+                </Grid>
+              ) : null}
+              <Grid item xs={12} sm={6}></Grid>
+
+              {/* Tags */}
+              <Grid marginTop={5} item xs={12} sm={12}>
+                <TextField onChange={handleTagsInputChange} onKeyPress={handleKeyPressTags} label='Post tags' fullWidth />
+                <Grid marginTop={5} xs={12} sm={12}>
+                  {tags
+                    ? tags?.map(tag => (
+                      <Button
+                        color='primary'
+                        key={tag.id}
+                        onClick={e => handelRemoveTag(tag.id)}
+                        style={{ backgroundColor: 'rgb(115 100 240 / 11%)', margin: '0 5px' }}
+                      >
+                        {tag.title} <span className='badge  badge-sm' style={{ margin: '10px' }}></span>
+                        <Badge badgeContent={'x'} color='primary' />
+                      </Button>
                     ))
-                  : null}
-              </Select>
-            </FormControl>
+                    : null}
+                </Grid>
+              </Grid>
+              <Grid marginTop={5} item xs={12} sm={6} flex>
+                <img alt='Image' src={imageUrl} width='100' />
+                <input type='file' name='image' onChange={handleFileChange} />
+              </Grid>
+            </Grid>
 
-            {errors.authorId && (
-              <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-authorId-helper'>
-                {errors.authorId.message}
-              </FormHelperText>
-            )}
-          </Grid>
-        ) : null}
-        <Grid marginTop={5} item xs={12} sm={6}>
-          <TextField onChange={handleTagsInputChange} onKeyPress={handleKeyPressTags} label='Post tags' fullWidth />
-          <Grid marginTop={5} xs={12} sm={12}>
-            {tags
-              ? tags?.map(tag => (
-                  <Button
-                    color='primary'
-                    key={tag.id}
-                    onClick={e => handelRemoveTag(tag.id)}
-                    style={{ backgroundColor: 'rgb(115 100 240 / 11%)', margin: '0 5px' }}
-                  >
-                    {tag.title} <span className='badge  badge-sm' style={{ margin: '10px' }}></span>
-                    <Badge badgeContent={'x'} color='primary' />
-                  </Button>
-                ))
-              : null}
-          </Grid>
-        </Grid>
-        <Grid marginTop={5} item xs={12} sm={6} flex>
-          <img alt='Image' src={imageUrl} width='100' />
-          <input type='file' name='image' onChange={handleFileChange} />
-        </Grid>
-      </Grid>
-
-      <Grid marginTop={10} item xs={12} sm={6}>
-        <Button type='submit' size='large' variant='contained' color='success'>
-          Update
-        </Button>
-      </Grid>
-    </form>
+            <Grid marginTop={10} item xs={12} sm={6}>
+              <Button type='submit' size='large' variant='contained' color='success'>
+                Update
+              </Button>
+            </Grid>
+          </form>
+        </CardContent>
+      </Card>
+    </>
   )
 }

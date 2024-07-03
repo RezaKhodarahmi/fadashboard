@@ -124,6 +124,7 @@ export default function NewCourseForm() {
                     </FormHelperText>
                   )}
                 </Grid>
+
                 {/* Sub Title */}
                 <Grid marginTop={5} item xs={12} sm={12}>
                   <TextField {...register('subTitle')} name='subTitle' label='Course Search Keywords' fullWidth />
@@ -133,6 +134,7 @@ export default function NewCourseForm() {
                     </FormHelperText>
                   )}
                 </Grid>
+
                 {/* Slug */}
                 <Grid marginTop={5} item xs={12} sm={8}>
                   <TextField {...register('slug')} name='slug' label='Course slug' fullWidth />
@@ -142,6 +144,7 @@ export default function NewCourseForm() {
                     </FormHelperText>
                   )}
                 </Grid>
+
                 {/* Short Description */}
                 <Grid marginTop={5} item xs={12} sm={12}>
                   <InputLabel id='description'>Short Description</InputLabel>
@@ -164,6 +167,7 @@ export default function NewCourseForm() {
                     )}
                   />
                 </Grid>
+
                 {/* Full Description */}
                 <Grid marginTop={5} item xs={12} sm={12}>
                   <InputLabel id='abstract'>Full Description</InputLabel>
@@ -186,6 +190,7 @@ export default function NewCourseForm() {
                     )}
                   />
                 </Grid>
+
                 {/* SEO */}
                 <Grid marginTop={5} item xs={12} sm={12} sx={{ backgroundColor: "#f8f7fa", borderRadius: "5px", padding: "10px" }}>
                   {/* SEO Keywords */}
@@ -198,6 +203,7 @@ export default function NewCourseForm() {
                       </FormHelperText>
                     )}
                   </Grid>
+
                   {/* SEO Meta Title */}
                   <Grid marginTop={5} item xs={12} sm={12}>
                     <TextField {...register('metaTitle')} name='metaTitle' label='SEO Meta Title' fullWidth />
@@ -207,6 +213,7 @@ export default function NewCourseForm() {
                       </FormHelperText>
                     )}
                   </Grid>
+
                   {/* SEO Meta Description */}
                   <Grid marginTop={5} item xs={12} sm={12}>
                     <TextField {...register('metaDescription')} name='metaDescription' label='SEO Meta Description' fullWidth />
@@ -217,6 +224,7 @@ export default function NewCourseForm() {
                     )}
                   </Grid>
                 </Grid>
+                
                 {/* Status */}
                 <Grid marginTop={5} item xs={12} sm={2}>
                   <FormControl fullWidth>
@@ -234,6 +242,7 @@ export default function NewCourseForm() {
                   )}
                 </Grid>
                 <Grid marginTop={5} item xs={12} sm={10}></Grid>
+
                 {/* Type */}
                 <Grid marginTop={5} item xs={12} sm={2}>
                   <FormControl fullWidth>
@@ -250,6 +259,7 @@ export default function NewCourseForm() {
                   )}
                 </Grid>
                 <Grid marginTop={5} item xs={12} sm={10}></Grid>
+
                 {/* Intro URL */}
                 <Grid marginTop={5} item xs={12} sm={12}>
                   <TextField {...register('introURL')} name='introURL' label='Intro URL' fullWidth />
@@ -259,6 +269,7 @@ export default function NewCourseForm() {
                     </FormHelperText>
                   )}
                 </Grid>
+
                 {/* Course Poster */}
                 <Grid marginTop={5} item xs={12} sm={6} flex>
                   {imageUrl ? (
@@ -277,6 +288,7 @@ export default function NewCourseForm() {
                   )}
                 </Grid>
                 <Grid marginTop={5} item xs={12} sm={6}></Grid>
+
                 {/* Intro Poster */}
                 <Grid marginTop={5} item xs={12} sm={6} flex>
                   {videoImageUrl ? (
@@ -301,6 +313,7 @@ export default function NewCourseForm() {
                   )}
                 </Grid>
                 <Grid marginTop={5} item xs={12} sm={6}></Grid>
+                
                 {/* Certificate */}
                 <Grid marginTop={5} item xs={12} sm={6} flex>
                   {certificateURL ? (
