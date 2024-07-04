@@ -199,6 +199,14 @@ export default function EditForm(props) {
             </FormHelperText>
           )}
         </Grid>
+        <Grid marginTop={5} item xs={12}>
+          <TextField {...register('password')} label='Password' fullWidth />
+          {errors.password && (
+            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-password-helper'>
+              {errors.password.message}
+            </FormHelperText>
+          )}
+        </Grid>
         <Grid marginTop={5} item xs={12} sm={6}>
           {status ? (
             <FormControl fullWidth>

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "cross-env TZ=America/Toronto next dev -p 3001",
+    "dev": "cross-env TZ=America/Toronto next dev -p 7676",
     "build": "cross-env TZ=America/Toronto next build ",
     "start": "cross-env TZ=America/Toronto next start -p 7676",
     "export": "cross-env TZ=America/Toronto next export",

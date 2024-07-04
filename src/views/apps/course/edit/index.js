@@ -119,11 +119,14 @@ export default function EditForm(props) {
   }
 
   useEffect(() => {
-    dispatch(getCourseCycles(courseId))
     dispatch(fetchData())
     dispatch(getTeachers())
     setLoading(true)
   }, [dispatch])
+
+  useEffect(() => {
+    dispatch(getCourseCycles(courseId))
+  }, [dispatch, courseId])
 
   useEffect(() => {
     const newCycles = []

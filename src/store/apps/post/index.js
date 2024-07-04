@@ -30,23 +30,34 @@ const postSlice = createSlice({
 
 export const { getDataStart, getDataSuccess, getDataFailure } = postSlice.actions
 
-export const fetchPostsData = () => async dispatch => {
-  dispatch(getDataStart())
-  try {
-    const token = window.localStorage.getItem('accessToken')
+export const fetchPostsData =
+  (page = 1, limit = 25, searchTerm = '') =>
+  async dispatch => {
+    dispatch(getDataStart())
+    try {
+      const token = window.localStorage.getItem('accessToken')
 
-    const response = await axios.get(`${BASE_URL}/posts`, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      },
-      withCredentials: true
-    })
-    dispatch(getDataSuccess(response.data))
-  } catch (error) {
-    dispatch(getDataFailure(error.message))
+      const response = await axios.get(`${BASE_URL}/posts`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        withCredentials: true,
+        params: { page, limit, searchTerm } // Pass page, limit, and searchTerm as query params
+      })
+
+      dispatch(
+        getDataSuccess({
+          data: response.data.data,
+          total: response.data.total, // Pass total count to the reducer
+          page,
+          limit
+        })
+      )
+    } catch (error) {
+      dispatch(getDataFailure(error.message))
+    }
   }
-}
 
 export const newPost = params => async dispatch => {
   dispatch(getDataStart())
