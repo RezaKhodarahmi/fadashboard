@@ -82,10 +82,10 @@ export const getTestWithId = (id, page, limit) => async dispatch => {
       },
       withCredentials: true
     })
+
     dispatch(getDataSuccess(response.data))
   } catch (error) {
     toast.error('Error! message:' + error?.response?.data?.message)
-
     dispatch(getDataFailure(error.message))
   }
 }

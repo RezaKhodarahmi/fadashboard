@@ -39,20 +39,21 @@ export default function EditForm({ setNewPage, ...props }) {
 
   const dispatch = useDispatch()
 
-  //Set state
+  // Set state
   const [needEnroll, setNeedEnroll] = useState(null)
   const [status, setStatus] = useState(null)
   const [courseId, setCourseId] = useState(null)
   const [testId, setTestId] = useState(null)
   const [cycleId, setCycleId] = useState(null)
   const [file, setFile] = useState(null)
+  const [testQuestions, setTestQuestions] = useState([])
   const courses = useSelector(state => state.course)
   const cycles = useSelector(state => state.cycleListReducer)
 
   useEffect(() => {
     dispatch(fetchData())
     dispatch(fetchCycleData())
-  }, [])
+  }, [dispatch])
 
   useEffect(() => {
     if (props.testData) {
@@ -62,11 +63,22 @@ export default function EditForm({ setNewPage, ...props }) {
       setCycleId(props.testData.cycleId)
       setTestId(props.testData.id)
     }
-  }, [props])
+  }, [props.testData, reset])
 
   useEffect(() => {
-    cycles.data?.data?.filter(cycle => cycle.id == cycleId).map(cycle => setCourseId(cycle.courseId))
-  }, [cycleId])
+    if (props.testQuestions) {
+      setTestQuestions(props.testQuestions)
+    }
+  }, [props.testQuestions])
+
+  useEffect(() => {
+    if (cycleId) {
+      const cycle = cycles.data?.data?.find(cycle => cycle.id === cycleId)
+      if (cycle) {
+        setCourseId(cycle.courseId)
+      }
+    }
+  }, [cycleId, cycles.data?.data])
 
   const handleFileChange = event => {
     const file = event.target.files[0]
@@ -90,7 +102,7 @@ export default function EditForm({ setNewPage, ...props }) {
     dispatch(updateTest(data))
   }
 
-  const handelCourseSelect = e => {
+  const handleCourseSelect = e => {
     setCourseId(e.target.value)
   }
 
@@ -141,12 +153,13 @@ export default function EditForm({ setNewPage, ...props }) {
             )}
           </Grid>
           <Grid marginTop={5} item xs={12} sm={6}>
-            {needEnroll ? (
+            {needEnroll !== null && (
               <FormControl fullWidth>
                 <InputLabel id='enroll-select-label'>Need Enroll?</InputLabel>
                 <Select
                   {...register('needEnroll')}
-                  defaultValue={needEnroll}
+                  value={needEnroll}
+                  onChange={e => setNeedEnroll(e.target.value)}
                   labelId='enroll-select-label'
                   label='Need Enroll'
                 >
@@ -154,7 +167,7 @@ export default function EditForm({ setNewPage, ...props }) {
                   <MenuItem value={'0'}>No</MenuItem>
                 </Select>
               </FormControl>
-            ) : null}
+            )}
             {errors.needEnroll && (
               <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-needEnroll-helper'>
                 {errors.needEnroll.message}
@@ -162,15 +175,21 @@ export default function EditForm({ setNewPage, ...props }) {
             )}
           </Grid>
           <Grid marginTop={5} item xs={12} sm={6}>
-            {status ? (
+            {status !== null && (
               <FormControl fullWidth>
                 <InputLabel id='status-select-label'>Status</InputLabel>
-                <Select {...register('status')} defaultValue={status} labelId='status-select-label' label='Status'>
+                <Select
+                  {...register('status')}
+                  value={status}
+                  onChange={e => setStatus(e.target.value)}
+                  labelId='status-select-label'
+                  label='Status'
+                >
                   <MenuItem value={'1'}>Active</MenuItem>
                   <MenuItem value={'0'}>Inactive</MenuItem>
                 </Select>
               </FormControl>
-            ) : null}
+            )}
             {errors.status && (
               <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-status-helper'>
                 {errors.status.message}
@@ -187,15 +206,14 @@ export default function EditForm({ setNewPage, ...props }) {
           </Grid>
 
           <Grid marginTop={5} item xs={12} sm={6}>
-            {courseId && courses.data.data ? (
+            {courseId && courses.data.data && (
               <FormControl fullWidth>
-                <InputLabel id='courses-select-label'>Selet Course</InputLabel>
+                <InputLabel id='courses-select-label'>Select Course</InputLabel>
                 <Select
                   {...register('courseId')}
-                  labelId='enroll-select-label'
-                  label='Need Enroll'
-                  defaultValue={courseId}
-                  onChange={e => handelCourseSelect(e)}
+                  labelId='courses-select-label'
+                  value={courseId}
+                  onChange={e => handleCourseSelect(e)}
                 >
                   {courses.data.data?.map(course => (
                     <MenuItem key={course.id} value={course.id}>
@@ -210,20 +228,21 @@ export default function EditForm({ setNewPage, ...props }) {
                   ))}
                 </Select>
               </FormControl>
-            ) : null}
+            )}
           </Grid>
-          {cycleId ? (
+          {cycleId && (
             <Grid marginTop={5} item xs={12} sm={6}>
               <FormControl fullWidth>
                 <InputLabel id='cycle-select-label'>Select Course Cycle</InputLabel>
                 <Select
                   {...register('cycleId')}
-                  defaultValue={cycleId}
+                  value={cycleId}
+                  onChange={e => setCycleId(e.target.value)}
                   labelId='cycle-select-label'
                   label='Select Cycle'
                 >
                   {cycles.data?.data
-                    ?.filter(cycle => cycle.courseId == courseId)
+                    ?.filter(cycle => cycle.courseId === courseId)
                     .map(cycle => (
                       <MenuItem key={cycle.id} value={cycle.id}>
                         {cycle.name}
@@ -232,7 +251,7 @@ export default function EditForm({ setNewPage, ...props }) {
                 </Select>
               </FormControl>
             </Grid>
-          ) : null}
+          )}
           <Grid marginTop={5} item xs={12} sm={12}>
             <InputLabel id='Agenda'>Agenda</InputLabel>
             <Controller
@@ -255,9 +274,11 @@ export default function EditForm({ setNewPage, ...props }) {
             />
           </Grid>
         </Grid>
-        <Questions testId={testId} Questions={props?.testQuestions} />
+        <Questions testId={testId} Questions={testQuestions} />
         <Grid marginTop={10} item xs={12} sm={6}>
-          {/* <Button type='submit' size='large' variant='contained' color='success'></Button> */}
+          <Button type='submit' size='large' variant='contained' color='success'>
+            Save
+          </Button>
         </Grid>
       </form>
       <div className='importInput'>
