@@ -4,7 +4,7 @@ import { Box, Button, TextField, Typography, IconButton } from '@mui/material'
 import { Editor } from '@tinymce/tinymce-react'
 import DeleteIcon from '@mui/icons-material/Delete'
 import AppConfig from 'src/configs/appConfg'
-import { BASE_URL } from 'src/api/BASE_URL'
+import BASE_URL from 'src/api/BASE_URL'
 
 const FaqForm = ({ courseId }) => {
   const [faqs, setFaqs] = useState([{ id: null, title: '', description: '' }])
