@@ -4,6 +4,7 @@ import { Box, Button, TextField, Typography, IconButton } from '@mui/material'
 import { Editor } from '@tinymce/tinymce-react'
 import DeleteIcon from '@mui/icons-material/Delete'
 import AppConfig from 'src/configs/appConfg'
+import { BASE_URL } from 'src/api/BASE_URL'
 
 const FaqForm = ({ courseId }) => {
   const [faqs, setFaqs] = useState([{ id: null, title: '', description: '' }])
@@ -13,11 +14,12 @@ const FaqForm = ({ courseId }) => {
     // Fetch existing FAQs when component mounts
     const fetchFaqs = async () => {
       try {
-        const response = await axios.get(`http://localhost:3200/api/v1/faq?courseId=${courseId}`, {
+        const response = await axios.get(`${BASE_URL}/faq?courseId=${courseId}`, {
           headers: {
             Authorization: `Bearer ${accessToken}`
           }
         })
+
         if (response.data && response.data.data) {
           setFaqs(response.data.data)
         }
@@ -49,7 +51,7 @@ const FaqForm = ({ courseId }) => {
   const handleDelete = async (index, faqId) => {
     if (faqId) {
       try {
-        await axios.delete(`http://localhost:3200/api/v1/faq/${faqId}`, {
+        await axios.delete(`${BASE_URL}/faq/${faqId}`, {
           headers: {
             Authorization: `Bearer ${accessToken}`
           }
@@ -58,16 +60,18 @@ const FaqForm = ({ courseId }) => {
         console.error('Error deleting FAQ:', error)
       }
     }
+
     const newFaqs = faqs.filter((_, i) => i !== index)
     setFaqs(newFaqs)
   }
 
   const handleSubmit = async event => {
     event.preventDefault()
+
     const faqsWithCourseId = faqs.map(faq => ({ ...faq, courseId }))
     try {
       await axios.post(
-        'http://localhost:3200/api/v1/faq/update',
+        `${BASE_URL}/faq/update`,
         { faqs: faqsWithCourseId },
         {
           headers: {
@@ -75,10 +79,10 @@ const FaqForm = ({ courseId }) => {
           }
         }
       )
+
       // Reset form or show success message
     } catch (error) {
       console.error('Error creating or updating FAQs:', error)
-      // Show error message
     }
   }
 
@@ -87,6 +91,7 @@ const FaqForm = ({ courseId }) => {
       <Typography variant='h4' gutterBottom>
         Add FAQs
       </Typography>
+
       {faqs.map((faq, index) => (
         <Box key={index} sx={{ mb: 3 }}>
           <TextField
