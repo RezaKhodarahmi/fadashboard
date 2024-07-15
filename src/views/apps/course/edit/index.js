@@ -4,6 +4,7 @@ import { useForm, Controller } from 'react-hook-form'
 
 import FormHelperText from '@mui/material/FormHelperText'
 
+import FaqForm from '../faq'
 import { Editor } from '@tinymce/tinymce-react'
 import * as yup from 'yup'
 import { useRouter } from 'next/router'
@@ -928,8 +929,10 @@ export default function EditForm(props) {
               Create new Cycle
             </Button>
           </Grid>
+          <FaqForm courseId={courseId} />
         </CardContent>
       </Card>
+
     </>
   )
 }
