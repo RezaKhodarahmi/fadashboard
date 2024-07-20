@@ -84,7 +84,7 @@ export default function EditForm(props) {
 
   // Set state
   const [status, setStatus] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [accessAll, setAccess] = useState(null)
   const [courseId, setCourseId] = useState(null)
   const [type, setType] = useState(null)
@@ -122,12 +122,7 @@ export default function EditForm(props) {
   useEffect(() => {
     dispatch(fetchData())
     dispatch(getTeachers())
-    setLoading(true)
   }, [dispatch])
-
-  useEffect(() => {
-    dispatch(getCourseCycles(courseId))
-  }, [dispatch, courseId])
 
   useEffect(() => {
     const newCycles = []
@@ -220,6 +215,12 @@ export default function EditForm(props) {
     setCycles(newCycles)
     setCycleSubmit(true)
   }
+
+  useEffect(() => {
+    if (courseId != null) {
+      dispatch(getCourseCycles(courseId))
+    }
+  }, [dispatch, courseId])
 
   useEffect(() => {
     if (cycles.length >= 1 && cycleSubmit) {
@@ -819,9 +820,25 @@ export default function EditForm(props) {
                               </Grid>
                               <Grid item xs={12} sm={6} marginTop={5}>
                                 <TextField
+                                  {...register2(`cycles.${index}.vipPLPrice`)}
+                                  defaultValue={cycle.vipPLPrice}
+                                  label='VIP PL Price'
+                                  fullWidth
+                                />
+                              </Grid>
+                              <Grid item xs={12} sm={6} marginTop={5}>
+                                <TextField
                                   {...register2(`cycles.${index}.discountPrice`)}
                                   defaultValue={cycle.discountPrice}
                                   label='Discount Price'
+                                  fullWidth
+                                />
+                              </Grid>
+                              <Grid item xs={12} sm={6} marginTop={5}>
+                                <TextField
+                                  {...register2(`cycles.${index}.discountVipPLPrice`)}
+                                  defaultValue={cycle.discountVipPLPrice}
+                                  label='Discount VIP PL Price'
                                   fullWidth
                                 />
                               </Grid>
@@ -932,7 +949,6 @@ export default function EditForm(props) {
           <FaqForm courseId={courseId} />
         </CardContent>
       </Card>
-
     </>
   )
 }

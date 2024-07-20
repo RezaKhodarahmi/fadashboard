@@ -3,6 +3,7 @@ import axios from 'axios'
 import { Box, Button, TextField, Typography, IconButton } from '@mui/material'
 import { Editor } from '@tinymce/tinymce-react'
 import DeleteIcon from '@mui/icons-material/Delete'
+import { toast, Toaster } from 'react-hot-toast'
 import AppConfig from 'src/configs/appConfg'
 import BASE_URL from 'src/api/BASE_URL'
 
@@ -19,6 +20,7 @@ const FaqForm = ({ courseId }) => {
             Authorization: `Bearer ${accessToken}`
           }
         })
+        console.log(response)
 
         if (response.data && response.data.data) {
           setFaqs(response.data.data)
@@ -56,8 +58,10 @@ const FaqForm = ({ courseId }) => {
             Authorization: `Bearer ${accessToken}`
           }
         })
+        toast.success('FAQ deleted successfully')
       } catch (error) {
         console.error('Error deleting FAQ:', error)
+        toast.error('Error deleting FAQ')
       }
     }
 
@@ -80,9 +84,10 @@ const FaqForm = ({ courseId }) => {
         }
       )
 
-      // Reset form or show success message
+      toast.success('FAQs updated successfully')
     } catch (error) {
       console.error('Error creating or updating FAQs:', error)
+      toast.error('Error creating or updating FAQs')
     }
   }
 
@@ -124,6 +129,7 @@ const FaqForm = ({ courseId }) => {
       <Button type='submit' variant='contained' color='primary'>
         Submit
       </Button>
+      <Toaster />
     </Box>
   )
 }
