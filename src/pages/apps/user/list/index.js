@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { DataGrid } from '@mui/x-data-grid'
 import { fetchData, deleteUser } from 'src/store/apps/user'
-import { TextField, Select, MenuItem, InputLabel } from '@mui/material'
+import { TextField, Select, MenuItem } from '@mui/material'
+import { adminLogin } from 'src/store/apps/admin-login'
 import Button from '@mui/material/Button'
 import { useRouter } from 'next/router'
 import BASE_URL from 'src/api/BASE_URL'
@@ -20,6 +21,7 @@ const UserList = () => {
   const router = useRouter()
   const dispatch = useDispatch()
   const users = useSelector(state => state.user)
+  const adminLoginRes = useSelector(state => state.adminLogin)
   const [searchTerm, setSearchTerm] = useState('')
   const [serchUserRole, setSerchUserRole] = useState('0')
   const [pageSize, setPageSize] = useState(10)
@@ -29,27 +31,21 @@ const UserList = () => {
     const token = localStorage.getItem('accessToken')
     const URL = `${BASE_URL}/users/download/vip?Authorization=Bearer+${token}`
 
-    // Create a new tab and start loading the URL
     const newTab = window.open()
 
-    // Create a form element
     const form = document.createElement('form')
     form.method = 'GET'
     form.action = URL
     form.target = newTab ? newTab.name : '_blank'
 
-    // Create an input element to hold the bearer token
     const input = document.createElement('input')
     input.type = 'hidden'
     input.name = 'Authorization'
     input.value = `Bearer ${token}`
     form.appendChild(input)
 
-    // Append the form to the body and submit it
     document.body.appendChild(form)
     form.submit()
-
-    // Remove the form from the body after submission
     document.body.removeChild(form)
   }
 
@@ -57,27 +53,21 @@ const UserList = () => {
     const token = localStorage.getItem('accessToken')
     const URL = `${BASE_URL}/users/download/all?Authorization=Bearer+${token}`
 
-    // Create a new tab and start loading the URL
     const newTab = window.open()
 
-    // Create a form element
     const form = document.createElement('form')
     form.method = 'GET'
     form.action = URL
     form.target = newTab ? newTab.name : '_blank'
 
-    // Create an input element to hold the bearer token
     const input = document.createElement('input')
     input.type = 'hidden'
     input.name = 'Authorization'
     input.value = `Bearer ${token}`
     form.appendChild(input)
 
-    // Append the form to the body and submit it
     document.body.appendChild(form)
     form.submit()
-
-    // Remove the form from the body after submission
     document.body.removeChild(form)
   }
 
@@ -89,6 +79,28 @@ const UserList = () => {
     }
   }
 
+  useEffect(() => {
+    if (adminLoginRes?.data?.data) {
+      const { accessToken, refreshToken } = adminLoginRes.data
+      const e = window.open('http://localhost:8585', '_blank')
+
+      if (newWindow) {
+        const handleMessage = event => {
+          if (event.origin === 'http://localhost:8585' && event.data === 'ready') {
+            newWindow.postMessage({ accessToken, refreshToken }, 'http://localhost:8585')
+            window.removeEventListener('message', handleMessage)
+          }
+        }
+
+        window.addEventListener('message', handleMessage)
+      }
+    }
+  }, [adminLoginRes])
+
+  const handleLogin = email => {
+    dispatch(adminLogin({ email }))
+  }
+
   const handleEdit = id => {
     router.push('/apps/user/edit/' + id)
   }
@@ -97,25 +109,17 @@ const UserList = () => {
     switch (role.formattedValue) {
       case '10000':
         return 'Administrator'
-        break
       case '8000':
         return 'Editor'
-        break
       case '6000':
         return 'Financial manager'
-        break
       case '4000':
         return 'Blog manager'
-        break
       case '2000':
-        return 'Customer'
-        break
       case '1000':
         return 'Customer'
-        break
       default:
         return 'client'
-        break
     }
   }
 
@@ -123,13 +127,9 @@ const UserList = () => {
     switch (status.formattedValue) {
       case '1':
         return 'Active'
-        break
       case '0':
-        return 'Inactive'
-        break
       default:
         return 'Inactive'
-        break
     }
   }
 
@@ -137,28 +137,43 @@ const UserList = () => {
     dispatch(fetchData())
   }, [dispatch])
 
-  const renderStatusCell = (params) => {
-    const { value } = params;
-    const statusText = handleStatus(value);
-  
+  const renderStatusCell = params => {
+    const { value } = params
+    const statusText = handleStatus(value)
+
     return (
       <div>
         {statusText && (
-          <Chip label={ value == '1' ? 'Active' : value == '0' ? 'Inactive' : 'Inactive' } color={ value == '1' ? 'success' : value == '0' ? 'secondary' : 'secondary'} sx={{ width: '100%' } } />
+          <Chip
+            label={value == '1' ? 'Active' : 'Inactive'}
+            color={value == '1' ? 'success' : 'secondary'}
+            sx={{ width: '100%' }}
+          />
         )}
       </div>
-    );
-  };
+    )
+  }
 
   const columns = [
-    { field: 'id', headerName: 'ID', flex: 0.03, minWidth: 50, },
-    { field: 'firstName', headerName: 'First Name', flex: 0.06, minWidth: 50, },
-    { field: 'lastName', headerName: 'Last Name', flex: 0.06, minWidth: 50, },
-    { field: 'email', headerName: 'Email', flex: 0.10, minWidth: 50, },
-    { field: 'phone', headerName: 'Phone', flex: 0.08, minWidth: 50, },
+    { field: 'id', headerName: 'ID', flex: 0.03, minWidth: 50 },
+    { field: 'firstName', headerName: 'First Name', flex: 0.06, minWidth: 50 },
+    { field: 'lastName', headerName: 'Last Name', flex: 0.06, minWidth: 50 },
+    { field: 'email', headerName: 'Email', flex: 0.1, minWidth: 50 },
+    { field: 'phone', headerName: 'Phone', flex: 0.08, minWidth: 50 },
     { field: 'vip', headerName: 'VIP', flex: 0.05, minWidth: 50 },
     { field: 'role', headerName: 'Role', flex: 0.05, minWidth: 50, renderCell: handleRole },
     { field: 'status', headerName: 'Status', flex: 0.05, minWidth: 50, renderCell: renderStatusCell },
+    {
+      field: 'login',
+      headerName: 'Login',
+      flex: 0.06,
+      minWidth: 100,
+      renderCell: params => (
+        <Button variant='contained' color='primary' onClick={() => handleLogin(params.row.email)}>
+          Login to Account
+        </Button>
+      )
+    },
     {
       field: 'edit',
       headerName: 'Edit',
@@ -169,7 +184,7 @@ const UserList = () => {
           label='Edit'
           color='warning'
           variant='outlined'
-          onClick={()=> handleEdit(params.row.id)}
+          onClick={() => handleEdit(params.row.id)}
           icon={<Icon icon='tabler:edit' />}
           fontSize={14}
           sx={{ width: '100%' }}
@@ -183,16 +198,16 @@ const UserList = () => {
       minWidth: 100,
       renderCell: params => (
         <Chip
-            label='Delete'
-            color='error'
-            variant='outlined'
-            onClick={()=> handleDelete(params.row.id)}
-            icon={<Icon icon='tabler:trash' />}
-            fontSize={14}
-            sx={{ width: '100%' }}
+          label='Delete'
+          color='error'
+          variant='outlined'
+          onClick={() => handleDelete(params.row.id)}
+          icon={<Icon icon='tabler:trash' />}
+          fontSize={14}
+          sx={{ width: '100%' }}
         />
       )
-    },
+    }
   ]
 
   const filteredUsers = Array.isArray(users?.data?.data)
@@ -202,13 +217,9 @@ const UserList = () => {
           user?.phone?.toLowerCase().includes(searchTerm.toLowerCase())
 
         if (serchUserRole === '0') {
-          const searchRoleMatch = serchUserRole
-
-          return searchTermMatch && searchRoleMatch
+          return searchTermMatch
         } else {
-          const searchRoleMatch = user.role === serchUserRole
-
-          return searchTermMatch && searchRoleMatch
+          return searchTermMatch && user.role === serchUserRole
         }
       })
     : []
@@ -217,8 +228,8 @@ const UserList = () => {
     <>
       {filteredUsers ? (
         <Card>
-          <CardHeader 
-            title='All Users' 
+          <CardHeader
+            title='All Users'
             action={
               <div>
                 <Select
@@ -244,7 +255,7 @@ const UserList = () => {
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
                 />
-            </div>
+              </div>
             }
           />
           <Box sx={{ height: 650 }}>

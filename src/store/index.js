@@ -18,6 +18,7 @@ import coupon from 'src/store/apps/coupon'
 import transaction from 'src/store/apps/transaction'
 import enrollment from 'src/store/apps/enrollment'
 import activecamp from 'src/store/apps/activecampaing'
+import adminLogin from 'src/store/apps/admin-login'
 import webinar from 'src/store/apps/webinar'
 import appointment from 'src/store/apps/appointment'
 
@@ -43,7 +44,8 @@ export const store = configureStore({
     blogCategoryList,
     blogTag,
     media,
-    appointment
+    appointment,
+    adminLogin
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

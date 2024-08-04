@@ -14,7 +14,8 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions
+  DialogActions,
+  TextField
 } from '@mui/material'
 import { MultiSelect } from 'react-multi-select-component'
 
@@ -29,6 +30,7 @@ export default function OrderView(props) {
   const [getCourses, setGetCourses] = useState(false)
   const [courses, setCourses] = useState([])
   const [openCourseModel, setOpenCourseModel] = useState(false)
+  const [refunded, setRefunded] = useState(0)
 
   const dispatch = useDispatch()
   const coursesData = useSelector(state => state.course)
@@ -37,6 +39,7 @@ export default function OrderView(props) {
     if (props.transactionData) {
       setTransactionData(props.transactionData)
       setSelectedStatus(props.transactionData.Transaction_Status)
+      setRefunded(props.transactionData.Refunded || 0)
 
       // Map the courses from props.transactionData to the desired format
       const mappedCourses =
@@ -96,7 +99,14 @@ export default function OrderView(props) {
     }))
 
   const handleUpdateTransaction = () => {
-    dispatch(updateTransaction({ items: courses, status: selectedStatus, id: transactionData.Transaction_ID }))
+    dispatch(
+      updateTransaction({
+        items: courses,
+        status: selectedStatus,
+        id: transactionData.Transaction_ID,
+        Refunded: refunded
+      })
+    )
   }
 
   if (loading) {
@@ -125,6 +135,17 @@ export default function OrderView(props) {
               <MenuItem value='requires_payment_method'>Pending</MenuItem>
               <MenuItem value='Refund'>Refund</MenuItem>
             </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+          <FormControl fullWidth>
+            <TextField
+              name='Refunded'
+              onChange={e => setRefunded(e.target.value)}
+              type='number'
+              label='Refunded'
+              fullWidth
+            />
           </FormControl>
         </Grid>
       </Grid>

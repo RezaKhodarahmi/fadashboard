@@ -59,7 +59,7 @@ const TransactionList = () => {
 
   useEffect(() => {
     if (fetchCourses?.data?.data) {
-      const courseOptions = fetchCourses.data.data.map(course => ({
+      const courseOptions = fetchCourses?.data?.data?.map(course => ({
         label: course.title,
         value: course.id
       }))
@@ -121,21 +121,13 @@ const TransactionList = () => {
   const handleStatus = status => {
     switch (status.formattedValue) {
       case 'requires_confirmation':
-        return (
-          <Chip label="Pending" color="warning" />
-        )
+        return <Chip label='Pending' color='warning' />
       case 'succeeded':
-        return (
-          <Chip label="Succeeded" color="success" />
-        )
+        return <Chip label='Succeeded' color='success' />
       case 'Refund':
-        return (
-          <Chip label="Refunded" color="error" />
-        )
+        return <Chip label='Refunded' color='error' />
       default:
-        return (
-          <Chip label="Canceled" color="secondary" />
-        )
+        return <Chip label='Canceled' color='secondary' />
     }
   }
 
@@ -170,6 +162,7 @@ const TransactionList = () => {
     { field: 'user', headerName: 'User', flex: 0.25, minWidth: 50, renderCell: handelUserEmail },
     { field: 'courses', headerName: 'Course', flex: 0.22, minWidth: 50, renderCell: handelEnrolledCourse },
     { field: 'Amount', headerName: 'Amount', flex: 0.08, minWidth: 50 },
+    { field: 'Refunded', headerName: 'Refunded', flex: 0.08, minWidth: 50 },
     { field: 'Transaction_Date', headerName: 'Date', width: 150, renderCell: handelConvertDate },
     { field: 'Transaction_Type', headerName: 'Type', flex: 0.08, minWidth: 50 },
     { field: 'Transaction_Status', headerName: 'Status', flex: 0.1, minWidth: 50, renderCell: handleStatus },
@@ -261,6 +254,10 @@ const TransactionList = () => {
           sum += parseFloat(transaction.Amount)
           count += 1
         }
+        if (transaction.Refunded != null && transaction.Refunded != 0) {
+          sum += parseFloat(transaction.Refunded)
+          count += 1
+        }
       })
       setRefundedTransactionSum(sum)
       setRefundedTransactionCount(count)
@@ -317,8 +314,8 @@ const TransactionList = () => {
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <Grid item xs={12} sx={{ marginBottom: 5, overflow: "visible" }}>
-          <Card sx={{ overflow: "visible" }}>
+        <Grid item xs={12} sx={{ marginBottom: 5, overflow: 'visible' }}>
+          <Card sx={{ overflow: 'visible' }}>
             <CardHeader title='Filters' />
             <CardContent>
               <Grid container spacing={6}>
@@ -376,7 +373,7 @@ const TransactionList = () => {
                       onChange={handleCourseChange}
                       labelledBy='Course'
                       hasSelectAll={true}
-                      sx={{ zIndex: "5", position: 'relative' }}
+                      sx={{ zIndex: '5', position: 'relative' }}
                     />
                   </FormControl>
                 </Grid>
