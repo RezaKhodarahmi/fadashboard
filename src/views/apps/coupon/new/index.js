@@ -140,7 +140,7 @@ export default function CrateUserForm() {
                 )}
               </Grid>
               <Grid item xs={12} sm={6} mb={3}>
-                <TextField {...register('expires_at')} label='Expiration Date' type='date' fullWidth />
+                <TextField {...register('expires_at')} label='Expiration Date' type='date' focused fullWidth />
                 {errors.expires_at && (
                   <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-expires_at-helper'>
                     {errors.expires_at.message}
