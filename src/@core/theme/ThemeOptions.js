@@ -30,7 +30,7 @@ const themeOptions = settings => {
         fontFamily:
           userFontFamily ||
           [
-            'Public Sans',
+            'Fira Sans',
             "YekanBakh",
             'BlinkMacSystemFont',
             '"Segoe UI"',
