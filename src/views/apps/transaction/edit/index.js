@@ -30,7 +30,7 @@ export default function OrderView(props) {
   const [getCourses, setGetCourses] = useState(false)
   const [courses, setCourses] = useState([])
   const [openCourseModel, setOpenCourseModel] = useState(false)
-  const [refunded, setRefunded] = useState(0)
+  const [refunded, setRefunded] = useState("0")
 
   const dispatch = useDispatch()
   const coursesData = useSelector(state => state.course)
@@ -141,6 +141,7 @@ export default function OrderView(props) {
           <FormControl fullWidth>
             <TextField
               name='Refunded'
+              value={refunded}
               onChange={e => setRefunded(e.target.value)}
               type='number'
               label='Refunded'

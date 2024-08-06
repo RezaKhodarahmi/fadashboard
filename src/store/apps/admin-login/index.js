@@ -24,14 +24,19 @@ const adminLoginSlice = createSlice({
     getDataFailure(state, { payload }) {
       state.loading = false
       state.error = payload
+    },
+    resetState(state) {
+      state.data = []
+      state.loading = false
+      state.error = null
     }
   }
 })
 
-export const { getDataStart, getDataSuccess, getDataFailure } = adminLoginSlice.actions
-
+export const { getDataStart, getDataSuccess, getDataFailure, resetState } = adminLoginSlice.actions
 
 export const adminLogin = params => async dispatch => {
+  dispatch(resetState()) // Reset state before new login request
   dispatch(getDataStart())
 
   const token = window.localStorage.getItem('accessToken')
@@ -44,7 +49,7 @@ export const adminLogin = params => async dispatch => {
       withCredentials: true
     })
 
-    toast.success('Answers created successfully.')
+    toast.success('Logged in successfully.')
     dispatch(getDataSuccess(response.data))
   } catch (error) {
     dispatch(getDataFailure(error.message))
@@ -52,6 +57,5 @@ export const adminLogin = params => async dispatch => {
     toast.error('Error! message:' + error?.response?.data?.message)
   }
 }
-
 
 export default adminLoginSlice.reducer

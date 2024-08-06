@@ -58,6 +58,10 @@ const TransactionList = () => {
   const [activeFilter, setActiveFilter] = useState('')
 
   useEffect(() => {
+    console.log(transactions)
+  }, [transactions])
+
+  useEffect(() => {
     if (fetchCourses?.data?.data) {
       const courseOptions = fetchCourses?.data?.data?.map(course => ({
         label: course.title,
@@ -80,21 +84,33 @@ const TransactionList = () => {
   }
 
   const handleDateFilter = period => {
-    const end = new Date()
+    let end = new Date()
     let start = new Date()
 
     switch (period) {
-      case 'last_week':
+      case '1w':
         start.setDate(end.getDate() - 7)
         break
-      case 'last_month':
-        start.setMonth(end.getMonth() - 1)
+      case '4w':
+        start.setDate(end.getDate() - 28)
         break
-      case 'last_3_months':
-        start.setMonth(end.getMonth() - 3)
+      case '1Y':
+        start = new Date(end.getFullYear(), 0, 1)
         break
+      case 'MTD':
+        start = new Date(end.getFullYear(), end.getMonth(), 1)
+        break
+      case 'QTD':
+        start.setMonth(end.getMonth() - 2)
+        start.setDate(1)
+        break
+      case 'YTD':
+        start = new Date(end.getFullYear(), 0, 1)
+        break
+      case 'ALL':
       default:
         start = null
+        end = null
     }
 
     setExportStartDate(start)
@@ -240,6 +256,13 @@ const TransactionList = () => {
         if (transaction.Transaction_Status === 'succeeded') {
           sum += parseFloat(transaction.Amount)
           count += 1
+        }
+        if (
+          transaction.Transaction_Status === 'succeeded' &&
+          transaction.Refunded != null &&
+          transaction.Refunded != 0
+        ) {
+          sum -= transaction.Refunded
         }
       })
       setSucceededTransactionSum(sum)
@@ -404,36 +427,80 @@ const TransactionList = () => {
                   <Typography variant='h6'>Quick Filters</Typography>
                 </Grid>
 
-                <Grid item xs={2}>
+                <Grid item xs={1}>
                   <Button
                     fullWidth
-                    variant={activeFilter === 'last_week' ? 'contained' : 'outlined'}
+                    variant={activeFilter === '1w' ? 'contained' : 'outlined'}
                     color='primary'
-                    onClick={() => handleDateFilter('last_week')}
+                    onClick={() => handleDateFilter('1w')}
                   >
-                    Last Week
+                    1w
                   </Button>
                 </Grid>
 
-                <Grid item xs={2}>
+                <Grid item xs={1}>
                   <Button
                     fullWidth
-                    variant={activeFilter === 'last_month' ? 'contained' : 'outlined'}
+                    variant={activeFilter === '4w' ? 'contained' : 'outlined'}
                     color='primary'
-                    onClick={() => handleDateFilter('last_month')}
+                    onClick={() => handleDateFilter('4w')}
                   >
-                    Last Month
+                    4w
                   </Button>
                 </Grid>
 
-                <Grid item xs={2}>
+                <Grid item xs={1}>
                   <Button
                     fullWidth
-                    variant={activeFilter === 'last_3_months' ? 'contained' : 'outlined'}
+                    variant={activeFilter === '1Y' ? 'contained' : 'outlined'}
                     color='primary'
-                    onClick={() => handleDateFilter('last_3_months')}
+                    onClick={() => handleDateFilter('1Y')}
                   >
-                    Last 3 Months
+                    1Y
+                  </Button>
+                </Grid>
+
+                <Grid item xs={1}>
+                  <Button
+                    fullWidth
+                    variant={activeFilter === 'MTD' ? 'contained' : 'outlined'}
+                    color='primary'
+                    onClick={() => handleDateFilter('MTD')}
+                  >
+                    MTD
+                  </Button>
+                </Grid>
+
+                <Grid item xs={1}>
+                  <Button
+                    fullWidth
+                    variant={activeFilter === 'QTD' ? 'contained' : 'outlined'}
+                    color='primary'
+                    onClick={() => handleDateFilter('QTD')}
+                  >
+                    QTD
+                  </Button>
+                </Grid>
+
+                <Grid item xs={1}>
+                  <Button
+                    fullWidth
+                    variant={activeFilter === 'YTD' ? 'contained' : 'outlined'}
+                    color='primary'
+                    onClick={() => handleDateFilter('YTD')}
+                  >
+                    YTD
+                  </Button>
+                </Grid>
+
+                <Grid item xs={1}>
+                  <Button
+                    fullWidth
+                    variant={activeFilter === 'ALL' ? 'contained' : 'outlined'}
+                    color='primary'
+                    onClick={() => handleDateFilter('ALL')}
+                  >
+                    ALL
                   </Button>
                 </Grid>
 

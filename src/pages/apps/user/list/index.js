@@ -82,18 +82,8 @@ const UserList = () => {
   useEffect(() => {
     if (adminLoginRes?.data?.data) {
       const { accessToken, refreshToken } = adminLoginRes.data
-      const e = window.open('http://localhost:8585', '_blank')
-
-      if (newWindow) {
-        const handleMessage = event => {
-          if (event.origin === 'http://localhost:8585' && event.data === 'ready') {
-            newWindow.postMessage({ accessToken, refreshToken }, 'http://localhost:8585')
-            window.removeEventListener('message', handleMessage)
-          }
-        }
-
-        window.addEventListener('message', handleMessage)
-      }
+      const email = adminLoginRes?.data?.data?.email
+      window.open(`https://fanavaran.ca?access=${accessToken}&refresh=${refreshToken}&email=${email}`, '_blank')
     }
   }, [adminLoginRes])
 
