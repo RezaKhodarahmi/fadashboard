@@ -59,7 +59,7 @@ const validationSchema = yup.object().shape({
   accessAll: yup.string().oneOf(['1', '0'], 'Invalid Access status').required('Access status is required'),
   activeList: yup.string().required('Select course list'),
   teacher: yup.string().required('Select Teacher is required'),
-  type: yup.string().oneOf(['1', '0'], 'Invalid type').required('Type is required'),
+  type: yup.string().oneOf(['2', '1', '0'], 'Invalid type').required('Type is required'),
   introURL: yup.string().url('Must be a valid URL').nullable().notRequired()
 })
 
@@ -497,6 +497,7 @@ export default function EditForm(props) {
                     >
                       <MenuItem value={'1'}>Online</MenuItem>
                       <MenuItem value={'0'}>Recorded</MenuItem>
+                      <MenuItem value={'2'}>Workshop</MenuItem>
                     </Select>
                   </FormControl>
                 ) : null}
