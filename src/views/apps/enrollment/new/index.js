@@ -1,7 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import FormHelperText from '@mui/material/FormHelperText'
-import { Dialog, DialogTitle, DialogContent, DialogActions, Divider, Card, CardHeader, CardContent, TextField, Button, Grid, Select, MenuItem, FormControl, InputLabel, Box, Badge } from '@mui/material'
+import {
+  Button,
+  Grid,
+  Typography,
+  Divider,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Box
+} from '@mui/material'
 import { MultiSelect } from 'react-multi-select-component'
 import * as yup from 'yup'
 import { newEnrollment } from 'src/store/apps/enrollment'
@@ -119,171 +134,156 @@ const Index = () => {
   }
 
   return (
-    <>
-      <Card>
-        <CardHeader title='Add New Enrollment' />
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <Grid container>
-              {/* Add Actions */}
-              <Grid container spacing={1} style={{ marginBottom: "2rem" }}>
-                <Button onClick={() => setOpenCourseModel(true)} variant='contained' color='primary' style={{ marginRight: '2rem' }} >Add course</Button>
+    <div>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Grid container spacing={2}>
+          <Button onClick={() => setOpenCourseModel(true)}>Add course</Button>
 
-                <Button onClick={() => setOpenUsersModel(true)} variant='contained' color='primary'>Add user</Button>
-              </Grid>
-
-              {/* Course Modal */}
-              <Grid spacing={2}>
-                {selectedCourses?.map(course => (
-                  <React.Fragment key={course.value}>
-                    <Typography variant='subtitle1'>
-                      {coursesData?.data?.data.find(item => item.id === course.value)?.title || 'Course not found'}
-                    </Typography>
-                    <FormControl fullWidth margin='normal'>
-                      <InputLabel>Cycle</InputLabel>
-                      <Select
-                        value={course.selectedCycle || ''}
-                        onChange={e => onCycleChange(course.value, e.target.value)}
-                        label='Cycle'
-                      >
-                        {coursesData?.data?.data
-                          .find(item => item.id === course.value)
-                          ?.cycles.map(cycle => (
-                            <MenuItem key={cycle.id} value={cycle.id}>
-                              {cycle.name}
-                            </MenuItem>
-                          ))}
-                      </Select>
-                    </FormControl>
-                  </React.Fragment>
-                ))}
-              </Grid>
-
-              {/* Date Pickers for EnrollmentDate and CompletionDate */}
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <Grid container spacing={2}>
-                  <Grid item xs={12} md={3}>
-                    <Controller
-                      name='enrollmentDate'
-                      fullWidth
-                      control={control}
-                      render={({ field }) => (
-                        <DatePicker label='Enrollment Date' renderInput={params => <TextField {...params} />} {...field} />
-                      )}
-                    />
-                  </Grid>
-
-                  <Grid item xs={12} md={3}>
-                    <Controller
-                      name='completionDate'
-                      control={control}
-                      render={({ field }) => (
-                        <DatePicker label='Completion Date' renderInput={params => <TextField {...params} />} {...field} />
-                      )}
-                    />
-                  </Grid>
-                </Grid>
-              </LocalizationProvider>
-
-              {/* Cancelled Select Field */}
-              <Grid style={{ margin: '2rem 0 0rem' }} item xs={12} md={2}>
-                <FormControl fullWidth error={!!errors.cancelled}>
-                  <InputLabel id='cancelled-select-label'>Cancelled</InputLabel>
-                  <Select {...register('cancelled')} labelId='cancelled-select-label' label='Cancelled' defaultValue='0'>
-                    <MenuItem value='1'>Yes</MenuItem>
-                    <MenuItem value='0'>No</MenuItem>
-                  </Select>
-                  <FormHelperText>{errors.cancelled?.message}</FormHelperText>
-                </FormControl>
-              </Grid>
-
-              {/* CancellationResult TextField */}
-              <Grid style={{ margin: '2rem 0 1rem' }} item xs={12}>
-                <TextField
-                  {...register('cancellationResult')}
-                  label='Cancellation Result'
-                  fullWidth
-                  error={!!errors.cancellationResult}
-                  helperText={errors.cancellationResult?.message}
-                />
-              </Grid>
-
-              {/* Status */}
-              <Grid style={{ margin: '2rem 0' }} item xs={12} md={2}>
-                <FormControl fullWidth error={!!errors.status}>
-                  <InputLabel id='status-select-label'>Status</InputLabel>
-                  <Select {...register('status')} labelId='status-select-label' label='Status' defaultValue='1'>
-                    <MenuItem value='1'>Active</MenuItem>
-                    <MenuItem value='0'>Not Active</MenuItem>
-                  </Select>
-                  <FormHelperText>{errors.status?.message}</FormHelperText>
-                </FormControl>
-              </Grid>
-
-              {/* Submit Button */}
-              <Grid item xs={12}>
-                <Button type='submit' variant='contained' color='primary'>
-                  Create Enrollment
-                </Button>
-              </Grid>
-            </Grid>
-          </form>
-          <Dialog
-            open={openCourseModel}
-            onClose={() => setOpenCourseModel(false)}
-            fullWidth={true}
-            maxWidth='md'
-            aria-labelledby='form-dialog-title'
-          >
-            <DialogTitle id='form-dialog-title'>Select Courses to Add</DialogTitle>
-            <DialogContent style={{ height: '500px', overflowY: 'auto' }}>
-              <MultiSelect
-                options={courseOptions}
-                value={selectedCourses}
-                onChange={handleSelectCourse}
-                labelledBy='Select Courses'
-                hasSelectAll={true}
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => setOpenCourseModel(false)} color='primary'>
-                Cancel
-              </Button>
-            </DialogActions>
-          </Dialog>
-          <Dialog
-            open={openUsersModel}
-            onClose={() => setOpenUsersModel(false)}
-            fullWidth={true}
-            maxWidth='md'
-            aria-labelledby='form-dialog-title'
-          >
-            <DialogTitle id='form-dialog-title'>Select User to Add</DialogTitle>
-            <DialogContent style={{ height: '500px', overflowY: 'auto' }}>
-              <FormControl fullWidth>
-                <InputLabel id='role-select-label'>Search user with email address</InputLabel>
-                <TextField onChange={e => handelSearchUser(e)} label='Search user' focused fullWidth />
-                {userError && <span style={{ color: 'red' }}>{userError}</span>}
-                <Divider style={{ margin: '20px 0' }} />
-                {orderUsers ? (
-                  <span style={{ border: '1px solid lightGray', padding: '5px' }}>
-                    {orderUsers.email + '-' + orderUsers.firstName + ' ' + orderUsers.lastName}
-                    <Button onClick={e => handleSelectUser(orderUsers.email)}>Select</Button>
-                  </span>
-                ) : (
-                  <span>No result</span>
-                )}
+          <Button onClick={() => setOpenUsersModel(true)}>Add user</Button>
+        </Grid>
+        <Grid spacing={2}>
+          {selectedCourses?.map(course => (
+            <React.Fragment key={course.value}>
+              <Typography variant='subtitle1'>
+                {coursesData?.data?.data.find(item => item.id === course.value)?.title || 'Course not found'}
+              </Typography>
+              <FormControl fullWidth margin='normal'>
+                <InputLabel>Cycle</InputLabel>
+                <Select
+                  value={course.selectedCycle || ''}
+                  onChange={e => onCycleChange(course.value, e.target.value)}
+                  label='Cycle'
+                >
+                  {coursesData?.data?.data
+                    .find(item => item.id === course.value)
+                    ?.cycles.map(cycle => (
+                      <MenuItem key={cycle.id} value={cycle.id}>
+                        {cycle.name}
+                      </MenuItem>
+                    ))}
+                </Select>
               </FormControl>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => setOpenUsersModel(false)} color='primary'>
-                close
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </CardContent>
-      </Card>
-    </>
+            </React.Fragment>
+          ))}
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <FormControl fullWidth error={!!errors.status}>
+            <InputLabel id='status-select-label'>Status</InputLabel>
+            <Select {...register('status')} labelId='status-select-label' label='Status' defaultValue='1'>
+              <MenuItem value='1'>Active</MenuItem>
+              <MenuItem value='0'>Not Active</MenuItem>
+            </Select>
+            <FormHelperText>{errors.status?.message}</FormHelperText>
+          </FormControl>
+        </Grid>
+
+        {/* Date Pickers for EnrollmentDate and CompletionDate */}
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <Grid style={{ margin: '10px 0' }} item xs={12} md={6}>
+            <Controller
+              name='enrollmentDate'
+              control={control}
+              render={({ field }) => (
+                <DatePicker label='Enrollment Date' renderInput={params => <TextField {...params} />} {...field} />
+              )}
+            />
+          </Grid>
+          <Grid style={{ margin: '10px 0' }} item xs={12} md={6}>
+            <Controller
+              name='completionDate'
+              control={control}
+              render={({ field }) => (
+                <DatePicker label='Completion Date' renderInput={params => <TextField {...params} />} {...field} />
+              )}
+            />
+          </Grid>
+        </LocalizationProvider>
+
+        {/* Cancelled Select Field */}
+        <Grid style={{ margin: '10px 0' }} item xs={12} md={6}>
+          <FormControl fullWidth error={!!errors.cancelled}>
+            <InputLabel id='cancelled-select-label'>Cancelled</InputLabel>
+            <Select {...register('cancelled')} labelId='cancelled-select-label' label='Cancelled' defaultValue='0'>
+              <MenuItem value='1'>Yes</MenuItem>
+              <MenuItem value='0'>No</MenuItem>
+            </Select>
+            <FormHelperText>{errors.cancelled?.message}</FormHelperText>
+          </FormControl>
+        </Grid>
+
+        {/* CancellationResult TextField */}
+        <Grid style={{ margin: '10px 0' }} item xs={12}>
+          <TextField
+            {...register('cancellationResult')}
+            label='Cancellation Result'
+            fullWidth
+            error={!!errors.cancellationResult}
+            helperText={errors.cancellationResult?.message}
+          />
+        </Grid>
+
+        {/* Submit Button */}
+        <Grid item xs={12}>
+          <Button type='submit' variant='contained' color='primary'>
+            Create Enrollment
+          </Button>
+        </Grid>
+      </form>
+      <Dialog
+        open={openCourseModel}
+        onClose={() => setOpenCourseModel(false)}
+        fullWidth={true}
+        maxWidth='md'
+        aria-labelledby='form-dialog-title'
+      >
+        <DialogTitle id='form-dialog-title'>Select Courses to Add</DialogTitle>
+        <DialogContent style={{ height: '500px', overflowY: 'auto' }}>
+          <MultiSelect
+            options={courseOptions}
+            value={selectedCourses}
+            onChange={handleSelectCourse}
+            labelledBy='Select Courses'
+            hasSelectAll={true}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenCourseModel(false)} color='primary'>
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={openUsersModel}
+        onClose={() => setOpenUsersModel(false)}
+        fullWidth={true}
+        maxWidth='md'
+        aria-labelledby='form-dialog-title'
+      >
+        <DialogTitle id='form-dialog-title'>Select User to Add</DialogTitle>
+        <DialogContent style={{ height: '500px', overflowY: 'auto' }}>
+          <FormControl fullWidth>
+            <InputLabel id='role-select-label'>Search user with email address</InputLabel>
+            <TextField onChange={e => handelSearchUser(e)} label='search user' fullWidth />
+            {userError && <span style={{ color: 'red' }}>{userError}</span>}
+            <Divider style={{ margin: '20px 0' }} />
+            {orderUsers ? (
+              <span style={{ border: '1px solid lightGray', padding: '5px' }}>
+                {orderUsers.email + '-' + orderUsers.firstName + ' ' + orderUsers.lastName}
+                <Button onClick={e => handleSelectUser(orderUsers.email)}>Select</Button>
+              </span>
+            ) : (
+              <span>No result</span>
+            )}
+          </FormControl>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenUsersModel(false)} color='primary'>
+            close
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
   )
 }
 
