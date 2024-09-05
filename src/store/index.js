@@ -8,6 +8,7 @@ import { categoryListReducer, categoryReducer } from 'src/store/apps/category'
 import { blogCategory, blogCategoryList } from 'src/store/apps/blog-category'
 import { cycleReducer, cycleListReducer } from 'src/store/apps/cycle'
 import blogTag from 'src/store/apps/blog-tag'
+import demosession from 'src/store/apps/demo-session'
 import posts from 'src/store/apps/post'
 import video from 'src/store/apps/video'
 import test from 'src/store/apps/test'
@@ -45,7 +46,8 @@ export const store = configureStore({
     blogTag,
     media,
     appointment,
-    adminLogin
+    adminLogin,
+    demosession
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
