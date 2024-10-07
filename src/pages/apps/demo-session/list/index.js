@@ -47,7 +47,7 @@ const CourseList = () => {
   }
 
   const handleExportToCSV = () => {
-    const filteredData = filteredRows.map(item => ({
+    const filteredData = filteredRows?.map(item => ({
       ID: item.id,
       'User Name': item.userName,
       Email: item.userEmail,
@@ -65,7 +65,7 @@ const CourseList = () => {
 
   // Filter the rows based on selected courseId and date range
   const filteredRows =
-    demosession?.data.filter(item => {
+    demosession?.data?.filter(item => {
       const isWithinCourse = selectedCourseId ? item.courseId === selectedCourseId : true
       const isWithinStartDate = startDate ? new Date(item.createdAt) >= new Date(startDate) : true
       const isWithinEndDate = endDate ? new Date(item.createdAt) <= new Date(endDate) : true

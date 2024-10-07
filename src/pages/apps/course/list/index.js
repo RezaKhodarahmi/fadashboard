@@ -36,7 +36,7 @@ const UserList = () => {
   }
 
   const handleType = type => {
-    switch (type.formattedValue) {
+    switch (type?.formattedValue) {
       case '1':
         return 'Online'
         break
@@ -50,7 +50,7 @@ const UserList = () => {
   }
 
   const handleStatus = status => {
-    switch (status.formattedValue) {
+    switch (status?.formattedValue) {
       case '1':
         return 'Active'
         break
@@ -70,10 +70,10 @@ const UserList = () => {
   const renderTypeCell = (params) => {
     const { value } = params;
     const statusText = handleType(value);
-  
+
     return (
       <div>
-        {statusText && (    
+        {statusText && (
           <Chip
               label={value === '1' ? 'Online' : 'Recorded'}
               color={value === '1' ? 'success' : 'error'}
@@ -88,7 +88,7 @@ const UserList = () => {
   const renderStatusCell = (params) => {
     const { value } = params;
     const statusText = handleStatus(value);
-  
+
     return (
       <div>
         {statusText && (
@@ -152,8 +152,8 @@ const UserList = () => {
     <>
       {filteredUsers ? (
         <Card>
-          <CardHeader 
-            title='All Courses' 
+          <CardHeader
+            title='All Courses'
             action={
               <div>
                 <TextField

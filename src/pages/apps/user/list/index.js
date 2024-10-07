@@ -101,7 +101,8 @@ const UserList = () => {
   }
 
   const handleRole = role => {
-    switch (role.formattedValue) {
+    const roleValue = role?.formattedValue || role?.value; // Check for both formattedValue and value
+    switch (roleValue) {
       case '10000':
         return 'Administrator'
       case '8000':
@@ -111,6 +112,7 @@ const UserList = () => {
       case '4000':
         return 'Blog manager'
       case '2000':
+        return 'Instructor'
       case '1000':
         return 'Customer'
       default:
@@ -119,7 +121,8 @@ const UserList = () => {
   }
 
   const handleStatus = status => {
-    switch (status.formattedValue) {
+    const statusValue = status?.formattedValue || status?.value; // Check for both formattedValue and value
+    switch (statusValue) {
       case '1':
         return 'Active'
       case '0':
@@ -127,6 +130,7 @@ const UserList = () => {
         return 'Inactive'
     }
   }
+
 
   useEffect(() => {
     dispatch(fetchData())

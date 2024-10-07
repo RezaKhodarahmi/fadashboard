@@ -30,6 +30,9 @@ const EnrollmentList = () => {
     dispatch(fetchEnrollmentData())
   }, [dispatch])
 
+  useEffect(() => {
+    console.log(enrollments)
+  }, [enrollments])
 
   const handleDelete = id => {
     const confirmation = window.confirm('Are you sure you want to delete this Enrollment?')
@@ -77,8 +80,17 @@ const EnrollmentList = () => {
     return <Link href={`/apps/course/edit/${course.value.id}`}>{course.value.title + ',' || 'Unknown'}</Link>
   }
 
-  const handelConvertDate = date => {
-    return <DateFormat date={date.formattedValue} />
+  const handelEnrolledCycle = cycle => {
+    return <h5>{cycle.value.name || 'Unknown'}</h5>
+  }
+
+  const handelEnrolledStart = date => {
+    console.log(date)
+    return <DateFormat date={date.value} />
+  }
+
+  const handelEnrolledEnd = date => {
+    return <DateFormat date={date.value} />
   }
 
   const handelTransaction = transaction => {
@@ -89,24 +101,32 @@ const EnrollmentList = () => {
     }
   }
 
-  const renderStatusCell = (params) => {
-    const { value } = params;
-    const statusText = handleStatus(value);
-  
+  const renderStatusCell = params => {
+    const { value } = params
+    const statusText = handleStatus(value)
+
     return (
       <div>
         {statusText && (
-          <Chip label={ value == '1' ? 'Accepted' : value == '0' ? 'Pending' : value == '2' ? 'Pending Review' : 'Pending Review' } color={ value == '1' ? 'success' : value == '0' ? 'warning' : value == '2' ? 'warning' : 'secondary'} sx={{ width: '100%' } } />
+          <Chip
+            label={
+              value == '1' ? 'Accepted' : value == '0' ? 'Pending' : value == '2' ? 'Pending Review' : 'Pending Review'
+            }
+            color={value == '1' ? 'success' : value == '0' ? 'warning' : value == '2' ? 'warning' : 'secondary'}
+            sx={{ width: '100%' }}
+          />
         )}
       </div>
-    );
-  };
+    )
+  }
 
   const columns = [
     { field: 'id', headerName: 'ID', flex: 0.05, minWidth: 50 },
     { field: 'user', headerName: 'User', flex: 0.2, minWidth: 50, renderCell: handelUserEmail },
-    { field: 'course', headerName: 'Course', flex: 0.2, minWidth: 50, renderCell: handelEnrolledCourse },
-    { field: 'Transaction_ID', headerName: 'Transaction Id', flex: 0.1, minWidth: 50, renderCell: handelTransaction },
+    { field: 'course', headerName: 'Course', flex: 0.2, minWidth: 60, renderCell: handelEnrolledCourse },
+    { field: 'cycle', headerName: 'Cycle', flex: 0.2, minWidth: 20, renderCell: handelEnrolledCycle },
+    { field: 'enrollmentDate', headerName: 'Start', flex: 0.2, minWidth: 20, renderCell: handelEnrolledStart },
+    { field: 'completionDate', headerName: 'End', flex: 0.2, minWidth: 20, renderCell: handelEnrolledEnd },
     { field: 'status', headerName: 'Status', flex: 0.06, minWidth: 50, renderCell: renderStatusCell },
     {
       field: 'edit',
@@ -118,7 +138,7 @@ const EnrollmentList = () => {
           label='Edit'
           color='warning'
           variant='outlined'
-          onClick={()=> handleEdit(params.row.id)}
+          onClick={() => handleEdit(params.row.id)}
           icon={<Icon icon='tabler:edit' />}
           fontSize={14}
           sx={{ width: '100%' }}
@@ -132,16 +152,16 @@ const EnrollmentList = () => {
       minWidth: 100,
       renderCell: params => (
         <Chip
-            label='Delete'
-            color='error'
-            variant='outlined'
-            onClick={()=> handleDelete(params.row.id)}
-            icon={<Icon icon='tabler:trash' />}
-            fontSize={14}
-            sx={{ width: '100%' }}
+          label='Delete'
+          color='error'
+          variant='outlined'
+          onClick={() => handleDelete(params.row.id)}
+          icon={<Icon icon='tabler:trash' />}
+          fontSize={14}
+          sx={{ width: '100%' }}
         />
       )
-    },
+    }
   ]
 
   const filteredEnrollment = Array.isArray(enrollments?.data?.data)
@@ -161,8 +181,8 @@ const EnrollmentList = () => {
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <>
         <Card>
-          <CardHeader 
-            title='All Enrollments' 
+          <CardHeader
+            title='All Enrollments'
             action={
               <div>
                 <TextField

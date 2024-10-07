@@ -205,6 +205,9 @@ export default function EditForm(props) {
       duration: '20 hours',
       groupLink: '',
       zoomLink: '',
+      zoomId: '',
+      zoomSecret: '',
+      zoomAccId:'',
       vipPrice: '0',
       certificate: '',
       vipAccess: '0',
@@ -760,6 +763,42 @@ export default function EditForm(props) {
                                   {...register2(`cycles.${index}.zoomLink`)}
                                   defaultValue={cycle.zoomLink}
                                   label='Zoom Link'
+                                  type='text'
+                                  fullWidth
+                                  InputLabelProps={{
+                                    shrink: true
+                                  }}
+                                />
+                              </Grid>
+                              <Grid item xs={12} sm={6} marginTop={5}>
+                                <TextField
+                                  {...register2(`cycles.${index}.zoomId`)}
+                                  defaultValue={cycle.zoomId}
+                                  label='Zoom Account ID'
+                                  type='text'
+                                  fullWidth
+                                  InputLabelProps={{
+                                    shrink: true
+                                  }}
+                                />
+                              </Grid>
+                              <Grid item xs={12} sm={6} marginTop={5}>
+                                <TextField
+                                  {...register2(`cycles.${index}.zoomSecret`)}
+                                  defaultValue={cycle.zoomSecret}
+                                  label='Zoom Account Secret'
+                                  type='text'
+                                  fullWidth
+                                  InputLabelProps={{
+                                    shrink: true
+                                  }}
+                                />
+                              </Grid>
+                              <Grid item xs={12} sm={6} marginTop={5}>
+                                <TextField
+                                  {...register2(`cycles.${index}.zoomAccId`)}
+                                  defaultValue={cycle.zoomAccId}
+                                  label='Zoom Account Number'
                                   type='text'
                                   fullWidth
                                   InputLabelProps={{
