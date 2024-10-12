@@ -51,6 +51,7 @@ const validationSchema = yup.object().shape({
   subTitle: yup.string().nullable().notRequired(),
   slug: yup.string().required('Slug is required'),
   description: yup.string().nullable().notRequired(),
+  englishDescription: yup.string().nullable().notRequired(),
   abstract: yup.string().nullable().notRequired(),
   keywords: yup.string().nullable().notRequired(),
   metaTitle: yup.string().nullable().notRequired(),
@@ -335,6 +336,28 @@ export default function EditForm(props) {
                 <Controller
                   name='description'
                   labelId='description'
+                  control={control}
+                  rules={validationSchema.content}
+                  render={({ field, fieldState }) => (
+                    <Box sx={{ mt: 2 }}>
+                      <Editor
+                        apiKey={AppConfig.TINYMCE_KEY}
+                        value={field.value}
+                        onEditorChange={value => field.onChange(value)}
+                        onBlur={field.onBlur}
+                        init={AppConfig.TINYMCE_INIT}
+                      />
+                      {fieldState.error && <Box sx={{ color: 'red', mt: 1 }}>{fieldState.error.message}</Box>}
+                    </Box>
+                  )}
+                />
+              </Grid>
+              {/* English Description */}
+              <Grid marginTop={5} item xs={12} sm={12}>
+                <InputLabel id='englishDescription'>English Description</InputLabel>
+                <Controller
+                  name='englishDescription'
+                  labelId='englishDescription'
                   control={control}
                   rules={validationSchema.content}
                   render={({ field, fieldState }) => (

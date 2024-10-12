@@ -85,7 +85,6 @@ const EnrollmentList = () => {
   }
 
   const handelEnrolledStart = date => {
-    console.log(date)
     return <DateFormat date={date.value} />
   }
 
