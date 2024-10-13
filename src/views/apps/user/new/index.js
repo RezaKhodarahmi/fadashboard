@@ -75,6 +75,22 @@ export default function CrateUserForm() {
             </FormHelperText>
           )}
         </Grid>
+        <Grid marginTop={5} item xs={12}>
+          <TextField {...register('designation')} label='Designation' fullWidth />
+          {errors.designation && (
+            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-designation-helper'>
+              {errors.designation.message}
+            </FormHelperText>
+          )}
+        </Grid>
+        <Grid marginTop={5} item xs={12}>
+          <TextField {...register('linkedin')} label='Linkedin' fullWidth />
+          {errors.linkedin && (
+            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-linkedin-helper'>
+              {errors.linkedin.message}
+            </FormHelperText>
+          )}
+        </Grid>
         <Grid marginTop={5} item xs={12} sm={6}>
           <FormControl fullWidth>
             <InputLabel id='role-select-label'>Role</InputLabel>

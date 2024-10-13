@@ -30,9 +30,6 @@ const EnrollmentList = () => {
     dispatch(fetchEnrollmentData())
   }, [dispatch])
 
-  useEffect(() => {
-    console.log(enrollments)
-  }, [enrollments])
 
   const handleDelete = id => {
     const confirmation = window.confirm('Are you sure you want to delete this Enrollment?')

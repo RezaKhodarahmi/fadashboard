@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import FormHelperText from '@mui/material/FormHelperText'
 import * as yup from 'yup'
 import { useAuth } from 'src/hooks/useAuth'
-import { TextField, Button, Grid, Select, MenuItem, FormControl, InputLabel, Avatar } from '@mui/material'
+import { TextField, Button, Grid, Select, MenuItem, FormControl,Box , InputLabel, Avatar } from '@mui/material'
 import { updateUser } from 'src/store/apps/user'
 import { useDispatch } from 'react-redux'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { Editor } from '@tinymce/tinymce-react'
+import AppConfig from 'src/configs/appConfg'
 
 const validationSchema = yup.object().shape({
   firstName: yup.string().required('First Name is required'),
@@ -15,7 +17,8 @@ const validationSchema = yup.object().shape({
   phone: yup.string('Phone is not correct'),
   address: yup.string('Address is not correct'),
   postalCode: yup.string('Postal Code is not correct'),
-  country: yup.string('Country is not correct')
+  country: yup.string('Country is not correct'),
+  descriptions: yup.string().nullable().notRequired()
 })
 
 export default function EditForm(props) {
@@ -25,6 +28,7 @@ export default function EditForm(props) {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors }
   } = useForm({
     resolver: yupResolver(validationSchema)
@@ -92,6 +96,22 @@ export default function EditForm(props) {
             </FormHelperText>
           )}
         </Grid>
+        <Grid marginTop={5} item xs={12}>
+          <TextField {...register('designation')} label='Designation' fullWidth />
+          {errors.designation && (
+            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-designation-helper'>
+              {errors.designation.message}
+            </FormHelperText>
+          )}
+        </Grid>
+        <Grid marginTop={5} item xs={12}>
+          <TextField {...register('linkedin')} label='Linkedin' fullWidth />
+          {errors.linkedin && (
+            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-linkedin-helper'>
+              {errors.linkedin.message}
+            </FormHelperText>
+          )}
+        </Grid>
         <Grid marginTop={5} item xs={12} sm={6}>
           {role ? (
             <FormControl fullWidth>
@@ -127,6 +147,14 @@ export default function EditForm(props) {
           {errors.vip && (
             <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-vip-helper'>
               {errors.vip.message}
+            </FormHelperText>
+          )}
+        </Grid>
+        <Grid marginTop={5} item xs={12} sm={6}>
+          <TextField {...register('vipPlan')} defaultValue={0} label='VIP PLAN' fullWidth />
+          {errors.vipPlan && (
+            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-vipPlan-helper'>
+              {errors.vipPlan.message}
             </FormHelperText>
           )}
         </Grid>
@@ -226,6 +254,28 @@ export default function EditForm(props) {
         <Grid marginTop={5} item xs={12} sm={6} flex>
           <Avatar alt='Avatar' src={imageUrl} sx={{ width: 50, height: 50 }} />
           <input type='file' onChange={handleFileChange} />
+        </Grid>
+
+        <Grid marginTop={5} item xs={12} sm={12}>
+          <InputLabel id='descriptions'>Description</InputLabel>
+          <Controller
+            name='descriptions'
+            labelId='descriptions'
+            control={control}
+            rules={validationSchema.descriptions}
+            render={({ field, fieldState }) => (
+              <Box sx={{ mt: 2 }}>
+                <Editor
+                  apiKey={AppConfig.TINYMCE_KEY}
+                  value={field.value}
+                  onEditorChange={value => field.onChange(value)}
+                  onBlur={field.onBlur}
+                  init={AppConfig.TINYMCE_INIT}
+                />
+                {fieldState.error && <Box sx={{ color: 'red', mt: 1 }}>{fieldState.error.message}</Box>}
+              </Box>
+            )}
+          />
         </Grid>
       </Grid>
       <Grid marginTop={10} item xs={12} sm={6}>
