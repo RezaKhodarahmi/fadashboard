@@ -22,19 +22,20 @@ import Icon from 'src/@core/components/icon'
 const EnrollmentList = () => {
   const router = useRouter()
   const dispatch = useDispatch()
-  const enrollments = useSelector(state => state.enrollment)
+  const { data: enrollment } = useSelector(state => state.enrollment)
   const [searchTerm, setSearchTerm] = useState('')
   const [pageSize, setPageSize] = useState(10)
+  const [page, setPage] = useState(0)
 
   useEffect(() => {
-    dispatch(fetchEnrollmentData())
-  }, [dispatch])
-
+    dispatch(fetchEnrollmentData(page + 1, pageSize, searchTerm))
+  }, [dispatch, page, pageSize, searchTerm])
 
   const handleDelete = id => {
     const confirmation = window.confirm('Are you sure you want to delete this Enrollment?')
     if (confirmation) {
       dispatch(deleteEnrollment(id))
+      dispatch(fetchEnrollmentData(page + 1, pageSize, searchTerm))
     }
   }
 
@@ -160,57 +161,51 @@ const EnrollmentList = () => {
     }
   ]
 
-  const filteredEnrollment = Array.isArray(enrollments?.data?.data)
-    ? enrollments?.data?.data
-        ?.filter(
-          enrollment =>
-            enrollment.user?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            enrollment?.user?.phone?.toLowerCase().includes(searchItinerary.toLowerCase())
-        )
-        .map(enrollment => ({
-          ...enrollment,
-          id: enrollment.id // This ensures the row uses the enrollment id
-        }))
-    : []
-
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <>
-        <Card>
-          <CardHeader
-            title='All Enrollments'
-            action={
-              <div>
-                <TextField
-                  id='searchTerm'
-                  name='searchTerm'
-                  value={searchTerm}
-                  onChange={e => setSearchTerm(e.target.value)}
-                  placeholder='Search'
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position='end'>
-                        <IconButton>
-                          <Search />
-                        </IconButton>
-                      </InputAdornment>
-                    )
-                  }}
-                />
-              </div>
-            }
-          />
-          <Box sx={{ height: 650 }}>
-            <DataGrid
-              rows={filteredEnrollment}
-              columns={columns}
-              pageSize={pageSize}
-              rowsPerPageOptions={[5, 10, 20]}
-              onPageSizeChange={newPageSize => setPageSize(newPageSize)}
-              pagination
+        {enrollment?.data && (
+          <Card>
+            <CardHeader
+              title='All Enrollments'
+              action={
+                <div>
+                  <TextField
+                    id='searchTerm'
+                    name='searchTerm'
+                    value={searchTerm}
+                    onChange={e => setSearchTerm(e.target.value)}
+                    placeholder='Search'
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position='end'>
+                          <IconButton>
+                            <Search />
+                          </IconButton>
+                        </InputAdornment>
+                      )
+                    }}
+                  />
+                </div>
+              }
             />
-          </Box>
-        </Card>
+            <Box sx={{ height: 650 }}>
+              <DataGrid
+                rows={enrollment?.data}
+                columns={columns}
+                pageSize={pageSize}
+                onPageSizeChange={newPageSize => setPageSize(newPageSize)}
+                rowsPerPageOptions={[5, 10, 25, 50, 100]}
+                checkboxSelection
+                paginationMode='server'
+                page={page}
+                onPageChange={newPage => setPage(newPage)}
+                rowCount={enrollment?.total}
+                pagination
+              />
+            </Box>
+          </Card>
+        )}
       </>
     </LocalizationProvider>
   )

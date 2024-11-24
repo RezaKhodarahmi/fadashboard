@@ -30,24 +30,34 @@ const enrollmentSlice = createSlice({
 
 export const { getDataStart, getDataSuccess, getDataFailure } = enrollmentSlice.actions
 
-export const fetchEnrollmentData = () => async dispatch => {
-  dispatch(getDataStart())
-  try {
-    const token = window.localStorage.getItem('accessToken')
+export const fetchEnrollmentData =
+  (page = 1, limit = 25, searchTerm = '') =>
+  async dispatch => {
+    dispatch(getDataStart())
+    try {
+      const token = window.localStorage.getItem('accessToken')
 
-    const response = await axios.get(`${BASE_URL}/enrollment`, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      },
-      withCredentials: true
-    })
-    console.log(response.data)
-    dispatch(getDataSuccess(response.data))
-  } catch (error) {
-    dispatch(getDataFailure(error.message))
+      const response = await axios.get(`${BASE_URL}/enrollment`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        withCredentials: true,
+        params: { page, limit, searchTerm }
+      })
+
+      dispatch(
+        getDataSuccess({
+          data: response.data.data,
+          total: response.data.total, // Pass total count to the reducer
+          page,
+          limit
+        })
+      )
+    } catch (error) {
+      dispatch(getDataFailure(error.message))
+    }
   }
-}
 
 export const newEnrollment = params => async dispatch => {
   dispatch(getDataStart())
