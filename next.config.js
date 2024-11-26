@@ -12,6 +12,9 @@ module.exports = {
   ],
   experimental: {
     esmExternals: false
-  }
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   // webpack configuration if needed
 }

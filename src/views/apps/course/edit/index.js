@@ -101,6 +101,7 @@ export default function EditForm(props) {
   const [categoryId, setCategoryId] = useState([{ label: 'Select category', value: '0' }])
   const [videoImageFile, setVideoImageFile] = useState(null)
   const [videoImageUrl, setVideoImageUrl] = useState(null)
+  const [featured, setFeatured] = useState(null)
 
   // Get teachers from API
   const user = useSelector(state => state.user)
@@ -154,10 +155,10 @@ export default function EditForm(props) {
     if (props.courseData) {
       const { categories, cycles, teachers, ...rest } = props.courseData
       reset(rest)
-
-      setStatus(props.courseData.status)
       setAccess(props.courseData.accessAll)
+      setStatus(props.courseData.status)
       setType(props.courseData.type)
+      setFeatured(props.courseData.featured)
       setImageUrl(props.courseData.image)
       setSelectedActiveList(props.courseData.activeList)
       setCertificateURL(props.courseData.certificate)
@@ -208,7 +209,7 @@ export default function EditForm(props) {
       zoomLink: '',
       zoomId: '',
       zoomSecret: '',
-      zoomAccId:'',
+      zoomAccId: '',
       vipPrice: '0',
       certificate: '',
       vipAccess: '0',
@@ -446,7 +447,7 @@ export default function EditForm(props) {
 
               {/* status */}
               <Grid marginTop={5} item xs={12} sm={2}>
-                {status ? (
+                {status != null  ? (
                   <FormControl fullWidth>
                     <InputLabel id='status-select-label'>Status</InputLabel>
                     <Select
@@ -468,9 +469,33 @@ export default function EditForm(props) {
                 )}
               </Grid>
 
+              {/* featured */}
+              <Grid marginTop={5} item xs={12} sm={2}>
+                {featured != null  ? (
+                  <FormControl fullWidth>
+                    <InputLabel id='status-select-label'>Featured</InputLabel>
+                    <Select
+                      {...register('featured')}
+                      name='featured'
+                      labelId='featured-select-label'
+                      label='Featured'
+                      defaultValue={featured}
+                    >
+                      <MenuItem value={'1'}>Yes</MenuItem>
+                      <MenuItem value={'0'}>no</MenuItem>
+                    </Select>
+                  </FormControl>
+                ) : null}
+                {errors.featured && (
+                  <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-featured-helper'>
+                    {errors.featured.message}
+                  </FormHelperText>
+                )}
+              </Grid>
+
               {/* access all users to materials */}
               <Grid marginTop={5} item xs={12} sm={2}>
-                {accessAll ? (
+                {accessAll != null ? (
                   <FormControl fullWidth>
                     <InputLabel id='accessAll-select-label'>Access All materials</InputLabel>
                     <Select
@@ -511,7 +536,7 @@ export default function EditForm(props) {
 
               {/* Type */}
               <Grid marginTop={5} item xs={12} sm={2}>
-                {type ? (
+                {type != null  ? (
                   <FormControl fullWidth>
                     <InputLabel id='type-select-label'>Type</InputLabel>
                     <Select
@@ -536,7 +561,7 @@ export default function EditForm(props) {
               <Grid marginTop={5} item xs={12} sm={10}></Grid>
 
               {/* Category */}
-              {categoryId ? (
+              {categoryId != null  ? (
                 <Grid marginTop={5} item xs={12} sm={6} style={{ zIndex: '999' }}>
                   <InputLabel id='category-select-label'>Category</InputLabel>
                   <MultiSelect
