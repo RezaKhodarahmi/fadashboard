@@ -214,7 +214,8 @@ export default function EditForm(props) {
       certificate: '',
       vipAccess: '0',
       retake: '0',
-      status: '0'
+      status: '0',
+      srt_publish: '0'
     })
     setIsApiLoaded(false)
     setCycles(newCycles)
