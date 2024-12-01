@@ -447,7 +447,7 @@ export default function EditForm(props) {
 
               {/* status */}
               <Grid marginTop={5} item xs={12} sm={2}>
-                {status != null  ? (
+                {status != null ? (
                   <FormControl fullWidth>
                     <InputLabel id='status-select-label'>Status</InputLabel>
                     <Select
@@ -471,7 +471,7 @@ export default function EditForm(props) {
 
               {/* featured */}
               <Grid marginTop={5} item xs={12} sm={2}>
-                {featured != null  ? (
+                {featured != null ? (
                   <FormControl fullWidth>
                     <InputLabel id='status-select-label'>Featured</InputLabel>
                     <Select
@@ -536,7 +536,7 @@ export default function EditForm(props) {
 
               {/* Type */}
               <Grid marginTop={5} item xs={12} sm={2}>
-                {type != null  ? (
+                {type != null ? (
                   <FormControl fullWidth>
                     <InputLabel id='type-select-label'>Type</InputLabel>
                     <Select
@@ -561,7 +561,7 @@ export default function EditForm(props) {
               <Grid marginTop={5} item xs={12} sm={10}></Grid>
 
               {/* Category */}
-              {categoryId != null  ? (
+              {categoryId != null ? (
                 <Grid marginTop={5} item xs={12} sm={6} style={{ zIndex: '999' }}>
                   <InputLabel id='category-select-label'>Category</InputLabel>
                   <MultiSelect
@@ -973,6 +973,20 @@ export default function EditForm(props) {
                                   >
                                     <MenuItem value={'1'}>Active</MenuItem>
                                     <MenuItem value={'0'}>Inactive</MenuItem>
+                                  </Select>
+                                </FormControl>
+                              </Grid>
+                              <Grid item xs={12} sm={6} marginTop={5}>
+                                <FormControl fullWidth>
+                                  <InputLabel id='srt_publish-select-label'>Publish certificate</InputLabel>
+                                  <Select
+                                    {...register2(`cycles.${index}.srt_publish`)}
+                                    defaultValue={cycle.srt_publish}
+                                    labelId='srt_publish-select-label'
+                                    label='Publish certificate'
+                                  >
+                                    <MenuItem value={'1'}>Yes</MenuItem>
+                                    <MenuItem value={'0'}>No</MenuItem>
                                   </Select>
                                 </FormControl>
                               </Grid>

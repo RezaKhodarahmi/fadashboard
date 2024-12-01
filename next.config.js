@@ -14,7 +14,7 @@ module.exports = {
     esmExternals: false
   },
   eslint: {
-    ignoreDuringBuilds: true,
-  },
+    ignoreDuringBuilds: true
+  }
   // webpack configuration if needed
 }
