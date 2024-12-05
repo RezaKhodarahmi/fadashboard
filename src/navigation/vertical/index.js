@@ -7,12 +7,9 @@ const navigation = () => {
       children: [
         {
           title: 'Analytics',
-          path: '/dashboards/analytics'
-        },
-
-        {
-          title: 'eCommerce',
-          path: '/dashboards/ecommerce'
+          path: '/dashboards/analytics',
+          action: 'manage',
+          subject: 'analytics-page'
         }
       ]
     },
@@ -25,11 +22,15 @@ const navigation = () => {
       children: [
         {
           title: 'Add New Post',
-          path: '/apps/post/new'
+          path: '/apps/post/new',
+          action: 'manage',
+          subject: 'new-post-page'
         },
         {
           title: 'All Posts',
-          path: '/apps/post/list'
+          path: '/apps/post/list',
+          action: 'manage',
+          subject: 'post-list-page'
         }
       ]
     },
@@ -41,11 +42,15 @@ const navigation = () => {
       children: [
         {
           title: 'Add New Category',
-          path: '/apps/blog-category/new'
+          path: '/apps/blog-category/new',
+          action: 'manage',
+          subject: 'new-post-category-page'
         },
         {
           title: 'All Categories',
-          path: '/apps/blog-category/list'
+          path: '/apps/blog-category/list',
+          action: 'manage',
+          subject: 'post-list-category-page'
         }
       ]
     },
@@ -61,15 +66,34 @@ const navigation = () => {
       children: [
         {
           title: 'Add New Course',
-          path: '/apps/course/new'
+          path: '/apps/course/new',
+          action: 'manage',
+          subject: 'new-course-page'
         },
         {
           title: 'All Courses',
-          path: '/apps/course/list'
+          path: '/apps/course/list',
+          action: 'manage',
+          subject: 'course-list-page'
         },
         {
           title: 'Demo requests',
-          path: '/apps/demo-session/list'
+          path: '/apps/demo-session/list',
+          action: 'manage',
+          subject: 'course-requests-page'
+        }
+      ]
+    },
+    {
+      title: 'ZOOM Links',
+      icon: 'tabler:link',
+      badgeColor: 'error',
+      children: [
+        {
+          title: 'Links',
+          path: '/apps/zoom-links/list',
+          action: 'manage',
+          subject: 'zoom-links'
         }
       ]
     },
@@ -81,11 +105,15 @@ const navigation = () => {
       children: [
         {
           title: 'Add New Category',
-          path: '/apps/category/new'
+          path: '/apps/category/new',
+          action: 'manage',
+          subject: 'new-course-category-page'
         },
         {
           title: 'All Categories',
-          path: '/apps/category/list'
+          path: '/apps/category/list',
+          action: 'manage',
+          subject: 'course-list-category-page'
         }
       ]
     },
@@ -97,11 +125,15 @@ const navigation = () => {
       children: [
         {
           title: 'Add New Video',
-          path: '/apps/video/new'
+          path: '/apps/video/new',
+          action: 'manage',
+          subject: 'video-new-page'
         },
         {
           title: 'All Recorded Videos',
-          path: '/apps/video/list'
+          path: '/apps/video/list',
+          action: 'manage',
+          subject: 'video-list-page'
         }
       ]
     },
@@ -113,11 +145,15 @@ const navigation = () => {
       children: [
         {
           title: 'Add New Test',
-          path: '/apps/test/new'
+          path: '/apps/test/new',
+          action: 'manage',
+          subject: 'new-video-page'
         },
         {
           title: 'All Tests',
-          path: '/apps/test/list'
+          path: '/apps/test/list',
+          action: 'manage',
+          subject: 'test-list-page'
         }
       ]
     },
@@ -129,11 +165,15 @@ const navigation = () => {
       children: [
         {
           title: 'Add New Enrollment',
-          path: '/apps/enrollment/new'
+          path: '/apps/enrollment/new',
+          action: 'manage',
+          subject: 'new-enrollment-page'
         },
         {
           title: 'All Enrollments',
-          path: '/apps/enrollment/list'
+          path: '/apps/enrollment/list',
+          action: 'manage',
+          subject: 'enrollment-list-page'
         }
       ]
     },
@@ -148,11 +188,15 @@ const navigation = () => {
       children: [
         {
           title: 'Add New Webinar',
-          path: '/apps/webinar/new'
+          path: '/apps/webinar/new',
+          action: 'manage',
+          subject: 'new-webinar-page'
         },
         {
           title: 'All Webinars',
-          path: '/apps/webinar/list'
+          path: '/apps/webinar/list',
+          action: 'manage',
+          subject: 'webinar-list-page'
         }
       ]
     },
@@ -168,11 +212,15 @@ const navigation = () => {
       children: [
         {
           title: 'Add New Coupon',
-          path: '/apps/coupon/new'
+          path: '/apps/coupon/new',
+          action: 'manage',
+          subject: 'new-coupon-page'
         },
         {
           title: 'All Coupons',
-          path: '/apps/coupon/list'
+          path: '/apps/coupon/list',
+          action: 'manage',
+          subject: 'webinar-list-page'
         }
       ]
     },
@@ -192,7 +240,9 @@ const navigation = () => {
     {
       title: 'File Manager',
       icon: 'tabler:folders',
-      path: '/apps/filemanager'
+      path: '/apps/filemanager',
+      action: 'manage',
+      subject: 'file-manager-page'
     },
     {
       sectionTitle: 'Users'
@@ -214,6 +264,7 @@ const navigation = () => {
     {
       title: 'Appointments',
       icon: 'tabler:calendar',
+
       children: [
         {
           title: 'Add New Book',
@@ -228,22 +279,13 @@ const navigation = () => {
           path: '/apps/appointments/work'
         }
       ]
-    },
-    {
-      title: 'Roles & Permissions',
-      icon: 'tabler:settings',
-      children: [
-        {
-          title: 'Roles',
-          path: '/apps/roles'
-        },
-        {
-          title: 'Permissions',
-          path: '/apps/permissions'
-        }
-      ]
     }
   ]
+}
+
+navigation.acl = {
+  action: 'manage',
+  subject: 'vertical-nav-page'
 }
 
 export default navigation

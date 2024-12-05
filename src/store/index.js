@@ -21,6 +21,7 @@ import enrollment from 'src/store/apps/enrollment'
 import activecamp from 'src/store/apps/activecampaing'
 import adminLogin from 'src/store/apps/admin-login'
 import webinar from 'src/store/apps/webinar'
+import zoomLinks from 'src/store/apps/zoom-links'
 import appointment from 'src/store/apps/appointment'
 
 export const store = configureStore({
@@ -47,6 +48,7 @@ export const store = configureStore({
     media,
     appointment,
     adminLogin,
+    zoomLinks,
     demosession
   },
   middleware: getDefaultMiddleware =>
