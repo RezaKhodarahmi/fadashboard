@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { DataGrid } from '@mui/x-data-grid'
-import { fetchTestData, deleteTest } from 'src/store/apps/test'
+import { fetchTestData, deleteTest, duplicateTest } from 'src/store/apps/test'
 import { fetchCycleData } from 'src/store/apps/cycle'
 
 // ** MUI Imports
@@ -24,6 +24,7 @@ const TestList = () => {
   const tests = useSelector(state => state.test)
   const [searchTerm, setSearchTerm] = useState('')
   const [pageSize, setPageSize] = useState(10)
+  const [loadingId, setLoadingId] = useState(null)
 
   const handleDelete = id => {
     const confirmation = window.confirm('Are you sure you want to delete this Test?')
@@ -95,37 +96,58 @@ const TestList = () => {
     dispatch(fetchCycleData())
   }, [dispatch])
 
-  const renderEnrollCell = (params) => {
-    const { value } = params;
-    const statusText = handleEnroll(value);
-  
-    return (
-      <div>
-        {statusText && (
-          <Chip label={ value == '1' ? 'Need Enroll' : value == '0' ? 'Free' : value == '2' ? 'Pending Review' : 'Pending Review' } color={ value == '1' ? 'primary' : value == '0' ? 'info' : value == '2' ? 'warning' : 'secondary'} sx={{ width: '100%' }} />
-        )}
-      </div>
-    );
-  };
+  const renderEnrollCell = params => {
+    const { value } = params
+    const statusText = handleEnroll(value)
 
-  const renderStatusCell = (params) => {
-    const { value } = params;
-    const statusText = handleStatus(value);
-  
     return (
       <div>
         {statusText && (
-          <Chip label={ value == '1' ? 'Active' : value == '0' ? 'Inactive' : value == '2' ? 'Pending Review' : 'Pending Review' } color={ value == '1' ? 'success' : value == '0' ? 'secondary' : value == '2' ? 'warning' : 'secondary'} sx={{ width: '100%' }} />
+          <Chip
+            label={
+              value == '1' ? 'Need Enroll' : value == '0' ? 'Free' : value == '2' ? 'Pending Review' : 'Pending Review'
+            }
+            color={value == '1' ? 'primary' : value == '0' ? 'info' : value == '2' ? 'warning' : 'secondary'}
+            sx={{ width: '100%' }}
+          />
         )}
       </div>
-    );
-  };
+    )
+  }
+
+  const renderStatusCell = params => {
+    const { value } = params
+    const statusText = handleStatus(value)
+
+    return (
+      <div>
+        {statusText && (
+          <Chip
+            label={
+              value == '1' ? 'Active' : value == '0' ? 'Inactive' : value == '2' ? 'Pending Review' : 'Pending Review'
+            }
+            color={value == '1' ? 'success' : value == '0' ? 'secondary' : value == '2' ? 'warning' : 'secondary'}
+            sx={{ width: '100%' }}
+          />
+        )}
+      </div>
+    )
+  }
+
+  const handleDuplicate = async id => {
+    const confirmation = window.confirm('Are you sure you want to duplicate this test?')
+    if (confirmation) {
+      setLoadingId(id) // Set the loading state for the specific button
+      await dispatch(duplicateTest(id)) // Dispatch the duplication action
+      setLoadingId(null) // Reset the loading state after duplication
+    }
+  }
 
   const columns = [
     { field: 'id', headerName: 'ID', flex: 0.01, minWidth: 50 },
     { field: 'title', headerName: 'Title', flex: 0.2, minWidth: 50 },
     { field: 'cycle', headerName: 'cycle', width: 120, renderCell: handelCycle },
-    { field: 'createdAt', headerName: 'Created At', flex: 0.1, minWidth: 50 , renderCell: handleDate},
+    { field: 'createdAt', headerName: 'Created At', flex: 0.1, minWidth: 50, renderCell: handleDate },
     { field: 'needEnroll', headerName: 'Enroll Status', flex: 0.1, minWidth: 50, renderCell: renderEnrollCell },
     { field: 'status', headerName: 'Status', flex: 0.06, minWidth: 50, renderCell: renderStatusCell },
     {
@@ -138,7 +160,7 @@ const TestList = () => {
           label='Edit'
           color='warning'
           variant='outlined'
-          onClick={()=> handleEdit(params.row.id)}
+          onClick={() => handleEdit(params.row.id)}
           icon={<Icon icon='tabler:edit' />}
           fontSize={14}
           sx={{ width: '100%' }}
@@ -152,16 +174,34 @@ const TestList = () => {
       minWidth: 100,
       renderCell: params => (
         <Chip
-            label='Delete'
-            color='error'
-            variant='outlined'
-            onClick={()=> handleDelete(params.row.id)}
-            icon={<Icon icon='tabler:trash' />}
-            fontSize={14}
-            sx={{ width: '100%' }}
+          label='Delete'
+          color='error'
+          variant='outlined'
+          onClick={() => handleDelete(params.row.id)}
+          icon={<Icon icon='tabler:trash' />}
+          fontSize={14}
+          sx={{ width: '100%' }}
         />
       )
     },
+    {
+      field: 'duplicate',
+      headerName: 'Duplicate',
+      flex: 0.1,
+      minWidth: 100,
+      renderCell: params => (
+        <Chip
+          label={loadingId === params.row.id ? 'Duplicating...' : 'Duplicate'}
+          color={loadingId === params.row.id ? 'secondary' : 'info'}
+          variant='outlined'
+          onClick={() => handleDuplicate(params.row.id)}
+          disabled={loadingId === params.row.id} // Disable the button while loading
+          icon={loadingId === params.row.id ? <Icon icon='tabler:loader' spin /> : <Icon icon='tabler:copy' />}
+          fontSize={14}
+          sx={{ width: '100%' }}
+        />
+      )
+    }
   ]
 
   const filteredTests = Array.isArray(tests?.data?.data)
@@ -177,8 +217,8 @@ const TestList = () => {
   return (
     <>
       <Card>
-        <CardHeader 
-          title='All Tests' 
+        <CardHeader
+          title='All Tests'
           action={
             <div>
               <TextField
@@ -193,15 +233,15 @@ const TestList = () => {
         />
         <Box sx={{ height: 650 }}>
           {filteredTests ? (
-              <DataGrid
-                rows={filteredTests}
-                columns={columns}
-                pageSize={Number(pageSize)}
-                onPageSizeChange={newPageSize => setPageSize(newPageSize)}
-                rowsPerPageOptions={[5, 10, 25, 50, 100]}
-                checkboxSelection
-              />
-            ) : null}
+            <DataGrid
+              rows={filteredTests}
+              columns={columns}
+              pageSize={Number(pageSize)}
+              onPageSizeChange={newPageSize => setPageSize(newPageSize)}
+              rowsPerPageOptions={[5, 10, 25, 50, 100]}
+              checkboxSelection
+            />
+          ) : null}
         </Box>
       </Card>
     </>

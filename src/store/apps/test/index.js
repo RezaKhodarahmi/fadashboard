@@ -156,4 +156,28 @@ export const importFromJson = data => async dispatch => {
   }
 }
 
+export const duplicateTest = id => async dispatch => {
+  dispatch(getDataStart())
+  try {
+    const token = window.localStorage.getItem('accessToken')
+    const response = await axios.post(
+      `${BASE_URL}/tests/duplicate/${id}`,
+      {},
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        withCredentials: true
+      }
+    )
+
+    toast.success('Test duplicated successfully.')
+    dispatch(fetchTestData()) // Refresh the test list
+  } catch (error) {
+    toast.error('Error! message:' + error?.response?.data?.message)
+    dispatch(getDataFailure(error.message))
+  }
+}
+
 export default testSlice.reducer
