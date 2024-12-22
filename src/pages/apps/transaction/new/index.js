@@ -11,7 +11,7 @@ import MuiLink from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 import CircularProgress from '@mui/material/CircularProgress'
 
-const NewUserForm = lazy(() => import('src/views/apps/user/new'))
+const NewTransactionForm = lazy(() => import('src/views/apps/transaction/new'))
 
 const Loading = () => {
   return (
@@ -26,18 +26,9 @@ export default function EditUser() {
   return (
     <DatePickerWrapper>
       <Grid container spacing={6} className='match-height'>
-        <PageHeader
-          title={
-            <Typography variant='h5'>
-              <MuiLink href='https://github.com/react-hook-form/react-hook-form' target='_blank'>
-                New user
-              </MuiLink>
-            </Typography>
-          }
-        />
         <Grid item xs={12}>
           <Suspense fallback={<Loading />}>
-            <NewUserForm />
+            <NewTransactionForm />
           </Suspense>
         </Grid>
       </Grid>

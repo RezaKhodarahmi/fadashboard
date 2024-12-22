@@ -1,223 +1,253 @@
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import FormHelperText from '@mui/material/FormHelperText'
-import * as yup from 'yup'
-import { useAuth } from 'src/hooks/useAuth'
-import { TextField, Button, Grid, Select, MenuItem, FormControl, InputLabel, Box, Avatar } from '@mui/material'
-import { newUser } from 'src/store/apps/user'
-import { useDispatch } from 'react-redux'
-import { yupResolver } from '@hookform/resolvers/yup'
+import React, { useState, useEffect } from 'react'
+import {
+  Button,
+  Grid,
+  Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
+} from '@mui/material'
+import { MultiSelect } from 'react-multi-select-component'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchData } from 'src/store/apps/course'
+import { createTransaction } from 'src/store/apps/transaction'
+import { getUserWithEmail } from 'src/store/apps/user'
 
-const validationSchema = yup.object().shape({
-  firstName: yup.string(),
-  lastName: yup.string(),
-  email: yup.string().email('Invalid email').required('Email is required'),
-  phone: yup.string('Phone is not correct'),
-  address: yup.string('Address is not correct'),
-  postalCode: yup.string('Postal Code is not correct'),
-  country: yup.string('Country is not correct')
-})
-
-export default function CrateUserForm() {
-  const auth = useAuth()
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors }
-  } = useForm({
-    resolver: yupResolver(validationSchema)
-  })
-
-  const [file, setFile] = useState(null)
-  const [imageUrl, setImageUrl] = useState(null)
+export default function NewTransactionForm() {
+  const [searchUserEmail, setSearchUserEmail] = useState('')
+  const [selectedUser, setSelectedUser] = useState(null)
+  const [amount, setAmount] = useState('')
+  const [currency, setCurrency] = useState('USD')
+  const [status, setStatus] = useState('Pending')
+  const [transactionType, setTransactionType] = useState('Stripe')
+  const [refunded, setRefunded] = useState('0')
+  const [selectedCourses, setSelectedCourses] = useState([])
+  const [openCourseDialog, setOpenCourseDialog] = useState(false)
+  const [courseOptions, setCourseOptions] = useState([])
+  const [userError, setUserError] = useState(null)
 
   const dispatch = useDispatch()
+  const coursesData = useSelector(state => state.course)
+  const userSearchResult = useSelector(state => state.user?.data?.data)
 
-  const handleFileChange = e => {
-    setFile(e.target.files[0])
-    setImageUrl(URL.createObjectURL(e.target.files[0]))
+  useEffect(() => {
+    dispatch(fetchData())
+  }, [dispatch])
+
+  useEffect(() => {
+    if (Array.isArray(coursesData.data?.data)) {
+      setCourseOptions(
+        coursesData.data.data.map(course => ({
+          label: course.title,
+          value: course.id,
+          cycles: course.cycles || []
+        }))
+      )
+    }
+  }, [coursesData])
+
+  const handleSearchUser = () => {
+    if (!searchUserEmail) {
+      setUserError('Email is required.')
+      return
+    }
+    dispatch(getUserWithEmail(searchUserEmail))
   }
 
-  const onSubmit = data => {
-    const formData = new FormData()
-    for (const key in data) {
-      formData.append(key, data[key])
+  useEffect(() => {
+    if (userSearchResult) {
+      setSelectedUser(userSearchResult)
+      setUserError(null)
+    } else {
+      setUserError('User not found.')
     }
-    formData.append('image', file)
-    dispatch(newUser(formData))
+  }, [userSearchResult])
+
+  const handleSelectCourse = selected => {
+    const updatedCourses = selected.map(s => {
+      const existing = selectedCourses.find(course => course.value === s.value)
+      return { ...s, selectedCycle: existing?.selectedCycle || '' }
+    })
+    setSelectedCourses(updatedCourses)
+  }
+
+  const handleCycleChange = (courseValue, cycleId) => {
+    const updatedCourses = selectedCourses.map(course =>
+      course.value === courseValue ? { ...course, selectedCycle: cycleId } : course
+    )
+    setSelectedCourses(updatedCourses)
+  }
+
+  const handleCreateTransaction = () => {
+    if (!selectedUser) {
+      setUserError('Please select a user.')
+      return
+    }
+
+    if (!selectedCourses.every(course => course.selectedCycle)) {
+      alert('Each course must have an associated cycle selected.')
+      return
+    }
+
+    const transactionData = {
+      userId: selectedUser.id,
+      amount,
+      currency,
+      status,
+      transactionType,
+      refunded,
+      courses: selectedCourses.map(course => ({
+        value: course.value,
+        selectedCycle: course.selectedCycle
+      }))
+    }
+
+    dispatch(createTransaction(transactionData))
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <div>
+      <Typography variant='h5'>New Transaction</Typography>
+
+      {/* User Search Section */}
       <Grid container spacing={2}>
-        <Grid marginTop={5} item xs={12} sm={6}>
-          <TextField {...register('firstName')} name='firstName' label='First Name' fullWidth />
-          {errors.firstName && (
-            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-firstName-helper'>
-              {errors.firstName.message}
-            </FormHelperText>
-          )}
-        </Grid>
-        <Grid marginTop={5} item xs={12} sm={6}>
-          <TextField {...register('lastName')} name='lastName' label='Last Name' fullWidth />
-          {errors.lastName && (
-            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-lastName-helper'>
-              {errors.lastName.message}
-            </FormHelperText>
-          )}
-        </Grid>
-        <Grid marginTop={5} item xs={12}>
-          <TextField {...register('email')} name='email' label='Email' fullWidth />
-          {errors.email && (
-            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-email-helper'>
-              {errors.email.message}
-            </FormHelperText>
-          )}
-        </Grid>
-        <Grid marginTop={5} item xs={12} sm={6}>
+        <Grid item xs={12}>
           <FormControl fullWidth>
-            <InputLabel id='role-select-label'>Role</InputLabel>
-            <Select {...register('role')} defaultValue={'2000'} name='role' labelId='role-select-label' label='Role'>
-              <MenuItem value={'1000'}>Instructor</MenuItem>
-              <MenuItem value={'2000'}>Customer</MenuItem>
-              <MenuItem value={'3000'}>Author</MenuItem>
-              <MenuItem value={'4000'}>Blog manager</MenuItem>
-              <MenuItem value={'5000'}>Employee</MenuItem>
-              <MenuItem value={'6000'}>Financial manager</MenuItem>
-              <MenuItem value={'8000'}>Editor</MenuItem>
-              {auth.user?.role === '10000' ? <MenuItem value={'10000'}>Administrator</MenuItem> : null}
+            <TextField
+              label='Search User by Email'
+              value={searchUserEmail}
+              onChange={e => setSearchUserEmail(e.target.value)}
+              onBlur={handleSearchUser}
+              fullWidth
+            />
+            {userError && <Typography color='error'>{userError}</Typography>}
+            {selectedUser && (
+              <Typography>
+                Selected User: {selectedUser.firstName} {selectedUser.lastName} ({selectedUser.email})
+              </Typography>
+            )}
+          </FormControl>
+        </Grid>
+
+        {/* Transaction Fields */}
+        <Grid item xs={6}>
+          <FormControl fullWidth>
+            <TextField
+              label='Amount'
+              value={amount}
+              type='number'
+              onChange={e => setAmount(e.target.value)}
+              fullWidth
+            />
+          </FormControl>
+        </Grid>
+        <Grid item xs={6}>
+          <FormControl fullWidth>
+            <InputLabel>Currency</InputLabel>
+            <Select value={currency} onChange={e => setCurrency(e.target.value)} fullWidth>
+              <MenuItem value='USD'>USD</MenuItem>
+              <MenuItem value='CAD'>CAD</MenuItem>
+              <MenuItem value='EUR'>EUR</MenuItem>
+              <MenuItem value='Rial'>Rial</MenuItem>
+              <MenuItem value='Other'>Other</MenuItem>
             </Select>
           </FormControl>
-
-          {errors.role && (
-            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-role-helper'>
-              {errors.role.message}
-            </FormHelperText>
-          )}
         </Grid>
-        <Grid marginTop={5} item xs={12} sm={6}>
-          <TextField {...register('phone')} name='phone' label='Phone' fullWidth />
-          {errors.phone && (
-            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-phone-helper'>
-              {errors.phone.message}
-            </FormHelperText>
-          )}
-        </Grid>
-        <Grid marginTop={5} item xs={12} sm={6}>
-          <TextField {...register('vip', { type: 'date' })} name='vip' label='VIP' type={'date'} fullWidth />
-          {errors.vip && (
-            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-vip-helper'>
-              {errors.vip.message}
-            </FormHelperText>
-          )}
-        </Grid>
-        <Grid marginTop={5} item xs={12} sm={6}>
+        <Grid item xs={6}>
           <FormControl fullWidth>
-            <InputLabel id='status-select-label'>Email Verification</InputLabel>
+            <InputLabel>Status</InputLabel>
+            <Select value={status} onChange={e => setStatus(e.target.value)} fullWidth>
+              <MenuItem value='Pending'>Pending</MenuItem>
+              <MenuItem value='Succeeded'>Succeeded</MenuItem>
+              <MenuItem value='Cancelled'>Cancelled</MenuItem>
+              <MenuItem value='Refund'>Refund</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={6}>
+          <FormControl fullWidth>
+            <InputLabel>Transaction Type</InputLabel>
+            <Select value={transactionType} onChange={e => setTransactionType(e.target.value)} fullWidth>
+              <MenuItem value='Stripe'>Stripe</MenuItem>
+              <MenuItem value='Partially'>Partially</MenuItem>
+              <MenuItem value='E-Transfer'>E-Transfer</MenuItem>
+              <MenuItem value='Iran'>Iran</MenuItem>
+              <MenuItem value='Manual'>Manual</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+          <FormControl fullWidth>
+            <TextField
+              label='Refunded'
+              value={refunded}
+              type='number'
+              onChange={e => setRefunded(e.target.value)}
+              fullWidth
+            />
+          </FormControl>
+        </Grid>
+      </Grid>
+
+      {/* Courses Section */}
+      <Typography variant='h6' style={{ margin: '20px 0' }}>
+        Courses
+      </Typography>
+      <Button variant='contained' onClick={() => setOpenCourseDialog(true)} style={{ marginBottom: '10px' }}>
+        Add Courses
+      </Button>
+      {selectedCourses.map(course => (
+        <div key={course.value}>
+          <Typography variant='body1'>{course.label}</Typography>
+          <FormControl fullWidth margin='normal'>
+            <InputLabel>Select Cycle</InputLabel>
             <Select
-              {...register('emailVerification')}
-              name='emailVerification'
-              labelId='emailVerification-select-label'
-              label='Email Verification'
-              defaultValue={'1'}
+              value={course.selectedCycle || ''}
+              onChange={e => handleCycleChange(course.value, e.target.value)}
+              label='Select Cycle'
             >
-              <MenuItem value={'1'}>Yes</MenuItem>
-              <MenuItem value={'0'}>No</MenuItem>
+              {course?.cycles?.map(cycle => (
+                <MenuItem key={cycle.id} value={cycle.id}>
+                  {cycle.name}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
+        </div>
+      ))}
 
-          {errors.emailVerification && (
-            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-emailVerification-helper'>
-              {errors.emailVerification.message}
-            </FormHelperText>
-          )}
-        </Grid>
-        <Grid marginTop={5} item xs={12}>
-          <TextField {...register('address')} name='address' label='Address' fullWidth />
-          {errors.address && (
-            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-address-helper'>
-              {errors.address.message}
-            </FormHelperText>
-          )}
-        </Grid>
-        <Grid marginTop={5} item xs={12} sm={6}>
-          <TextField {...register('postalCode')} name='postalCode' label='Postal Code' fullWidth />
-          {errors.postalCode && (
-            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-postalCode-helper'>
-              {errors.postalCode.message}
-            </FormHelperText>
-          )}
-        </Grid>
-        <Grid marginTop={5} item xs={12} sm={6}>
-          <TextField {...register('country')} name='country' label='Country' fullWidth />
-          {errors.country && (
-            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-country-helper'>
-              {errors.country.message}
-            </FormHelperText>
-          )}
-        </Grid>
-        <Grid marginTop={5} item xs={12}>
-          <TextField {...register('city')} name='city' label='City' fullWidth />
-          {errors.city && (
-            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-city-helper'>
-              {errors.city.message}
-            </FormHelperText>
-          )}
-        </Grid>
-        <Grid marginTop={5} item xs={12} sm={6}>
-          <TextField
-            {...register('dateOfBirth', { type: 'date' })}
-            name='dateOfBirth'
-            label='Date of Birth'
-            type={'date'}
-            fullWidth
+      <Dialog
+        open={openCourseDialog}
+        onClose={() => setOpenCourseDialog(false)}
+        fullWidth
+        maxWidth='md' // Larger size
+      >
+        <DialogTitle>Select Courses</DialogTitle>
+        <DialogContent style={{ height: '500px', overflowY: 'auto' }}>
+          <MultiSelect
+            options={courseOptions}
+            value={selectedCourses}
+            onChange={handleSelectCourse}
+            labelledBy='Select Courses'
           />
-          {errors.dateOfBirth && (
-            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-dateOfBirth-helper'>
-              {errors.dateOfBirth.message}
-            </FormHelperText>
-          )}
-        </Grid>
-        <Grid marginTop={5} item xs={12} sm={6}>
-          <FormControl fullWidth>
-            <InputLabel id='status-select-label'>Status</InputLabel>
-            <Select
-              {...register('status')}
-              name='status'
-              labelId='status-select-label'
-              label='Status'
-              defaultValue={'1'}
-            >
-              <MenuItem value={'1'}>Active</MenuItem>
-              <MenuItem value={'0'}>Inactive</MenuItem>
-            </Select>
-          </FormControl>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenCourseDialog(false)} color='primary' variant='contained'>
+            Done
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-          {errors.status && (
-            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-status-helper'>
-              {errors.status.message}
-            </FormHelperText>
-          )}
-        </Grid>
-        <Grid marginTop={5} item xs={12} sm={6}>
-          <TextField {...register('password')} name='password' label='Password' fullWidth />
-          {errors.password && (
-            <FormHelperText sx={{ color: 'error.main' }} id='stepper-linear-account-password-helper'>
-              {errors.password.message}
-            </FormHelperText>
-          )}
-        </Grid>
-      </Grid>
-      <Grid marginTop={5} item xs={12} sm={6} flex>
-        <Avatar alt='Avatar' src={imageUrl} sx={{ width: 50, height: 50 }} />
-        <input type='file' name='image' onChange={handleFileChange} />
-      </Grid>
-      <Grid marginTop={10} item xs={12} sm={6}>
-        <Button type='submit' size='large' variant='contained' color='success'>
-          Submit
-        </Button>
-      </Grid>
-    </form>
+      {/* Submit Button */}
+      <Button variant='contained' color='primary' onClick={handleCreateTransaction} style={{ marginTop: '20px' }}>
+        Create Transaction
+      </Button>
+    </div>
   )
 }

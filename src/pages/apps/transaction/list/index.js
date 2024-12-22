@@ -45,6 +45,7 @@ const TransactionList = () => {
   const fetchCourses = useSelector(state => state.course)
   const [searchTerm, setSearchTerm] = useState('')
   const [pageSize, setPageSize] = useState(10)
+  const [currentPage, setCurrentPage] = useState(1)
   const [exportStartDate, setExportStartDate] = useState(null)
   const [exportEndDate, setExportEndDate] = useState(null)
   const [selectedStatus, setSelectedStatus] = useState('succeeded')
@@ -58,15 +59,12 @@ const TransactionList = () => {
   const [activeFilter, setActiveFilter] = useState('')
 
   useEffect(() => {
-    console.log(transactions)
-  }, [transactions])
-
-  useEffect(() => {
     if (fetchCourses?.data?.data) {
       const courseOptions = fetchCourses?.data?.data?.map(course => ({
         label: course.title,
         value: course.id
       }))
+
       setCourses(courseOptions)
     }
   }, [fetchCourses])
@@ -121,12 +119,40 @@ const TransactionList = () => {
   useEffect(() => {
     dispatch(fetchTransactionData())
     dispatch(fetchData())
-  }, [dispatch])
+  }, [])
+
+  useEffect(() => {
+    const fetchTransactions = () => {
+      dispatch(
+        fetchTransactionData(
+          currentPage,
+          pageSize,
+          searchTerm,
+          selectedStatus,
+          selectedType,
+          exportStartDate,
+          exportEndDate
+        )
+      )
+    }
+
+    fetchTransactions()
+  }, [dispatch, currentPage, pageSize, searchTerm, selectedStatus, selectedType, exportStartDate, exportEndDate])
 
   const handleDelete = id => {
     const confirmation = window.confirm('Are you sure you want to delete this Transaction?')
     if (confirmation) {
-      dispatch(fetchTransactionData())
+      dispatch(
+        fetchTransactionData(
+          currentPage,
+          pageSize,
+          searchTerm,
+          selectedStatus,
+          selectedType,
+          exportStartDate,
+          exportEndDate
+        )
+      )
     }
   }
 
@@ -146,6 +172,41 @@ const TransactionList = () => {
         return <Chip label='Canceled' color='secondary' />
     }
   }
+
+  useEffect(() => {
+    if (transactions) {
+      setSucceededTransactionSum(transactions?.data?.succeededSum)
+      setSucceededTransactionCount(transactions?.data?.succeededCount)
+      setRefundedTransactionSum(transactions?.data?.refundedSum)
+      setRefundedTransactionCount(transactions?.data?.refundedCount)
+    }
+  }, [transactions])
+
+  useEffect(() => {
+    console.log(transactions?.data?.succeededSum)
+  }, [transactions])
+
+  useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      dispatch(
+        fetchTransactionData(
+          currentPage,
+          pageSize,
+          searchTerm,
+          selectedStatus,
+          selectedType,
+          exportStartDate,
+          exportEndDate
+        )
+      )
+    }, 500) // Debounce delay: 500ms
+
+    return () => clearTimeout(delayDebounce) // Cleanup on unmount or new search
+  }, [dispatch, currentPage, pageSize, searchTerm, selectedStatus, selectedType, exportStartDate, exportEndDate])
+
+  useEffect(() => {
+    console.log(exportStartDate, exportEndDate)
+  }, [exportStartDate, exportEndDate])
 
   const handelUserEmail = user => {
     return (
@@ -218,77 +279,7 @@ const TransactionList = () => {
     }
   ]
 
-  const filteredTransaction = Array.isArray(transactions?.data?.data)
-    ? transactions?.data?.data
-        ?.filter(transaction => {
-          const matchesSearchTerm =
-            transaction.user?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            transaction.user?.phone?.toLowerCase().includes(searchTerm.toLowerCase())
-          const matchesStatus = selectedStatus ? transaction.Transaction_Status === selectedStatus : true
-          const matchesType = selectedType ? transaction.Transaction_Type === selectedType : true
-
-          const matchesCourse = selectedCourses.length
-            ? transaction.courses.some(course => selectedCourses.some(selected => selected.value === course.id))
-            : true
-
-          const matchesDateRange = (() => {
-            if (!exportStartDate && !exportEndDate) return true
-            const transactionDate = new Date(transaction.Transaction_Date).getTime()
-            const start = exportStartDate ? new Date(exportStartDate).setHours(0, 0, 0, 0) : null
-            const end = exportEndDate ? new Date(exportEndDate).setHours(23, 59, 59, 999) : null
-
-            return (!start || transactionDate >= start) && (!end || transactionDate <= end)
-          })()
-
-          return matchesSearchTerm && matchesStatus && matchesType && matchesCourse && matchesDateRange
-        })
-        .map(transaction => ({
-          ...transaction,
-          id: transaction.Transaction_ID
-        }))
-    : []
-
-  useEffect(() => {
-    const calculateSucceededTransactionSumAndCount = () => {
-      let sum = 0
-      let count = 0
-      filteredTransaction.forEach(transaction => {
-        if (transaction.Transaction_Status === 'succeeded') {
-          sum += parseFloat(transaction.Amount)
-          count += 1
-        }
-        if (
-          transaction.Transaction_Status === 'succeeded' &&
-          transaction.Refunded != null &&
-          transaction.Refunded != 0
-        ) {
-          sum -= transaction.Refunded
-        }
-      })
-      setSucceededTransactionSum(sum)
-      setSucceededTransactionCount(count)
-    }
-
-    const calculateRefundedTransactionSum = () => {
-      let sum = 0
-      let count = 0
-      filteredTransaction.forEach(transaction => {
-        if (transaction.Transaction_Status === 'Refund') {
-          sum += parseFloat(transaction.Amount)
-          count += 1
-        }
-        if (transaction.Refunded != null && transaction.Refunded != 0) {
-          sum += parseFloat(transaction.Refunded)
-          count += 1
-        }
-      })
-      setRefundedTransactionSum(sum)
-      setRefundedTransactionCount(count)
-    }
-
-    calculateSucceededTransactionSumAndCount()
-    calculateRefundedTransactionSum()
-  }, [filteredTransaction])
+  const filteredTransaction = Array.isArray(transactions?.data?.data) ? transactions.data.data : []
 
   const exportTransactions = () => {
     let filteredExportTransactions = filteredTransaction
@@ -303,10 +294,10 @@ const TransactionList = () => {
         Transaction_Date: new Date(Transaction_Date).toLocaleDateString(),
         Transaction_Status,
         Transaction_Type,
-        CourseTitle: courses.map(course => course.title).join(', '),
-        CycleName: cycles.map(cycle => cycle.name).join(', '),
-        UserEmail: user.email,
-        UserPhone: user.phone
+        CourseTitle: (courses || []).map(course => course.title).join(', '),
+        CycleName: (cycles || []).map(cycle => cycle.name).join(', '),
+        UserEmail: user?.email || 'Unknown',
+        UserPhone: user?.phone || 'Unknown'
       }
 
       return newTransaction
@@ -383,6 +374,9 @@ const TransactionList = () => {
                       <MenuItem value=''>All</MenuItem>
                       <MenuItem value='Stripe'>Stripe</MenuItem>
                       <MenuItem value='Partially'>Partially</MenuItem>
+                      <MenuItem value='E-Transfer'>E-Transfer</MenuItem>
+                      <MenuItem value='Iran'>Iran</MenuItem>
+                      <MenuItem value='Manual'>Manual</MenuItem>
                     </Select>
                   </FormControl>
                 </Grid>
@@ -518,11 +512,17 @@ const TransactionList = () => {
 
         <Grid container spacing={5} sx={{ marginBottom: 5 }}>
           <Grid item xs={12} md={6}>
-            <SucceededTransactions total={succeededTransactionSum.toFixed(2)} count={succeededTransactionCount} />
+            <SucceededTransactions
+              total={(succeededTransactionSum || 0).toFixed(2)}
+              count={succeededTransactionCount || 0}
+            />
           </Grid>
 
           <Grid item xs={12} md={6}>
-            <RefundedTransactions total={refundedTransactionSum.toFixed(2)} count={refundedTransactionCount} />
+            <RefundedTransactions
+              total={(refundedTransactionSum || 0).toFixed(2)}
+              count={refundedTransactionCount || 0}
+            />
           </Grid>
         </Grid>
 
@@ -534,8 +534,12 @@ const TransactionList = () => {
               columns={columns}
               pageSize={pageSize}
               rowsPerPageOptions={[5, 10, 20]}
-              onPageSizeChange={newPageSize => setPageSize(newPageSize)}
               pagination
+              getRowId={row => row.Transaction_ID}
+              paginationMode='server'
+              rowCount={transactions?.data?.total || 0} // Set total rows from the API response
+              onPageChange={newPage => setCurrentPage(newPage + 1)} // Increment page for zero-based index
+              onPageSizeChange={newPageSize => setPageSize(newPageSize)}
             />
           </Box>
         </Card>

@@ -30,23 +30,34 @@ const transactionSlice = createSlice({
 
 export const { getDataStart, getDataSuccess, getDataFailure } = transactionSlice.actions
 
-export const fetchTransactionData = () => async dispatch => {
-  dispatch(getDataStart())
-  try {
-    const token = window.localStorage.getItem('accessToken')
+export const fetchTransactionData =
+  (
+    page = 1,
+    limit = 25,
+    searchTerm = '',
+    selectedStatus = 'succeeded',
+    selectedType = '',
+    exportStartDate = '',
+    exportEndDate = ''
+  ) =>
+  async dispatch => {
+    dispatch(getDataStart())
+    try {
+      const token = window.localStorage.getItem('accessToken')
 
-    const response = await axios.get(`${BASE_URL}/transaction`, {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      },
-      withCredentials: true
-    })
-    dispatch(getDataSuccess(response.data))
-  } catch (error) {
-    dispatch(getDataFailure(error.message))
+      const response = await axios.get(`${BASE_URL}/transaction`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        params: { page, limit, searchTerm, selectedStatus, selectedType, exportStartDate, exportEndDate },
+        withCredentials: true
+      })
+      dispatch(getDataSuccess(response.data))
+    } catch (error) {
+      dispatch(getDataFailure(error.message))
+    }
   }
-}
 
 export const fetchTransactionWithId = id => async dispatch => {
   dispatch(getDataStart())
@@ -79,7 +90,29 @@ export const updateTransaction = params => async dispatch => {
       withCredentials: true
     })
 
-    toast.success('Post successfully updated!')
+    toast.success('Transaction successfully updated!')
+
+    dispatch(getDataSuccess(response.data))
+  } catch (error) {
+    toast.error('Error! message:' + error?.response?.data?.message)
+    dispatch(getDataFailure(error.response?.data?.message))
+  }
+}
+
+export const createTransaction = params => async dispatch => {
+  dispatch(getDataStart())
+  try {
+    const token = window.localStorage.getItem('accessToken')
+
+    const response = await axios.post(`${BASE_URL}/transaction/create`, params, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      withCredentials: true
+    })
+
+    toast.success('Transaction successfully Created!')
 
     dispatch(getDataSuccess(response.data))
   } catch (error) {

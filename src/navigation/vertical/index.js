@@ -231,6 +231,10 @@ const navigation = () => {
         {
           title: 'Transaction List',
           path: '/apps/transaction/list'
+        },
+        {
+          title: 'New Transaction ',
+          path: '/apps/transaction/new'
         }
       ]
     },
