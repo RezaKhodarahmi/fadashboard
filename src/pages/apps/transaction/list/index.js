@@ -182,9 +182,7 @@ const TransactionList = () => {
     }
   }, [transactions])
 
-  useEffect(() => {
-    console.log(transactions?.data?.succeededSum)
-  }, [transactions])
+
 
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
@@ -203,10 +201,6 @@ const TransactionList = () => {
 
     return () => clearTimeout(delayDebounce) // Cleanup on unmount or new search
   }, [dispatch, currentPage, pageSize, searchTerm, selectedStatus, selectedType, exportStartDate, exportEndDate])
-
-  useEffect(() => {
-    console.log(exportStartDate, exportEndDate)
-  }, [exportStartDate, exportEndDate])
 
   const handelUserEmail = user => {
     return (
