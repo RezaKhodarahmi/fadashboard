@@ -38,6 +38,7 @@ import Icon from 'src/@core/components/icon'
 import { updateCourse, deleteCourseCategory } from 'src/store/apps/course'
 import { getTeachers } from 'src/store/apps/user'
 import { newCycle, updateCycle, getCourseCycles, deleteCycle } from 'src/store/apps/cycle'
+import { fetchPlansData } from 'src/store/apps/plans'
 import { useDispatch, useSelector } from 'react-redux'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { MultiSelect } from 'react-multi-select-component'
@@ -82,6 +83,7 @@ export default function EditForm(props) {
   const cycle = useSelector(state => state.cycleReducer)
   const courseCycles = useSelector(state => state.cycleListReducer)
   const allCategories = useSelector(state => state.categoryListReducer)
+  const plans = useSelector(state => state.plans.data)
 
   // Set state
   const [status, setStatus] = useState(null)
@@ -102,10 +104,23 @@ export default function EditForm(props) {
   const [videoImageFile, setVideoImageFile] = useState(null)
   const [videoImageUrl, setVideoImageUrl] = useState(null)
   const [featured, setFeatured] = useState(null)
+  const [selectedPlanId, setSelectedPlanId] = useState(null)
 
   // Get teachers from API
   const user = useSelector(state => state.user)
 
+  useEffect(() => {
+    dispatch(fetchPlansData())
+    console.log(props?.plan?.planId)
+    if (props.plan) {
+      setSelectedPlanId(props?.plan?.planId)
+    }
+  }, [dispatch, props.plan])
+
+  const handlePlanChange = event => {
+    console.log(event.target.value)
+    setSelectedPlanId(event.target.value)
+  }
   const handleFileChange = e => {
     setFile(e.target.files[0])
     setImageUrl(URL.createObjectURL(e.target.files[0]))
@@ -283,6 +298,7 @@ export default function EditForm(props) {
       formData.append(key, data[key])
     }
     formData.append('cats', JSON.stringify(categoryId))
+    formData.append('planId', selectedPlanId)
     dispatch(updateCourse(formData))
   }
 
@@ -445,6 +461,26 @@ export default function EditForm(props) {
                   )}
                 </Grid>
               </Grid>
+              {plans?.data && selectedPlanId != null && (
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <InputLabel id='plan-select-label'>Select Partially Plan</InputLabel>
+                    <Select
+                      labelId='plan-select-label'
+                      defaultValue={selectedPlanId}
+                      onChange={handlePlanChange}
+                      required
+                    >
+                      {plans?.data?.map(plan => (
+                        <MenuItem key={plan.id} value={plan.id}>
+                          {plan.title}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  {errors.planId && <FormHelperText error>{errors.planId.message}</FormHelperText>}
+                </Grid>
+              )}
 
               {/* status */}
               <Grid marginTop={5} item xs={12} sm={2}>

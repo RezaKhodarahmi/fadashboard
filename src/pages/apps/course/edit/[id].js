@@ -35,6 +35,7 @@ export default function EditUser() {
 
   const activeListData = activeList?.data.lists
   const courseData = course.data?.data
+  const plan = course?.data?.plan
 
   useEffect(() => {
     if (id) {
@@ -60,7 +61,7 @@ export default function EditUser() {
         />
         <Grid item xs={12}>
           <Suspense fallback={<Loading />}>
-            <EditForm courseData={courseData} activeListData={activeListData} />
+            <EditForm courseData={courseData} plan={plan} activeListData={activeListData} />
           </Suspense>
         </Grid>
       </Grid>

@@ -97,7 +97,25 @@ const navigation = () => {
         }
       ]
     },
-
+    {
+      title: 'Partial Plans',
+      icon: 'tabler:pizza',
+      badgeColor: 'error',
+      children: [
+        {
+          title: 'Plans list',
+          path: '/apps/plans/list',
+          action: 'manage',
+          subject: 'plans-list'
+        },
+        {
+          title: 'New Plan',
+          path: '/apps/plans/new',
+          action: 'manage',
+          subject: 'new-plan'
+        }
+      ]
+    },
     // Course Category
     {
       title: 'Course Categories',

@@ -157,6 +157,7 @@ const TransactionList = () => {
   }
 
   const handleEdit = id => {
+    console.log(id)
     router.push('/apps/transaction/edit/' + id)
   }
 
@@ -181,8 +182,6 @@ const TransactionList = () => {
       setRefundedTransactionCount(transactions?.data?.refundedCount)
     }
   }, [transactions])
-
-
 
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
@@ -247,7 +246,7 @@ const TransactionList = () => {
           label='Edit'
           color='warning'
           variant='outlined'
-          onClick={() => handleEdit(params.row.id)}
+          onClick={() => handleEdit(params.row.userId)}
           icon={<Icon icon='tabler:edit' />}
           fontSize={14}
           sx={{ width: '100%' }}
