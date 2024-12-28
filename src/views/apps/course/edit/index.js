@@ -109,16 +109,24 @@ export default function EditForm(props) {
   // Get teachers from API
   const user = useSelector(state => state.user)
 
+  const [isPlansLoading, setIsPlansLoading] = useState(true)
+
   useEffect(() => {
-    dispatch(fetchPlansData())
-    console.log(props?.plan?.planId)
+    const fetchPlans = async () => {
+      setIsPlansLoading(true)
+      await dispatch(fetchPlansData())
+      setIsPlansLoading(false)
+    }
+    fetchPlans()
+  }, [dispatch])
+
+  useEffect(() => {
     if (props.plan) {
       setSelectedPlanId(props?.plan?.planId)
     }
   }, [dispatch, props.plan])
 
   const handlePlanChange = event => {
-    console.log(event.target.value)
     setSelectedPlanId(event.target.value)
   }
   const handleFileChange = e => {
@@ -461,16 +469,23 @@ export default function EditForm(props) {
                   )}
                 </Grid>
               </Grid>
-              {plans?.data && selectedPlanId != null && (
+              {isPlansLoading ? (
+                <Grid item xs={12}>
+                  <Typography>Loading plans...</Typography>
+                </Grid>
+              ) : (
                 <Grid item xs={12}>
                   <FormControl fullWidth>
                     <InputLabel id='plan-select-label'>Select Partially Plan</InputLabel>
                     <Select
                       labelId='plan-select-label'
-                      defaultValue={selectedPlanId}
+                      value={selectedPlanId || ''}
                       onChange={handlePlanChange}
                       required
                     >
+                      <MenuItem value='' disabled>
+                        Select a Plan
+                      </MenuItem>
                       {plans?.data?.map(plan => (
                         <MenuItem key={plan.id} value={plan.id}>
                           {plan.title}
