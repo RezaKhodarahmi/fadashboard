@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { DataGrid } from '@mui/x-data-grid'
 import { fetchTransactionData } from 'src/store/apps/transaction'
+import BASE_URL from 'src/api/BASE_URL'
 
 // ** MUI Imports
 import {
@@ -271,51 +272,40 @@ const TransactionList = () => {
       )
     }
   ]
-
+  const token = window.localStorage.getItem('accessToken')
   const filteredTransaction = Array.isArray(transactions?.data?.data) ? transactions.data.data : []
 
-  const exportTransactions = () => {
-    let filteredExportTransactions = filteredTransaction
+  const exportTransactions = async () => {
+    try {
+      const queryParams = new URLSearchParams({
+        searchTerm,
+        selectedStatus,
+        selectedType,
+        exportStartDate: exportStartDate?.toISOString(),
+        exportEndDate: exportEndDate?.toISOString()
+      }).toString()
 
-    const processedData = filteredExportTransactions.map(transaction => {
-      const { Transaction_ID, Amount, Transaction_Date, Transaction_Status, Transaction_Type, courses, cycles, user } =
-        transaction
+      const response = await fetch(`${BASE_URL}/transaction/csv/export?${queryParams}`, {
+        headers: {
+          Authorization: `Bearer ${token}` // Replace with your auth logic
+        }
+      })
 
-      const newTransaction = {
-        Transaction_ID,
-        Amount,
-        Transaction_Date: new Date(Transaction_Date).toLocaleDateString(),
-        Transaction_Status,
-        Transaction_Type,
-        CourseTitle: (courses || []).map(course => course.title).join(', '),
-        CycleName: (cycles || []).map(cycle => cycle.name).join(', '),
-        UserEmail: user?.email || 'Unknown',
-        UserPhone: user?.phone || 'Unknown'
+      if (response.ok) {
+        const blob = await response.blob()
+        const url = window.URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        link.setAttribute('download', 'transactions.csv')
+        document.body.appendChild(link)
+        link.click()
+        link.parentNode.removeChild(link)
+      } else {
+        console.error('Failed to export CSV')
       }
-
-      return newTransaction
-    })
-
-    if (processedData.length === 0) {
-      return
+    } catch (error) {
+      console.error('Error exporting transactions:', error)
     }
-
-    const fields = [
-      'Transaction_ID',
-      'Amount',
-      'Transaction_Date',
-      'Transaction_Status',
-      'Transaction_Type',
-      'CourseTitle',
-      'CycleName',
-      'UserEmail',
-      'UserPhone'
-    ]
-
-    const parser = new Parser({ fields })
-    const csv = parser.parse(processedData)
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
-    saveAs(blob, 'transactions.csv')
   }
 
   return (

@@ -125,23 +125,23 @@ const EnrollmentList = () => {
     { field: 'enrollmentDate', headerName: 'Start', flex: 0.2, minWidth: 20, renderCell: handelEnrolledStart },
     { field: 'completionDate', headerName: 'End', flex: 0.2, minWidth: 20, renderCell: handelEnrolledEnd },
     { field: 'status', headerName: 'Status', flex: 0.06, minWidth: 50, renderCell: renderStatusCell },
-    {
-      field: 'edit',
-      headerName: 'Edit',
-      flex: 0.1,
-      minWidth: 100,
-      renderCell: params => (
-        <Chip
-          label='Edit'
-          color='warning'
-          variant='outlined'
-          onClick={() => handleEdit(params.row.id)}
-          icon={<Icon icon='tabler:edit' />}
-          fontSize={14}
-          sx={{ width: '100%' }}
-        />
-      )
-    },
+    // {
+    //   field: 'edit',
+    //   headerName: 'Edit',
+    //   flex: 0.1,
+    //   minWidth: 100,
+    //   renderCell: params => (
+    //     <Chip
+    //       label='Edit'
+    //       color='warning'
+    //       variant='outlined'
+    //       onClick={() => handleEdit(params.row.id)}
+    //       icon={<Icon icon='tabler:edit' />}
+    //       fontSize={14}
+    //       sx={{ width: '100%' }}
+    //     />
+    //   )
+    // },
     {
       field: 'delete',
       headerName: 'Delete',
